@@ -10,6 +10,7 @@
 Сборка из клона репозитория:
 
 ```bash
+npm install
 npm ci
 npx puppeteer browsers install chrome
 npm run build
