@@ -5,3 +5,4 @@ coverage/
 *.log
 
 package-lock.json
+article.md
