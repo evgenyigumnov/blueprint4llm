@@ -48,6 +48,39 @@ export async function run(): Promise<void> {
     { sourceFile: '/tmp/blueprint4llm-drawio-host-smoke.md' },
   );
   assert.match(drawio.html, /class="bp-diagram bp-diagram--drawio"/);
+  const pencil = await extension.exports.compileMarkdown(
+    [
+      '```pencil',
+      JSON.stringify({
+        version: '2.21',
+        children: [
+          {
+            id: 'frame',
+            type: 'frame',
+            width: 120,
+            height: 36,
+            layout: 'none',
+            children: [
+              {
+                id: 'label',
+                type: 'text',
+                x: 4,
+                y: 4,
+                width: 112,
+                height: 28,
+                content: 'Extension Pencil preview',
+                fill: '#202124',
+              },
+            ],
+          },
+        ],
+      }),
+      '```',
+    ].join('\n'),
+    { sourceFile: '/tmp/blueprint4llm-pencil-host-smoke.md' },
+  );
+  assert.match(pencil.html, /class="bp-diagram bp-diagram--pencil"/);
+  assert.match(pencil.html, /Extension Pencil preview/);
 
   const [major, minor] = hostNodeVersion.split('.').map(Number);
   assert.ok(

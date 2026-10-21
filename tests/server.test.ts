@@ -130,6 +130,29 @@ describe('preview server', () => {
     expect(updatedPreview).not.toContain('Queued');
   }, 15_000);
 
+  it('serves and rebuilds an inline Pencil preview', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'pencil.md');
+    await writeFile(input, pencilMarkdown('Before update'));
+    const server = await startPreviewServer({ input, port: 0 });
+    servers.push(server);
+
+    const firstPreview = await (await fetch(server.url)).text();
+    expect(firstPreview).toContain('bp-diagram--pencil');
+    expect(firstPreview).toContain('Before update');
+
+    const events = await connectEvents(server.url);
+    const reload = waitForReload(events.reader);
+    await writeFile(input, pencilMarkdown('After update'));
+    await reload;
+    await events.close();
+
+    const updatedPreview = await (await fetch(server.url)).text();
+    expect(updatedPreview).toContain('bp-diagram--pencil');
+    expect(updatedPreview).toContain('After update');
+    expect(updatedPreview).not.toContain('Before update');
+  }, 15_000);
+
   it('shows escaped diagnostics, rejects stale PDF, and recovers when a missing image appears', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'blueprint <script>.md');
@@ -326,6 +349,35 @@ function drawioMarkdown(label: string): string {
     ],
   });
   return `# Preview\n\n\`\`\`drawio\n${json}\n\`\`\`\n`;
+}
+
+function pencilMarkdown(label: string): string {
+  const document = JSON.stringify({
+    version: '2.21',
+    children: [
+      {
+        id: 'frame',
+        type: 'frame',
+        width: 240,
+        height: 48,
+        layout: 'none',
+        children: [
+          {
+            id: 'label',
+            type: 'text',
+            x: 4,
+            y: 6,
+            width: 232,
+            height: 36,
+            content: label,
+            textGrowth: 'fixed-width',
+            fill: '#202124',
+          },
+        ],
+      },
+    ],
+  });
+  return ['# Pencil preview', '', '```pencil', document, '```'].join('\n');
 }
 
 async function connectEvents(

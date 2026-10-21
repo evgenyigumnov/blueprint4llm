@@ -66,6 +66,14 @@ export async function run() {
     sourceFile: '/tmp/blueprint4llm-packaged-extension.md',
   });
   assert.ok(compiled.html.includes('<h1>Packaged extension host smoke check</h1>'));
+  const pencil = await api.compileMarkdown(['\`\`\`pencil', JSON.stringify({
+    version: '2.21',
+    children: [{ id: 'label', type: 'text', x: 0, y: 0, width: 180, height: 32, content: 'Packaged Pencil preview', fill: '#202124' }],
+  }), '\`\`\`'].join('\\n'), {
+    sourceFile: '/tmp/blueprint4llm-packaged-pencil.md',
+  });
+  assert.ok(pencil.html.includes('class="bp-diagram bp-diagram--pencil"'));
+  assert.ok(pencil.html.includes('Packaged Pencil preview'));
   assert.equal(api.getPreviewCount(), 0);
   console.log('Packaged extension loaded the runtime and compiled Markdown');
 }

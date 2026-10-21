@@ -20,6 +20,7 @@ import { plantumlRenderer } from './renderers/plantuml.js';
 import { wiremarkRenderer } from './renderers/wiremark.js';
 import { figmaRenderer } from './renderers/figma.js';
 import { drawioRenderer } from './renderers/drawio.js';
+import { pencilRenderer } from './renderers/pencil.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { resolveFigmaAccessToken } from './renderers/figma-token.js';
 import { renderHtmlPage } from './template.js';
@@ -106,6 +107,7 @@ export async function compileMarkdown(
         wiremarkRenderer,
         figmaRenderer,
         drawioRenderer,
+        pencilRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,
@@ -171,6 +173,7 @@ export async function checkMarkdown(
         wiremarkRenderer,
         figmaRenderer,
         drawioRenderer,
+        pencilRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,

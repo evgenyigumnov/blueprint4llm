@@ -121,6 +121,54 @@ ${longContent}`;
     }
   }, 120_000);
 
+  it('prints Pencil SVG text in a PDF', async () => {
+    const pencilJson = JSON.stringify({
+      version: '2.21',
+      children: [
+        {
+          id: 'frame',
+          type: 'frame',
+          width: 300,
+          height: 70,
+          layout: 'none',
+          children: [
+            {
+              id: 'label',
+              type: 'text',
+              x: 12,
+              y: 16,
+              width: 276,
+              height: 38,
+              content: 'Pencil PDF label',
+              textGrowth: 'fixed-width',
+              fontSize: 18,
+              fill: '#202124',
+            },
+          ],
+        },
+      ],
+    });
+    const markdown = ['# Pencil PDF', '', '```pencil', pencilJson, '```'].join('\n');
+    const compiled = await compileMarkdown(markdown, { sourceFile: 'pencil-pdf.md' });
+    const pdf = await renderPdf(compiled);
+    const loadingTask = getDocument({ data: Uint8Array.from(pdf) });
+    const document = await loadingTask.promise;
+    let text: string;
+    try {
+      const page = await document.getPage(1);
+      const content = await page.getTextContent();
+      text = content.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .filter(Boolean)
+        .join(' ');
+    } finally {
+      await loadingTask.destroy();
+    }
+
+    expect(Buffer.from(pdf.subarray(0, 5)).toString()).toBe('%PDF-');
+    expect(text.replaceAll(/\s+/g, '').toLowerCase()).toContain('pencilpdflabel');
+  }, 60_000);
+
   it('honors an already-aborted signal without launching Chromium', async () => {
     const compiled = await compileMarkdown('# Aborted', { sourceFile: 'aborted.md' });
     const controller = new AbortController();

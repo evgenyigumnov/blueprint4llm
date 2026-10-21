@@ -73,6 +73,42 @@ describe('CLI main', () => {
     expect((await readdir(root)).sort()).toEqual(['diagram.png', 'plan.md']);
   });
 
+  it('checks Pencil blocks through the CLI without creating output files', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'pencil.md');
+    const pencilJson = JSON.stringify({
+      version: '2.21',
+      children: [
+        {
+          id: 'screen',
+          type: 'frame',
+          width: 200,
+          height: 80,
+          layout: 'none',
+          children: [
+            {
+              id: 'label',
+              type: 'text',
+              x: 8,
+              y: 8,
+              width: 184,
+              height: 32,
+              content: 'Checked Pencil document',
+              fill: '#202124',
+            },
+          ],
+        },
+      ],
+    });
+    await writeFile(input, ['```pen', pencilJson, '```'].join('\n'));
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_OK);
+    expect(captured.stdout.join('')).toBe(`${input}: OK\n`);
+    expect(captured.stderr.join('')).toBe('');
+    expect((await readdir(root)).sort()).toEqual(['pencil.md']);
+  });
+
   it('returns failure for diagram errors in check mode and writes no output', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'broken.md');
