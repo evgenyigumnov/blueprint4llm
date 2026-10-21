@@ -71,17 +71,17 @@ flowchart LR
 
 ## Модули
 
-| Файл | Ответственность |
-| --- | --- |
-| `src/renderers/balsamiq.ts` | Адаптер `DiagramRenderer`, лимит исходника и вызов парсера/рендерера |
-| `src/renderers/balsamiq-json.ts` | Разбор JSON, проверка структуры и нормализация полей controls |
-| `src/renderers/balsamiq-svg.ts` | Рендер поддержанных controls в SVG и проверка их свойств |
-| `src/compiler.ts` | Регистрация нового renderer |
-| `tests/balsamiq-json.test.ts` | Структура, преобразование строковых чисел, пределы и ошибки JSON |
-| `tests/balsamiq-svg.test.ts` | Отрисовка controls, порядок слоёв, XML escaping и неподдержанные типы |
-| `tests/balsamiq.test.ts` | Компиляция Markdown, class SVG, диагностика и отсутствие сетевых вызовов |
-| `examples/blueprint-balsamiq.md` | Пример блока и перечень поддержанных элементов |
-| `README.md` | Синтаксис fenced-блока, область поддержки и ограничения |
+| Файл                             | Ответственность                                                          |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `src/renderers/balsamiq.ts`      | Адаптер `DiagramRenderer`, лимит исходника и вызов парсера/рендерера     |
+| `src/renderers/balsamiq-json.ts` | Разбор JSON, проверка структуры и нормализация полей controls            |
+| `src/renderers/balsamiq-svg.ts`  | Рендер поддержанных controls в SVG и проверка их свойств                 |
+| `src/compiler.ts`                | Регистрация нового renderer                                              |
+| `tests/balsamiq-json.test.ts`    | Структура, преобразование строковых чисел, пределы и ошибки JSON         |
+| `tests/balsamiq-svg.test.ts`     | Отрисовка controls, порядок слоёв, XML escaping и неподдержанные типы    |
+| `tests/balsamiq.test.ts`         | Компиляция Markdown, class SVG, диагностика и отсутствие сетевых вызовов |
+| `examples/blueprint-balsamiq.md` | Пример блока и перечень поддержанных элементов                           |
+| `README.md`                      | Синтаксис fenced-блока, область поддержки и ограничения                  |
 
 Не добавлять зависимость для JSON или SVG. Если renderer вырастет за установленный размер файла, вынести геометрию и отдельные группы controls в небольшие модули.
 

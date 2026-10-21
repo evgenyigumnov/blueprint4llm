@@ -19,6 +19,7 @@ import { mermaidRenderer } from './renderers/mermaid.js';
 import { plantumlRenderer } from './renderers/plantuml.js';
 import { wiremarkRenderer } from './renderers/wiremark.js';
 import { figmaRenderer } from './renderers/figma.js';
+import { drawioRenderer } from './renderers/drawio.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { resolveFigmaAccessToken } from './renderers/figma-token.js';
 import { renderHtmlPage } from './template.js';
@@ -99,7 +100,13 @@ export async function compileMarkdown(
       ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
     })
     .use(remarkDiagramPlugin, {
-      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer, figmaRenderer],
+      renderers: [
+        mermaidRenderer,
+        plantumlRenderer,
+        wiremarkRenderer,
+        figmaRenderer,
+        drawioRenderer,
+      ],
       sourceFile: options.sourceFile,
       warnings,
       errors,
@@ -158,7 +165,13 @@ export async function checkMarkdown(
       ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
     })
     .use(remarkDiagramPlugin, {
-      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer, figmaRenderer],
+      renderers: [
+        mermaidRenderer,
+        plantumlRenderer,
+        wiremarkRenderer,
+        figmaRenderer,
+        drawioRenderer,
+      ],
       sourceFile: options.sourceFile,
       warnings,
       errors,

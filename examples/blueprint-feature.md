@@ -4,8 +4,8 @@
 
 ## Состояние по исходному плану
 
-| Сервер и OAuth | Web UI | Rust-воркер SharePoint | Проверка с Microsoft tenant |
-|---|---|---|---|
+| Сервер и OAuth                       | Web UI                              | Rust-воркер SharePoint            | Проверка с Microsoft tenant     |
+| ------------------------------------ | ----------------------------------- | --------------------------------- | ------------------------------- |
 | ✅ Реализованы по сводке и разделу B | ✅ Реализован по сводке и разделу C | ⏳ Отдельная реализация ещё нужна | ⏳ Live-проверка не выполнялась |
 
 Пока нет воркера, полноценная индексация и поиск документов SharePoint не заработают. Статус `ONLINE` в прототипе — целевое состояние полного сценария после подключения воркера.
@@ -14,7 +14,7 @@
 
 ## Путь администратора
 
-~~~mermaid
+```mermaid
 flowchart LR
     A[Добавить коннектор] --> B[Сохранить выключенный черновик]
     B --> C[Авторизация Microsoft]
@@ -32,13 +32,13 @@ flowchart LR
     L --> M{Воркер SharePoint установлен?}
     M -- Нет --> N[Нет индексации и результатов]
     M -- Да --> O[Индексировать и искать документы]
-~~~
+```
 
 ## UI-прототипы
 
 Ниже каждый экран показан отдельной диаграммой Wiremark, поэтому его можно читать и рендерить независимо. Формат: [Wiremark — инструкция для LLM](https://docs.wiremark.dev/wiremark-llm.md).
 
-~~~wireframe
+```wireframe
 Wireframe #connectors landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -77,11 +77,11 @@ Wireframe #connectors landscape
           Spacer
           Link "Переподключить"
 
-~~~
+```
 
 ### Черновик коннектора
 
-~~~wireframe
+```wireframe
 Wireframe #draft landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -105,11 +105,11 @@ Wireframe #draft landscape
       Spacer
       Button "Сохранить черновик и продолжить" contained
 
-~~~
+```
 
 ### Авторизация Microsoft
 
-~~~wireframe
+```wireframe
 Wireframe #oauth landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -133,11 +133,11 @@ Wireframe #oauth landscape
           Alert "Токены остаются на сервере. В браузер возвращается только результат авторизации." severity=info
     Link "Вернуться к черновику"
 
-~~~
+```
 
 ### Выбор библиотеки
 
-~~~wireframe
+```wireframe
 Wireframe #libraries landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -165,11 +165,11 @@ Wireframe #libraries landscape
       Spacer
       Button "Продолжить" contained
 
-~~~
+```
 
 ### Настройки индексации
 
-~~~wireframe
+```wireframe
 Wireframe #settings landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -206,11 +206,11 @@ Wireframe #settings landscape
       Spacer
       Button "Проверить и включить" contained
 
-~~~
+```
 
 ### Подключённый источник
 
-~~~wireframe
+```wireframe
 Wireframe #online landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -231,11 +231,11 @@ Wireframe #online landscape
       Spacer
       Link "Смоделировать истёкшую авторизацию"
 
-~~~
+```
 
 ### Повторная авторизация
 
-~~~wireframe
+```wireframe
 Wireframe #reauth landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -253,11 +253,11 @@ Wireframe #reauth landscape
       Spacer
       Button "Переподключить" contained
 
-~~~
+```
 
 ### Поиск по источникам
 
-~~~wireframe
+```wireframe
 Wireframe #search landscape
   Stack column gap=2 padding=3
     Breadcrumbs
@@ -282,11 +282,11 @@ Wireframe #search landscape
           Typography body2 "SharePoint · Документы / Договоры / 2026"
           Typography body2 "Найден фрагмент: условия расторжения договора..."
           Link "Открыть в SharePoint"
-~~~
+```
 
 ## Обмен данными и границы безопасности
 
-~~~mermaid
+```mermaid
 sequenceDiagram
     actor Admin as Администратор
     participant UI as Web UI
@@ -322,9 +322,9 @@ sequenceDiagram
     Note over UI,Server: Ни refresh token, ни access token не возвращаются в Web UI или REST
     Worker->>Graph: Delta выбранной библиотеки
     Graph-->>Worker: Изменённые и удалённые элементы
-~~~
+```
 
-~~~mermaid
+```mermaid
 flowchart TD
     subgraph AdminPath["Настройка коннектора"]
       UI[Angular UI] --> REST[Company-scoped REST]
@@ -348,9 +348,9 @@ flowchart TD
 
     Entra -. refresh token зашифрован на сервере .-> OAuth
     Worker -. checkpoint на connector_id + scope .-> Delta
-~~~
+```
 
-~~~mermaid
+```mermaid
 stateDiagram-v2
     [*] --> Draft: Создать выключенный черновик
     Draft --> Authorizing: Начать OAuth
@@ -363,25 +363,25 @@ stateDiagram-v2
     Enabled --> ReauthRequired: AUTH_EXPIRED или отзыв доступа
     ReauthRequired --> Authorizing: Повторное подключение
     Enabled --> Enabled: Обновить токен / configure
-~~~
+```
 
 ## Контракт одного коннектора
 
-| Поле | Что означает |
-|---|---|
-| `type` | `sharepoint` — отдельный тип, OneDrive остаётся отдельным коннектором. |
-| `siteUrl` | Канонический HTTPS URL одного сайта SharePoint Online. |
-| `driveId` | ID одной выбранной библиотеки; пуст до выбора. |
-| `rootFolder` | Путь или DriveItem ID внутри библиотеки; пусто или `/` — вся библиотека. |
-| `includeHidden`, `maxFileBytes`, `pollIntervalSeconds` | Настройки индексации с валидацией Java и Angular. |
-| OAuth credentials | Зашифрованные на сервере refresh token, siteId, tenantId и scope. REST возвращает только признак наличия credentials и безопасный статус. |
-| Runtime credentials | Короткоживущий access token, siteId, driveId и scope только в `connector.configure`; refresh token воркеру не передаётся. |
+| Поле                                                   | Что означает                                                                                                                              |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`                                                 | `sharepoint` — отдельный тип, OneDrive остаётся отдельным коннектором.                                                                    |
+| `siteUrl`                                              | Канонический HTTPS URL одного сайта SharePoint Online.                                                                                    |
+| `driveId`                                              | ID одной выбранной библиотеки; пуст до выбора.                                                                                            |
+| `rootFolder`                                           | Путь или DriveItem ID внутри библиотеки; пусто или `/` — вся библиотека.                                                                  |
+| `includeHidden`, `maxFileBytes`, `pollIntervalSeconds` | Настройки индексации с валидацией Java и Angular.                                                                                         |
+| OAuth credentials                                      | Зашифрованные на сервере refresh token, siteId, tenantId и scope. REST возвращает только признак наличия credentials и безопасный статус. |
+| Runtime credentials                                    | Короткоживущий access token, siteId, driveId и scope только в `connector.configure`; refresh token воркеру не передаётся.                 |
 
 При смене сайта библиотека и статус проверки сбрасываются. Новый сайт требует новой OAuth-привязки; смена tenant требует новой авторизации. Библиотека и папка входят в revision scope, чтобы воркер не продолжал индексировать прежнюю область.
 
 ## Оставшаяся работа
 
-~~~mermaid
+```mermaid
 flowchart LR
     A[Согласовать runtime-контракт] --> B[Реализовать SharePoint worker в Rust]
     B --> C[Читать выбранный drive через Microsoft Graph]
@@ -389,7 +389,7 @@ flowchart LR
     D --> E[Удалять исчезнувшие документы]
     E --> F[Возвращать существующий ConnectorResult]
     F --> G[Проверить end-to-end на тестовом tenant]
-~~~
+```
 
 - Реализовать сканер в Rust-модуле поиска по согласованному runtime-контракту. Формат `ConnectorResult` и механизм выбора цели поиска на сервере не менять.
 - Вести отдельный delta checkpoint для каждого `connector_id` и scope; обрабатывать изменения и удаления файлов.
@@ -399,13 +399,13 @@ flowchart LR
 
 ## Проверки, записанные в исходном плане
 
-| Проверка | Статус в исходнике |
-|---|---|
-| `mvn -q -DskipTests compile` в модуле сервера | ✅ Успешно |
-| `mvn -q test` в модуле сервера | ✅ Успешно |
-| `npm run build -- --configuration development` в модуле Web UI | ✅ Успешно |
-| Live-интеграция с реальным Microsoft tenant | ⏳ Не выполнялась |
-| Сквозной поиск SharePoint-файла | ⏳ После реализации Rust-воркера |
+| Проверка                                                       | Статус в исходнике               |
+| -------------------------------------------------------------- | -------------------------------- |
+| `mvn -q -DskipTests compile` в модуле сервера                  | ✅ Успешно                       |
+| `mvn -q test` в модуле сервера                                 | ✅ Успешно                       |
+| `npm run build -- --configuration development` в модуле Web UI | ✅ Успешно                       |
+| Live-интеграция с реальным Microsoft tenant                    | ⏳ Не выполнялась                |
+| Сквозной поиск SharePoint-файла                                | ⏳ После реализации Rust-воркера |
 
 Критерий безопасности для готового сценария: токены не попадают в REST-ответы, браузер или логи; секреты не хранятся в `configJson`. Существующие OneDrive, Dropbox и IMAP продолжают работать через общий механизм коннекторов.
 
@@ -415,4 +415,3 @@ flowchart LR
 - [Список библиотек сайта](https://learn.microsoft.com/en-us/graph/api/drive-list?view=graph-rest-1.0)
 - [Delta для файлов](https://learn.microsoft.com/en-us/graph/api/driveitem-delta?view=graph-rest-1.0) и [скачивание содержимого](https://learn.microsoft.com/en-us/graph/api/driveitem-get-content?view=graph-rest-1.0)
 - [Разрешения Graph](https://learn.microsoft.com/en-us/graph/permissions-reference) и [429 / throttling](https://learn.microsoft.com/en-us/graph/throttling)
-

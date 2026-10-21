@@ -48,7 +48,6 @@ npm run package
 
 `npm run test:package` builds a VSIX in a temporary directory, launches the unpacked package in the Extension Development Host, renders Mermaid through the packaged CLI, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
 
-
 ## Installation
 
 After packaging the extension, install the generated VSIX with the VS Code CLI:

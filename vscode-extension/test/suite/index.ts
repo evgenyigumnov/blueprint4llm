@@ -31,6 +31,23 @@ export async function run(): Promise<void> {
     sourceFile: '/tmp/blueprint4llm-host-smoke.md',
   });
   assert.match(compiled.html, /<h1>Host smoke check<\/h1>/);
+  const drawio = await extension.exports.compileMarkdown(
+    `\`\`\`drawio\n${JSON.stringify({
+      version: '26.0',
+      pages: [
+        {
+          id: 'page-1',
+          name: 'Extension preview',
+          cells: [
+            { id: 'layer', type: 'layer' },
+            { id: 'start', type: 'node', parent: 'layer', label: 'Preview start' },
+          ],
+        },
+      ],
+    })}\n\`\`\``,
+    { sourceFile: '/tmp/blueprint4llm-drawio-host-smoke.md' },
+  );
+  assert.match(drawio.html, /class="bp-diagram bp-diagram--drawio"/);
 
   const [major, minor] = hostNodeVersion.split('.').map(Number);
   assert.ok(

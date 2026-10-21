@@ -107,6 +107,29 @@ describe('preview server', () => {
     expect(pdfRenders).toBe(2);
   }, 15_000);
 
+  it('rebuilds a draw.io preview after its Markdown source changes', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'drawio.md');
+    await writeFile(input, drawioMarkdown('Queued'));
+    const server = await startPreviewServer({ input, port: 0 });
+    servers.push(server);
+
+    const firstPreview = await (await fetch(server.url)).text();
+    expect(firstPreview).toContain('bp-diagram--drawio');
+    expect(firstPreview).toContain('Queued');
+
+    const events = await connectEvents(server.url);
+    const reload = waitForReload(events.reader);
+    await writeFile(input, drawioMarkdown('Released'));
+    await reload;
+    await events.close();
+
+    const updatedPreview = await (await fetch(server.url)).text();
+    expect(updatedPreview).toContain('bp-diagram--drawio');
+    expect(updatedPreview).toContain('Released');
+    expect(updatedPreview).not.toContain('Queued');
+  }, 15_000);
+
   it('shows escaped diagnostics, rejects stale PDF, and recovers when a missing image appears', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'blueprint <script>.md');
@@ -277,6 +300,32 @@ async function createTemporaryDirectory(): Promise<string> {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'blueprint4llm-server-'));
   directories.push(directory);
   return directory;
+}
+
+function drawioMarkdown(label: string): string {
+  const json = JSON.stringify({
+    version: '26.0',
+    pages: [
+      {
+        id: 'page-1',
+        name: 'Release flow',
+        cells: [
+          { id: 'layer', type: 'layer' },
+          { id: 'build', type: 'node', parent: 'layer', label },
+          { id: 'publish', type: 'node', parent: 'layer', label: 'Publish' },
+          {
+            id: 'edge',
+            type: 'edge',
+            parent: 'layer',
+            source: 'build',
+            target: 'publish',
+            label: 'deploy',
+          },
+        ],
+      },
+    ],
+  });
+  return `# Preview\n\n\`\`\`drawio\n${json}\n\`\`\`\n`;
 }
 
 async function connectEvents(

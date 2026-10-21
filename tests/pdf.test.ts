@@ -15,7 +15,29 @@ const wireframe = `Wireframe #login mobile
     Button "Continue" contained`;
 
 describe('PDF renderer', () => {
-  it('prints selectable Cyrillic and all three inline SVG diagram types on readable A4 pages', async () => {
+  it('prints selectable Cyrillic and all four inline SVG diagram types on readable A4 pages', async () => {
+    const drawioJson = JSON.stringify({
+      version: '26.0',
+      pages: [
+        {
+          id: 'page-1',
+          name: 'PDF release flow',
+          cells: [
+            { id: 'layer', type: 'layer' },
+            { id: 'start', type: 'node', parent: 'layer', label: 'Drawio Start' },
+            { id: 'finish', type: 'node', parent: 'layer', label: 'Drawio Finish' },
+            {
+              id: 'edge',
+              type: 'edge',
+              parent: 'layer',
+              source: 'start',
+              target: 'finish',
+              label: 'Routed',
+            },
+          ],
+        },
+      ],
+    });
     const longContent = Array.from(
       { length: 100 },
       (_, index) =>
@@ -28,6 +50,10 @@ describe('PDF renderer', () => {
 | Раздел | Значение |
 | --- | --- |
 | Таблица | читаемая |
+
+\`\`\`drawio
+${drawioJson}
+\`\`\`
 
 \`\`\`mermaid
 flowchart LR
@@ -83,6 +109,9 @@ ${longContent}`;
     expect(fullText).toContain('Таблица');
     expect(fullText).toMatch(/Mermaid\s+Start/);
     expect(fullText).toMatch(/Mermaid\s+Finish/);
+    expect(fullText).toMatch(/Drawio\s+Start/);
+    expect(fullText).toMatch(/Drawio\s+Finish/);
+    expect(fullText).toContain('Routed');
     expect(fullText).toContain('Wiremark screen');
     expect(fullText).toContain('Email address');
     expect(fullText).toMatch(/PlantUML\s+Start/);

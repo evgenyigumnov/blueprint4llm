@@ -45,6 +45,28 @@ describe('compileMarkdown', () => {
   }, 60_000);
 
   it('renders PlantUML alongside Mermaid and Wiremark with document-unique SVG IDs', async () => {
+    const drawioJson = JSON.stringify({
+      version: '26.0',
+      pages: [
+        {
+          id: 'page-1',
+          name: 'Combined draw.io',
+          cells: [
+            { id: 'layer', type: 'layer' },
+            { id: 'client', type: 'node', parent: 'layer', label: 'Client' },
+            { id: 'api', type: 'node', parent: 'layer', label: 'API' },
+            {
+              id: 'request',
+              type: 'edge',
+              parent: 'layer',
+              source: 'client',
+              target: 'api',
+              label: 'Submit',
+            },
+          ],
+        },
+      ],
+    });
     const compiled = await compileMarkdown(
       `# Combined diagrams
 
@@ -63,6 +85,10 @@ flowchart TB
   Client --> API
 \`\`\`
 
+\`\`\`drawio
+${drawioJson}
+\`\`\`
+
 \`\`\`wireframe
 Wireframe #combined mobile
   Stack column gap=2
@@ -74,10 +100,13 @@ Wireframe #combined mobile
 
     expect(compiled.html).toContain('bp-diagram--plantuml');
     expect(compiled.html).toContain('bp-diagram--mermaid');
+    expect(compiled.html).toContain('bp-diagram--drawio');
     expect(compiled.html).toContain('bp-diagram--wiremark');
     expect(compiled.html.match(/class="shiki/g)).toHaveLength(1);
-    expect(compiled.html).not.toMatch(/class="language-(?:plantuml|mermaid|wireframe|wiremark)"/);
-    expect(compiled.html.match(/<svg\b/g)).toHaveLength(3);
+    expect(compiled.html).not.toMatch(
+      /class="language-(?:plantuml|mermaid|drawio|wireframe|wiremark)"/,
+    );
+    expect(compiled.html.match(/<svg\b/g)).toHaveLength(4);
     expect(ids.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids.every((id) => id?.startsWith('bp-diagram-'))).toBe(true);

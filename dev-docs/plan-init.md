@@ -26,11 +26,11 @@ blueprint4llm blueprint.md --out=folder --format=both
 
 `--format` принимает `html`, `pdf` или `both`, по умолчанию — `html` (обратная совместимость). Создаваемые файлы:
 
-| Команда | Результат |
-| --- | --- |
-| `--out=folder` или `--format=html` | `folder/index.html` и при необходимости `folder/assets/` |
-| `--out=folder --format=pdf` | `folder/index.pdf` |
-| `--out=folder --format=both` | `folder/index.html`, `folder/index.pdf` и при необходимости `folder/assets/` |
+| Команда                            | Результат                                                                    |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `--out=folder` или `--format=html` | `folder/index.html` и при необходимости `folder/assets/`                     |
+| `--out=folder --format=pdf`        | `folder/index.pdf`                                                           |
+| `--out=folder --format=both`       | `folder/index.html`, `folder/index.pdf` и при необходимости `folder/assets/` |
 
 Название `index.pdf` фиксированное, независимо от имени исходного Markdown. Не переименовывать его в `<имя исходника>.pdf` без изменения требований и тестов.
 
@@ -130,22 +130,22 @@ Wireframe #login mobile
 
 ## 4. Технологический стек
 
-| Часть | Решение |
-| --- | --- |
-| Язык | TypeScript, strict mode |
-| Runtime | Node.js `>=22.13.0`, ESM |
-| Пакетный менеджер | npm, commit `package-lock.json` |
-| Markdown parser | `unified` + `remark-parse` + `remark-gfm` |
-| HTML AST | `remark-rehype`, `hast-util-from-html` |
-| HTML serialization | `rehype-stringify` |
-| Wiremark | `@wiremark/core` (`render`) |
-| Mermaid SVG | `@mermaid-js/mermaid-cli`, локальный Chromium/Puppeteer |
-| PDF | `puppeteer` + Chromium, `page.pdf()` с печатными CSS |
-| CLI arguments | `commander` или эквивалент с типизированной валидацией |
-| Web server | Node.js `node:http` (достаточно для MVP) |
-| Watching | `chokidar` |
-| Tests | `vitest` + HTTP/integration tests |
-| Formatting / lint | Prettier + ESLint, TypeScript `tsc --noEmit` |
+| Часть              | Решение                                                 |
+| ------------------ | ------------------------------------------------------- |
+| Язык               | TypeScript, strict mode                                 |
+| Runtime            | Node.js `>=22.13.0`, ESM                                |
+| Пакетный менеджер  | npm, commit `package-lock.json`                         |
+| Markdown parser    | `unified` + `remark-parse` + `remark-gfm`               |
+| HTML AST           | `remark-rehype`, `hast-util-from-html`                  |
+| HTML serialization | `rehype-stringify`                                      |
+| Wiremark           | `@wiremark/core` (`render`)                             |
+| Mermaid SVG        | `@mermaid-js/mermaid-cli`, локальный Chromium/Puppeteer |
+| PDF                | `puppeteer` + Chromium, `page.pdf()` с печатными CSS    |
+| CLI arguments      | `commander` или эквивалент с типизированной валидацией  |
+| Web server         | Node.js `node:http` (достаточно для MVP)                |
+| Watching           | `chokidar`                                              |
+| Tests              | `vitest` + HTTP/integration tests                       |
+| Formatting / lint  | Prettier + ESLint, TypeScript `tsc --noEmit`            |
 
 Зависимости фиксировать в lockfile; не полагаться на глобально установленный `mmdc`. Исполняемый файл Mermaid CLI запускать из зависимостей проекта. Выбрать совместимые актуальные версии и проверить их реальные API перед реализацией. Допускается эквивалентный пакет для конкретной функции, но не замена remark на другой Markdown-движок.
 
@@ -197,12 +197,15 @@ export interface DiagramResult {
 
 export interface DiagramRenderer {
   readonly languages: readonly string[];
-  render(source: string, context: {
-    diagramId: string;
-    sourceFile: string;
-    line: number;
-    signal?: AbortSignal;
-  }): Promise<DiagramResult>;
+  render(
+    source: string,
+    context: {
+      diagramId: string;
+      sourceFile: string;
+      line: number;
+      signal?: AbortSignal;
+    },
+  ): Promise<DiagramResult>;
 }
 ```
 
@@ -330,7 +333,7 @@ export interface CompiledBlueprint {
 
 export async function renderPdf(
   compiled: CompiledBlueprint,
-  options?: { signal?: AbortSignal }
+  options?: { signal?: AbortSignal },
 ): Promise<Uint8Array>;
 ```
 
@@ -345,7 +348,8 @@ const pdf = await page.pdf({
   waitForFonts: true,
   displayHeaderFooter: true,
   headerTemplate: '<span></span>',
-  footerTemplate: '<div style="font-size:9px;width:100%;text-align:center;color:#666"><span class="pageNumber"></span> / <span class="totalPages"></span></div>',
+  footerTemplate:
+    '<div style="font-size:9px;width:100%;text-align:center;color:#666"><span class="pageNumber"></span> / <span class="totalPages"></span></div>',
   margin: { top: '15mm', bottom: '18mm', left: '15mm', right: '15mm' },
 });
 ```
@@ -411,13 +415,13 @@ const pdf = await page.pdf({
 
 Минимальный набор маршрутов:
 
-| Маршрут | Назначение |
-| --- | --- |
-| `GET /` | Текущий отрендеренный HTML |
-| `GET /document.pdf` | Сгенерированный из текущей успешной версии PDF для скачивания |
-| `GET /assets/<name>` | Разрешённые локальные изображения |
-| `GET /_blueprint4llm/events` | SSE-подписка на событие `reload` |
-| Остальные | `404 Not Found` |
+| Маршрут                      | Назначение                                                    |
+| ---------------------------- | ------------------------------------------------------------- |
+| `GET /`                      | Текущий отрендеренный HTML                                    |
+| `GET /document.pdf`          | Сгенерированный из текущей успешной версии PDF для скачивания |
+| `GET /assets/<name>`         | Разрешённые локальные изображения                             |
+| `GET /_blueprint4llm/events` | SSE-подписка на событие `reload`                              |
+| Остальные                    | `404 Not Found`                                               |
 
 SSE добавляется только в server-mode. При успешной перестройке отправлять `reload`; в клиенте это вызывает `location.reload()`. При ошибочной перестройке тоже обновлять отображение на страницу с диагностикой или показывать встроенную ошибку. Предусмотреть реконнект SSE, heartbeat и очистку клиентов при shutdown. Не писать код первоначальных диаграмм в браузере для последующей отрисовки. В `GET /document.pdf` при незавершённой/ошибочной актуальной сборке вернуть информативный `503`/`422`, а не устаревший PDF или ошибку `200`.
 
