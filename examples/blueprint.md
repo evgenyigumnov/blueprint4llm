@@ -1,6 +1,6 @@
 # Blueprint: обработка заявки
 
-Небольшой пример документа с обычным Markdown, таблицей, Mermaid и Wiremark. Все диаграммы
+Небольшой пример документа с обычным Markdown, таблицей, Mermaid, PlantUML и Wiremark. Все диаграммы
 рендерятся в SVG во время сборки и встраиваются в HTML.
 
 ## Компоненты
@@ -49,6 +49,17 @@ Wireframe #request mobile
     TextField "Заголовок"
     TextField "Описание"
     Button "Отправить" contained to=#confirmation
+```
+
+## Обмен с API на PlantUML
+
+```plantuml
+@startuml
+Browser -> API: POST /requests
+API -> DB: Сохранить заявку
+DB --> API: Идентификатор
+API --> Browser: 202 Accepted
+@enduml
 ```
 
 ## Пример запроса

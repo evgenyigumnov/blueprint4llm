@@ -15,7 +15,7 @@ const wireframe = `Wireframe #login mobile
     Button "Continue" contained`;
 
 describe('PDF renderer', () => {
-  it('prints selectable Cyrillic and both inline SVG diagram types on readable A4 pages', async () => {
+  it('prints selectable Cyrillic and all three inline SVG diagram types on readable A4 pages', async () => {
     const longContent = Array.from(
       { length: 100 },
       (_, index) =>
@@ -36,6 +36,13 @@ flowchart LR
 
 \`\`\`wireframe
 ${wireframe}
+\`\`\`
+
+\`\`\`plantuml
+@startuml
+Browser -> API: PlantUML Start
+API --> Browser: PlantUML Finish
+@enduml
 \`\`\`
 
 ${longContent}`;
@@ -78,6 +85,8 @@ ${longContent}`;
     expect(fullText).toMatch(/Mermaid\s+Finish/);
     expect(fullText).toContain('Wiremark screen');
     expect(fullText).toContain('Email address');
+    expect(fullText).toMatch(/PlantUML\s+Start/);
+    expect(fullText).toMatch(/PlantUML\s+Finish/);
     for (let pageNumber = 1; pageNumber <= pages.length; pageNumber += 1) {
       expect(pages[pageNumber - 1]).toMatch(new RegExp(`${pageNumber}\\s*[/|]\\s*${pages.length}`));
     }

@@ -28,6 +28,52 @@ describe('compileMarkdown', () => {
     expect(compiled.errors).toEqual([]);
   }, 60_000);
 
+  it('keeps PlantUML syntax errors visible and reports their Markdown source location', async () => {
+    const compiled = await compileMarkdown(
+      '# PlantUML\n\n```plantuml\n@startuml\nclass User {\n@enduml\n```',
+      { sourceFile: 'invalid-plantuml.md' },
+    );
+
+    expect(compiled.html).toContain('class="bp-diagram bp-diagram--plantuml"');
+    expect(compiled.html).toContain('Syntax Error?');
+    expect(compiled.errors).toEqual([
+      expect.stringMatching(/^invalid-plantuml\.md:5:1: plantuml error: Syntax Error\?/),
+    ]);
+  }, 60_000);
+
+  it('renders PlantUML alongside Mermaid and Wiremark with document-unique SVG IDs', async () => {
+    const compiled = await compileMarkdown(
+      `# Combined diagrams
+
+\`\`\`plantuml
+@startuml
+Client -> API: Submit
+@enduml
+\`\`\`
+
+\`\`\`mermaid
+flowchart TB
+  Client --> API
+\`\`\`
+
+\`\`\`wireframe
+Wireframe #combined mobile
+  Stack column gap=2
+    Typography h4 "Combined diagram preview"
+\`\`\``,
+      { sourceFile: 'combined-diagrams.md' },
+    );
+    const ids = [...compiled.html.matchAll(/(?:^|\s)id="([^"]+)"/g)].map((match) => match[1]);
+
+    expect(compiled.html).toContain('bp-diagram--plantuml');
+    expect(compiled.html).toContain('bp-diagram--mermaid');
+    expect(compiled.html).toContain('bp-diagram--wiremark');
+    expect(ids.length).toBeGreaterThan(0);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids.every((id) => id?.startsWith('bp-diagram-'))).toBe(true);
+    expect(compiled.errors).toEqual([]);
+  }, 60_000);
+
   it('renders GFM Markdown into a complete standalone HTML page', async () => {
     const markdown = `# Blueprint
 

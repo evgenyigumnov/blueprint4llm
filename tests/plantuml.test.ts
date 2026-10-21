@@ -7,6 +7,7 @@ import {
   PLANTUML_RENDER_TIMEOUT_MS,
   plantumlRenderer,
 } from '../src/renderers/plantuml.js';
+import { DiagramRenderCache } from '../src/renderers/cache.js';
 
 const context = {
   diagramId: 'bp-diagram-plantuml-test',
@@ -156,5 +157,25 @@ describe('PlantUML renderer', () => {
 
     expect(results[0]?.svg).toContain('first');
     expect(results[1]?.svg).toContain('second');
+  }, 60_000);
+
+  it('reuses a rendered SVG through the shared diagram cache', async () => {
+    const cache = new DiagramRenderCache();
+    const render = vi.spyOn(plantumlRenderer, 'render');
+    const source = '@startuml\nAlice -> Bob: cached\n@enduml';
+
+    try {
+      const first = await cache.render(plantumlRenderer, source, context);
+      const second = await cache.render(plantumlRenderer, source, {
+        ...context,
+        diagramId: 'bp-diagram-plantuml-cached',
+      });
+
+      expect(second).toEqual(first);
+      expect(render).toHaveBeenCalledOnce();
+      expect(cache.size).toBe(1);
+    } finally {
+      render.mockRestore();
+    }
   }, 60_000);
 });
