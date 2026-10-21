@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
@@ -24,6 +25,19 @@ export type { LocalAsset } from './assets.js';
 
 /** Hard limit for the source Markdown size (plan §8.4). */
 export const MAX_MARKDOWN_BYTES = 5 * 1024 * 1024;
+
+/** Maximum UTF-8 size for syntax highlighting; larger fences stay plain escaped code. */
+export const MAX_HIGHLIGHTED_CODE_BYTES = 64 * 1024;
+
+const SHIKI_OPTIONS: RehypeShikiOptions = {
+  themes: { light: 'github-light', dark: 'github-dark' },
+  defaultColor: false,
+  langs: ['json'],
+  lazy: true,
+  addLanguageClass: true,
+  onError: () => undefined,
+};
+const SHIKI_PROCESSOR = unified().use(rehypeShiki, SHIKI_OPTIONS);
 
 export interface CompileOptions {
   /** Path of the source Markdown file, used for diagnostics and the title fallback. */
@@ -93,6 +107,7 @@ export async function compileMarkdown(
         html: (_h, node) => ({ type: 'text', value: node.value }),
       },
     })
+    .use(rehypeShikiWhenNeeded)
     .use(rehypeDiagramContainersPlugin)
     .use(remarkSafeLinksPlugin)
     .use(wrapTablesPlugin)
@@ -207,6 +222,100 @@ function wrapTablesPlugin() {
   return (tree: HastRoot) => {
     wrapTables(tree);
   };
+}
+
+/** Avoids loading Shiki themes for documents without a labeled code fence. */
+function rehypeShikiWhenNeeded() {
+  return async (tree: HastRoot): Promise<HastRoot | undefined> => {
+    const skippedCode = skipOversizedCodeFences(tree);
+    try {
+      if (!containsLabeledCodeFence(tree)) {
+        return;
+      }
+      return (await SHIKI_PROCESSOR.run(tree)) as HastRoot;
+    } finally {
+      for (const { code, className } of skippedCode) {
+        code.properties.className = className;
+      }
+    }
+  };
+}
+
+function skipOversizedCodeFences(
+  node: HastRoot | Element,
+  skipped: Array<{ code: Element; className: string[] }> = [],
+): Array<{ code: Element; className: string[] }> {
+  for (const child of node.children) {
+    if (child.type !== 'element') {
+      continue;
+    }
+    if (child.tagName === 'pre') {
+      const code = child.children.find(
+        (candidate): candidate is Element =>
+          candidate.type === 'element' && candidate.tagName === 'code',
+      );
+      const className = code?.properties.className;
+      const classes = Array.isArray(className)
+        ? className.filter((value): value is string => typeof value === 'string')
+        : [];
+      if (
+        code !== undefined &&
+        classes.some(
+          (value) => value.startsWith('language-') && value.length > 'language-'.length,
+        ) &&
+        hastByteLength(code) > MAX_HIGHLIGHTED_CODE_BYTES
+      ) {
+        skipped.push({ code, className: classes });
+        const remainingClasses = classes.filter((value) => !value.startsWith('language-'));
+        if (remainingClasses.length === 0) {
+          delete code.properties.className;
+        } else {
+          code.properties.className = remainingClasses;
+        }
+      }
+    }
+    skipOversizedCodeFences(child, skipped);
+  }
+  return skipped;
+}
+
+function hastByteLength(node: HastRoot | Element): number {
+  return node.children.reduce((total, child) => {
+    if (child.type === 'text') {
+      return total + Buffer.byteLength(child.value, 'utf8');
+    }
+    return child.type === 'element' ? total + hastByteLength(child) : total;
+  }, 0);
+}
+
+function containsLabeledCodeFence(node: HastRoot | Element): boolean {
+  for (const child of node.children) {
+    if (child.type !== 'element') {
+      continue;
+    }
+    if (child.tagName === 'pre') {
+      const code = child.children.find(
+        (candidate): candidate is Element =>
+          candidate.type === 'element' && candidate.tagName === 'code',
+      );
+      const classes = code?.properties.className;
+      if (
+        Array.isArray(classes) &&
+        classes.some(
+          (className) =>
+            typeof className === 'string' &&
+            className.startsWith('language-') &&
+            className.length > 'language-'.length,
+        )
+      ) {
+        return true;
+      }
+    }
+    if (containsLabeledCodeFence(child)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function wrapTables(node: HastRoot | Element): void {

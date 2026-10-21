@@ -2,7 +2,9 @@ import { mkdtemp, mkdir, realpath, rm, symlink, writeFile } from 'node:fs/promis
 import os from 'node:os';
 import path from 'node:path';
 
+import { fromHtml } from 'hast-util-from-html';
 import { afterEach, describe, expect, it } from 'vitest';
+import type { Element, Root } from 'hast';
 
 import { compileMarkdown } from '../src/compiler.js';
 
@@ -116,7 +118,7 @@ describe('Markdown image assets', () => {
       sourceFile: path.join(root, 'blueprint.md'),
     });
 
-    expect(compiled.html).toContain('![missing](./missing.png)');
+    expect(collectText(fromHtml(compiled.html))).toContain('![missing](./missing.png)');
     expect(compiled.assets).toEqual([]);
   });
 
@@ -131,3 +133,14 @@ describe('Markdown image assets', () => {
     expect(compiled.assets[0]?.mimeType).toBe('image/gif');
   });
 });
+
+function collectText(node: Root | Element): string {
+  return node.children
+    .map((child) => {
+      if (child.type === 'text') {
+        return child.value;
+      }
+      return child.type === 'element' ? collectText(child) : '';
+    })
+    .join('');
+}

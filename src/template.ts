@@ -188,6 +188,24 @@ pre code {
   line-height: 1.5;
 }
 
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
+
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
 .bp-table {
   margin: 1em 0;
   overflow-x: auto;
@@ -273,6 +291,21 @@ li > input[type='checkbox'] {
     white-space: pre-wrap;
     overflow-wrap: break-word;
     overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
   }
 
   code {

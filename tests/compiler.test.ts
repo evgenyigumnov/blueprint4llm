@@ -1,13 +1,16 @@
 import path from 'node:path';
 
+import { fromHtml } from 'hast-util-from-html';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import { describe, expect, it } from 'vitest';
+import type { Element, Root } from 'hast';
 
 import {
   compileMarkdown,
   detectLanguage,
   findFirstH1Text,
+  MAX_HIGHLIGHTED_CODE_BYTES,
   MAX_MARKDOWN_BYTES,
 } from '../src/compiler.js';
 import { DiagnosticError } from '../src/errors.js';
@@ -45,6 +48,10 @@ describe('compileMarkdown', () => {
     const compiled = await compileMarkdown(
       `# Combined diagrams
 
+\`\`\`typescript
+const previewLabel = 'Rendered by Shiki';
+\`\`\`
+
 \`\`\`plantuml
 @startuml
 Client -> API: Submit
@@ -68,6 +75,9 @@ Wireframe #combined mobile
     expect(compiled.html).toContain('bp-diagram--plantuml');
     expect(compiled.html).toContain('bp-diagram--mermaid');
     expect(compiled.html).toContain('bp-diagram--wiremark');
+    expect(compiled.html.match(/class="shiki/g)).toHaveLength(1);
+    expect(compiled.html).not.toMatch(/class="language-(?:plantuml|mermaid|wireframe|wiremark)"/);
+    expect(compiled.html.match(/<svg\b/g)).toHaveLength(3);
     expect(ids.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids.every((id) => id?.startsWith('bp-diagram-'))).toBe(true);
@@ -110,6 +120,61 @@ fn main() { println!("<ok>"); }
     expect(compiled.warnings).toEqual([]);
   });
 
+  it('highlights JSON and TypeScript fences while preserving their source text', async () => {
+    const json = '{\n  "name": "blueprint4llm",\n  "enabled": true\n}';
+    const typescript = 'const enabled: boolean = true;';
+    const compiled = await compileMarkdown(
+      `\`\`\`json\n${json}\n\`\`\`\n\n\`\`\`typescript\n${typescript}\n\`\`\``,
+      { sourceFile: 'highlighted.md' },
+    );
+    const tree = fromHtml(compiled.html);
+    const codeText = collectText(tree);
+
+    expect(compiled.html.match(/class="shiki/g)).toHaveLength(2);
+    expect(compiled.html).toContain('language-json');
+    expect(compiled.html).toContain('language-typescript');
+    expect(compiled.html).toContain('--shiki-light');
+    expect(compiled.html).toContain('--shiki-dark');
+    expect(compiled.html).toContain(":root[data-bp-theme='dark'] pre.shiki");
+    expect(codeText).toContain(json);
+    expect(codeText).toContain(typescript);
+  });
+
+  it('leaves inline and unlabelled code alone and safely falls back for unknown languages', async () => {
+    const unknown = `const value = "<img src=x onerror=alert(1)>";`;
+    const plain = '<plain & quoted "text">';
+    const compiled = await compileMarkdown(
+      `Inline \`code\`.\n\n\`\`\`language-that-does-not-exist\n${unknown}\n\`\`\`\n\n\`\`\`\n${plain}\n\`\`\``,
+      { sourceFile: 'fallback.md' },
+    );
+    const tree = fromHtml(compiled.html);
+    const codeText = collectText(tree);
+
+    expect(compiled.html).not.toContain('class="shiki');
+    expect(compiled.html).toContain('class="language-language-that-does-not-exist"');
+    expect(compiled.html).toContain('<code>code</code>');
+    expect(compiled.html).toContain('&#x3C;img');
+    expect(compiled.html).not.toContain('<img src=x');
+    expect(codeText).toContain(unknown);
+    expect(codeText).toContain(plain);
+  });
+
+  it('keeps fenced code above 64 KiB escaped without syntax highlighting', async () => {
+    const code = '<я'.repeat(Math.ceil((MAX_HIGHLIGHTED_CODE_BYTES + 1) / 3));
+    expect(code.length).toBeLessThan(MAX_HIGHLIGHTED_CODE_BYTES);
+    expect(Buffer.byteLength(code, 'utf8')).toBeGreaterThan(MAX_HIGHLIGHTED_CODE_BYTES);
+    const compiled = await compileMarkdown(`\`\`\`typescript\n${code}\n\`\`\``, {
+      sourceFile: 'large-code.md',
+    });
+    const codeText = collectText(fromHtml(compiled.html));
+
+    expect(compiled.html).not.toContain('class="shiki');
+    expect(compiled.html).toContain('class="language-typescript"');
+    expect(compiled.html).toContain('&#x3C;я');
+    expect(compiled.html).not.toContain(code);
+    expect(codeText).toContain(code);
+  });
+
   it('escapes raw HTML and keeps source code as escaped code', async () => {
     const compiled = await compileMarkdown(
       '<img src=x onerror="alert(1)">\n\n```html\n<script>alert(1)</script>\n```',
@@ -117,7 +182,7 @@ fn main() { println!("<ok>"); }
     );
 
     expect(compiled.html).toContain('&#x3C;img src=x onerror="alert(1)">');
-    expect(compiled.html).toContain('&#x3C;script>alert(1)&#x3C;/script>');
+    expect(collectText(fromHtml(compiled.html))).toContain('<script>alert(1)</script>');
     expect(compiled.html).not.toContain('<img src=x');
     expect(compiled.html).not.toContain('<script>');
   });
@@ -165,6 +230,17 @@ fn main() { println!("<ok>"); }
     });
   });
 });
+
+function collectText(node: Root | Element): string {
+  return node.children
+    .map((child) => {
+      if (child.type === 'text') {
+        return child.value;
+      }
+      return child.type === 'element' ? collectText(child) : '';
+    })
+    .join('');
+}
 
 describe('Markdown helpers', () => {
   it('detects Russian and English text', () => {
