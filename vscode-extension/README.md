@@ -47,3 +47,12 @@ npm run package
 `npm run test:host` starts an Extension Development Host at the minimum supported VS Code version. On headless Linux, run it under `xvfb-run -a`.
 
 `npm run test:package` builds a VSIX in a temporary directory, launches the unpacked package in the Extension Development Host, renders Mermaid through the packaged CLI, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
+
+
+## Installation
+
+After packaging the extension, install the generated VSIX with the VS Code CLI:
+
+```bash
+code --install-extension <path-to-file.vsix>
+```
