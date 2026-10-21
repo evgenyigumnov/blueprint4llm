@@ -85,6 +85,29 @@ describe('CLI main', () => {
     expect((await readdir(root)).sort()).toEqual(['broken.md']);
   });
 
+  it('prints a source-aware Figma diagnostic in --check without logging JSON source', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'broken-figma.md');
+    const figmaJson = JSON.stringify({
+      document: {
+        id: '0:0',
+        name: 'Document',
+        type: 'DOCUMENT',
+        children: [],
+      },
+      privateValue: 'FIGMA_JSON_SOURCE_MUST_NOT_APPEAR',
+    });
+    await writeFile(input, ['# Broken Figma', '', '```figma', figmaJson, '```'].join('\n'));
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain(`${input}:3:1: figma render failed:`);
+    expect(captured.stderr.join('')).toContain('no top-level frame');
+    expect(captured.stderr.join('')).not.toContain('FIGMA_JSON_SOURCE_MUST_NOT_APPEAR');
+    expect((await readdir(root)).sort()).toEqual(['broken-figma.md']);
+  });
+
   it('returns failure for non-fatal diagram diagnostics in check mode', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'invalid-plantuml.md');

@@ -11,6 +11,9 @@ const FORBIDDEN_ELEMENTS = new Set([
   'video',
   'canvas',
 ]);
+const MAX_EMBEDDED_SVG_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_EMBEDDED_SVG_IMAGE_BASE64_CHARS = Math.ceil(MAX_EMBEDDED_SVG_IMAGE_BYTES / 3) * 4;
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 /** Parses renderer output as HAST and requires one SVG root element. */
 export function parseAndValidateSvg(svg: string): Element {
@@ -48,7 +51,9 @@ function validateSvgSubtree(node: Element): void {
         normalizedName === 'xlinkhref'
       ) {
         if (!value.trim().startsWith('#')) {
-          throw new Error('diagram SVG contains a non-fragment href reference');
+          if (node.tagName.toLowerCase() !== 'image' || !isEmbeddedPngOrJpeg(value.trim())) {
+            throw new Error('diagram SVG contains a non-fragment href reference');
+          }
         }
       }
       validateCssReferences(value);
@@ -62,6 +67,34 @@ function validateSvgSubtree(node: Element): void {
       validateCssReferences(child.value);
     }
   }
+}
+
+function isEmbeddedPngOrJpeg(value: string): boolean {
+  const match = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/]+={0,2})$/i.exec(value);
+  const format = match?.[1]?.toLowerCase();
+  const encoded = match?.[2];
+  if (
+    (format !== 'png' && format !== 'jpeg') ||
+    encoded === undefined ||
+    encoded.length > MAX_EMBEDDED_SVG_IMAGE_BASE64_CHARS ||
+    encoded.length % 4 !== 0
+  ) {
+    return false;
+  }
+
+  const bytes = Buffer.from(encoded, 'base64');
+  if (bytes.byteLength === 0 || bytes.byteLength > MAX_EMBEDDED_SVG_IMAGE_BYTES) {
+    return false;
+  }
+  if (bytes.toString('base64') !== encoded) {
+    return false;
+  }
+  if (format === 'png') {
+    return (
+      bytes.byteLength >= PNG_SIGNATURE.byteLength && bytes.subarray(0, 8).equals(PNG_SIGNATURE)
+    );
+  }
+  return bytes.byteLength >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
 }
 
 function validateCssReferences(value: string): void {

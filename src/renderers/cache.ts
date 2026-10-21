@@ -8,6 +8,7 @@ const DEFAULT_MAX_BYTES = 32 * 1024 * 1024;
 interface CacheEntry {
   result: DiagramResult;
   bytes: number;
+  expiresAt?: number;
 }
 
 /** Bounded LRU cache for successful raw diagram SVG results. */
@@ -26,7 +27,9 @@ export class DiagramRenderCache {
     context: DiagramRenderContext,
   ): Promise<DiagramResult> {
     throwIfAborted(context.signal);
-    const key = cacheKey(renderer, source);
+    const now = Date.now();
+    this.removeExpiredEntries(now);
+    const key = cacheKey(renderer, source, context);
     const cached = this.entries.get(key);
     if (cached !== undefined) {
       this.entries.delete(key);
@@ -36,7 +39,7 @@ export class DiagramRenderCache {
 
     const result = await renderer.render(source, context);
     throwIfAborted(context.signal);
-    this.set(key, result);
+    this.set(key, result, renderer.cacheTtlMsForSource?.(source));
     return copyResult(result);
   }
 
@@ -46,12 +49,18 @@ export class DiagramRenderCache {
   }
 
   get size(): number {
+    this.removeExpiredEntries(Date.now());
     return this.entries.size;
   }
 
-  private set(key: string, result: DiagramResult): void {
+  private set(key: string, result: DiagramResult, ttlMs: number | undefined): void {
     const entryBytes = Buffer.byteLength(result.svg, 'utf8');
-    if (this.maxEntries <= 0 || this.maxBytes <= 0 || entryBytes > this.maxBytes) {
+    if (
+      this.maxEntries <= 0 ||
+      this.maxBytes <= 0 ||
+      entryBytes > this.maxBytes ||
+      (ttlMs !== undefined && (!Number.isFinite(ttlMs) || ttlMs <= 0))
+    ) {
       return;
     }
 
@@ -74,18 +83,39 @@ export class DiagramRenderCache {
     }
 
     const stored = copyResult(result);
-    this.entries.set(key, { result: stored, bytes: entryBytes });
+    this.entries.set(key, {
+      result: stored,
+      bytes: entryBytes,
+      ...(ttlMs === undefined ? {} : { expiresAt: Date.now() + ttlMs }),
+    });
     this.totalBytes += entryBytes;
+  }
+
+  private removeExpiredEntries(now: number): void {
+    for (const [key, entry] of this.entries) {
+      if (entry.expiresAt !== undefined && entry.expiresAt <= now) {
+        this.entries.delete(key);
+        this.totalBytes -= entry.bytes;
+      }
+    }
   }
 }
 
-function cacheKey(renderer: DiagramRenderer, source: string): string {
+function cacheKey(
+  renderer: DiagramRenderer,
+  source: string,
+  context: DiagramRenderContext,
+): string {
   return createHash('sha256')
     .update(renderer.name)
     .update('\0')
     .update(renderer.cacheKey)
     .update('\0')
+    .update(renderer.cacheKeyForContext?.(source, context) ?? '')
+    .update('\0')
     .update(source)
+    .update('\0')
+    .update(context.metadata ?? '')
     .digest('hex');
 }
 

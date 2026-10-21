@@ -18,7 +18,9 @@ import { remarkSafeLinksPlugin } from './plugins/remark-safe-links.js';
 import { mermaidRenderer } from './renderers/mermaid.js';
 import { plantumlRenderer } from './renderers/plantuml.js';
 import { wiremarkRenderer } from './renderers/wiremark.js';
+import { figmaRenderer } from './renderers/figma.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
+import { resolveFigmaAccessToken } from './renderers/figma-token.js';
 import { renderHtmlPage } from './template.js';
 
 export type { LocalAsset } from './assets.js';
@@ -44,6 +46,8 @@ export interface CompileOptions {
   sourceFile: string;
   /** Optional cache shared across successive live-preview builds. */
   diagramCache?: DiagramRenderCache;
+  /** Figma personal access token for URL blocks. Overrides the environment and `.env` file. */
+  figmaAccessToken?: string;
   /** Optional set populated with local image paths, including missing references. */
   watchPaths?: Set<string>;
   /** Aborts outstanding renderer work when a newer source version replaces this build. */
@@ -75,6 +79,7 @@ export async function compileMarkdown(
   options: CompileOptions,
 ): Promise<CompiledBlueprint> {
   assertMarkdownSize(markdown, options.sourceFile);
+  const figmaAccessToken = await resolveFigmaAccessToken(options.figmaAccessToken);
 
   let headingTitle: string | undefined;
   const warnings: string[] = [];
@@ -94,10 +99,11 @@ export async function compileMarkdown(
       ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
     })
     .use(remarkDiagramPlugin, {
-      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer],
+      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer, figmaRenderer],
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      ...(figmaAccessToken === undefined ? {} : { figmaAccessToken }),
       ...(options.signal === undefined ? {} : { signal: options.signal }),
       ...(options.diagramCache === undefined ? {} : { cache: options.diagramCache }),
     })
@@ -138,6 +144,7 @@ export async function checkMarkdown(
   options: CompileOptions,
 ): Promise<MarkdownCheckResult> {
   assertMarkdownSize(markdown, options.sourceFile);
+  const figmaAccessToken = await resolveFigmaAccessToken(options.figmaAccessToken);
 
   const warnings: string[] = [];
   const errors: string[] = [];
@@ -151,10 +158,11 @@ export async function checkMarkdown(
       ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
     })
     .use(remarkDiagramPlugin, {
-      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer],
+      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer, figmaRenderer],
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      ...(figmaAccessToken === undefined ? {} : { figmaAccessToken }),
       ...(options.signal === undefined ? {} : { signal: options.signal }),
       ...(options.diagramCache === undefined ? {} : { cache: options.diagramCache }),
     })

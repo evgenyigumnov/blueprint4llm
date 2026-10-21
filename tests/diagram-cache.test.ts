@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { DiagramRenderCache } from '../src/renderers/cache.js';
 import type { DiagramRenderer, DiagramRenderContext } from '../src/renderers/types.js';
@@ -57,6 +57,52 @@ describe('DiagramRenderCache', () => {
 
     expect(calls).toBe(3);
     expect(cache.size).toBe(3);
+  });
+
+  it('includes fenced metadata in the key when a renderer uses block options', async () => {
+    let calls = 0;
+    const renderer = fakeRenderer('metadata-v1', async (_source, renderContext) => {
+      calls += 1;
+      return { svg: `<svg>${renderContext.metadata ?? ''}</svg>`, warnings: [] };
+    });
+    const cache = new DiagramRenderCache();
+
+    await cache.render(renderer, 'same source', { ...context, metadata: 'node=12:34' });
+    await cache.render(renderer, 'same source', { ...context, metadata: 'node=12:35' });
+    await cache.render(renderer, 'same source', { ...context, metadata: 'node=12:34' });
+
+    expect(calls).toBe(2);
+    expect(cache.size).toBe(2);
+  });
+
+  it('expires remote results by renderer TTL and keeps local results until eviction', async () => {
+    vi.useFakeTimers();
+    try {
+      let calls = 0;
+      const base = fakeRenderer('ttl-v1', async (source) => {
+        calls += 1;
+        return { svg: `<svg>${source}</svg>`, warnings: [] };
+      });
+      const renderer: DiagramRenderer = {
+        ...base,
+        cacheTtlMsForSource: (source) => (source.startsWith('remote:') ? 1_000 : undefined),
+      };
+      const cache = new DiagramRenderCache();
+
+      await cache.render(renderer, 'remote:frame', context);
+      await cache.render(renderer, 'remote:frame', context);
+      await cache.render(renderer, 'local:json', context);
+      vi.advanceTimersByTime(1_001);
+
+      expect(cache.size).toBe(1);
+      await cache.render(renderer, 'remote:frame', context);
+      await cache.render(renderer, 'local:json', context);
+
+      expect(calls).toBe(3);
+      expect(cache.size).toBe(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('does not cache failures or oversized SVGs and evicts the oldest entry at its limit', async () => {

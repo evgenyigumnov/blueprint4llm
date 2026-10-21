@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 import { compileMarkdown } from '../src/compiler.js';
@@ -127,5 +127,78 @@ ${longContent}`;
     } finally {
       await rm(root, { recursive: true, force: true });
     }
+  }, 60_000);
+
+  it('renders a Figma JSON frame offline in standalone HTML and PDF', async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    const figmaJson = JSON.stringify({
+      name: 'Offline fixture',
+      sourceOnly: 'FIGMA_JSON_SOURCE_MUST_NOT_APPEAR',
+      document: {
+        id: '0:0',
+        name: 'Document',
+        type: 'DOCUMENT',
+        children: [
+          {
+            id: '1:1',
+            name: 'Page 1',
+            type: 'CANVAS',
+            children: [
+              {
+                id: '12:34',
+                name: 'Offline frame',
+                type: 'FRAME',
+                absoluteBoundingBox: { x: 0, y: 0, width: 360, height: 100 },
+                children: [
+                  {
+                    id: '12:35',
+                    name: 'Label',
+                    type: 'TEXT',
+                    absoluteBoundingBox: { x: 24, y: 24, width: 300, height: 32 },
+                    characters: 'Searchable offline Figma text',
+                    style: { fontFamily: 'Inter', fontSize: 20, fontWeight: 600 },
+                    fills: [{ type: 'SOLID', color: { r: 0.1, g: 0.1, b: 0.1, a: 1 } }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+    let compiled: Awaited<ReturnType<typeof compileMarkdown>>;
+    try {
+      compiled = await compileMarkdown(
+        ['# Offline Figma', '', '```figma node=12:34', figmaJson, '```'].join('\n'),
+        { sourceFile: 'offline-figma.md' },
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(compiled.html).toContain('bp-diagram--figma');
+    expect(compiled.html).toContain('Searchable offline Figma text');
+    expect(compiled.html).not.toContain('FIGMA_JSON_SOURCE_MUST_NOT_APPEAR');
+
+    const pdf = await renderPdf(compiled);
+    const loadingTask = getDocument({ data: Uint8Array.from(pdf) });
+    const document = await loadingTask.promise;
+    let text: string;
+    try {
+      const page = await document.getPage(1);
+      const content = await page.getTextContent();
+      text = content.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .filter(Boolean)
+        .join(' ');
+    } finally {
+      await loadingTask.destroy();
+    }
+
+    expect(Buffer.from(pdf.subarray(0, 5)).toString()).toBe('%PDF-');
+    expect(text.replaceAll(/\s+/g, '').toLowerCase()).toContain('searchableofflinefigmatext');
+    expect(text).not.toContain('FIGMA_JSON_SOURCE_MUST_NOT_APPEAR');
   }, 60_000);
 });

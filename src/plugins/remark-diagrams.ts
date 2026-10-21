@@ -15,6 +15,7 @@ export interface RemarkDiagramOptions {
   sourceFile: string;
   warnings: string[];
   errors: string[];
+  figmaAccessToken?: string;
   signal?: AbortSignal;
   cache?: DiagramRenderCache;
 }
@@ -45,9 +46,10 @@ export function remarkDiagramPlugin(options: RemarkDiagramOptions) {
 
     for (const [index, block] of blocks.entries()) {
       const sourceBytes = Buffer.byteLength(block.node.value, 'utf8');
-      if (sourceBytes > MAX_DIAGRAM_SOURCE_BYTES) {
+      const sourceLimit = block.renderer.maxSourceBytes ?? MAX_DIAGRAM_SOURCE_BYTES;
+      if (sourceBytes > sourceLimit) {
         throw diagnosticAtBlock(
-          `diagram block is too large: ${sourceBytes} bytes (limit ${MAX_DIAGRAM_SOURCE_BYTES} bytes)`,
+          `diagram block is too large: ${sourceBytes} bytes (limit ${sourceLimit} bytes)`,
           block,
           options.sourceFile,
         );
@@ -59,6 +61,10 @@ export function remarkDiagramPlugin(options: RemarkDiagramOptions) {
         diagramId,
         sourceFile: options.sourceFile,
         line: startLine ?? 1,
+        ...(typeof block.node.meta === 'string' ? { metadata: block.node.meta } : {}),
+        ...(block.renderer.name === 'figma' && options.figmaAccessToken !== undefined
+          ? { figmaAccessToken: options.figmaAccessToken }
+          : {}),
         ...(options.signal === undefined ? {} : { signal: options.signal }),
       };
 
