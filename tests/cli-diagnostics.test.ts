@@ -4,15 +4,16 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/compiler.js', () => ({ compileMarkdown: vi.fn() }));
+vi.mock('../src/compiler.js', () => ({ compileMarkdown: vi.fn(), checkMarkdown: vi.fn() }));
 
-import { compileMarkdown } from '../src/compiler.js';
+import { checkMarkdown, compileMarkdown } from '../src/compiler.js';
 import { EXIT_OK, main } from '../src/cli.js';
 
 const directories: string[] = [];
 
 afterEach(async () => {
   vi.mocked(compileMarkdown).mockReset();
+  vi.mocked(checkMarkdown).mockReset();
   await Promise.all(directories.splice(0).map((directory) => rm(directory, { recursive: true })));
 });
 

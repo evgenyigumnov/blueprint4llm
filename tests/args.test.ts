@@ -33,6 +33,10 @@ describe('parseCliArgs', () => {
     expect(parseCliArgs(['input.md', '--serve', '--port', '1'])).toMatchObject({ port: 1 });
   });
 
+  it('parses check mode without an output path', () => {
+    expect(parseCliArgs(['input.md', '--check'])).toEqual({ kind: 'check', input: 'input.md' });
+  });
+
   it('handles help and version without requiring an input file', () => {
     expect(parseCliArgs(['--help'])).toEqual({ kind: 'help' });
     expect(parseCliArgs(['--version'])).toEqual({ kind: 'version' });
@@ -42,6 +46,10 @@ describe('parseCliArgs', () => {
     [
       [],
       ['input.md'],
+      ['input.md', '--check', '--out', 'out'],
+      ['input.md', '--check', '--serve'],
+      ['input.md', '--check', '--format', 'html'],
+      ['input.md', '--check', '--port', '8080'],
       ['input.md', '--out', 'out', '--serve'],
       ['input.md', '--serve', '--format', 'html'],
       ['input.md', '--out', 'out', '--port', '8080'],

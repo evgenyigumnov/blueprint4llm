@@ -1,4 +1,4 @@
-import { lstat, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
@@ -36,6 +36,7 @@ describe('CLI main', () => {
     const help = captureIo();
     expect(await main(['--help'], help.io)).toBe(EXIT_OK);
     expect(help.stdout.join('')).toContain('blueprint4llm <input.md> --out=<file>');
+    expect(help.stdout.join('')).toContain('blueprint4llm <input.md> --check');
 
     const version = captureIo();
     expect(await main(['--version'], version.io)).toBe(EXIT_OK);
@@ -48,8 +49,64 @@ describe('CLI main', () => {
   it('returns usage code and prints usage for invalid arguments', async () => {
     const captured = captureIo();
     expect(await main(['input.md'], captured.io)).toBe(EXIT_USAGE);
-    expect(captured.stderr.join('')).toContain('one of --out or --serve is required');
+    expect(captured.stderr.join('')).toContain('one of --out, --serve, or --check is required');
     expect(captured.stderr.join('')).toContain('Usage:');
+  });
+
+  it('checks Markdown, diagrams, and local images without creating output files', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'plan.md');
+    await writeFile(path.join(root, 'diagram.png'), Buffer.from([137, 80, 78, 71]));
+    await writeFile(
+      input,
+      '# Plan\n\n![diagram](diagram.png)\n\n```wireframe\n' +
+        'Wireframe #login mobile\n  Stack column gap=2 padding=2\n' +
+        '    Typography h4 "Sign in"\n    Anchor\n```',
+    );
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_OK);
+    expect(captured.stdout.join('')).toBe(`${input}: OK\n`);
+    expect(captured.stderr.join('')).toContain(
+      'wiremark warning: Anchor without #id can never be targeted',
+    );
+    expect((await readdir(root)).sort()).toEqual(['diagram.png', 'plan.md']);
+  });
+
+  it('returns failure for diagram errors in check mode and writes no output', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'broken.md');
+    await writeFile(input, '# Broken\n\n```wiremark\nWireframe mobile\n  UnknownComponent\n```');
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain('wiremark render failed: unknown component');
+    expect((await readdir(root)).sort()).toEqual(['broken.md']);
+  });
+
+  it('returns failure for non-fatal diagram diagnostics in check mode', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'invalid-plantuml.md');
+    await writeFile(input, '# Broken\n\n```plantuml\n@startuml\nclass User {\n@enduml\n```');
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain('plantuml error: Syntax Error?');
+    expect((await readdir(root)).sort()).toEqual(['invalid-plantuml.md']);
+  }, 60_000);
+
+  it('reports missing local images in check mode', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'missing-image.md');
+    await writeFile(input, '![missing](./missing.png)');
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain('cannot read local image "./missing.png"');
+    expect((await readdir(root)).sort()).toEqual(['missing-image.md']);
   });
 
   it('builds Markdown to an absolute HTML output path', async () => {

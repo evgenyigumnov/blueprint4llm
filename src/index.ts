@@ -1,10 +1,16 @@
 export {
+  checkMarkdown,
   compileMarkdown,
   detectLanguage,
   findFirstH1Text,
   MAX_MARKDOWN_BYTES,
 } from './compiler.js';
-export type { CompiledBlueprint, CompileOptions, LocalAsset } from './compiler.js';
+export type {
+  CompiledBlueprint,
+  CompileOptions,
+  LocalAsset,
+  MarkdownCheckResult,
+} from './compiler.js';
 export { escapeHtml, renderHtmlPage } from './template.js';
 export type { PageOptions } from './template.js';
 export { writeBlueprintOutput, writeHtmlOutput } from './build.js';

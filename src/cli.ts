@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseCliArgs, UsageError, USAGE } from './args.js';
 import type { CliInvocation } from './args.js';
 import { writeBlueprintOutput } from './build.js';
-import { compileMarkdown } from './compiler.js';
+import { checkMarkdown, compileMarkdown } from './compiler.js';
 import type { CompiledBlueprint } from './compiler.js';
 import { toDiagnosticError } from './errors.js';
 import { renderPdf } from './pdf.js';
@@ -49,11 +49,50 @@ export async function main(argv: readonly string[], io: CliIo = DEFAULT_IO): Pro
     case 'version':
       io.out(`${readPackageVersion()}\n`);
       return EXIT_OK;
+    case 'check':
+      return runCheck(invocation, io);
     case 'serve':
       return runServe(invocation, io);
     case 'build':
       return runBuild(invocation, io);
   }
+}
+
+async function runCheck(
+  invocation: Extract<CliInvocation, { kind: 'check' }>,
+  io: CliIo,
+): Promise<number> {
+  let markdown: string;
+  try {
+    markdown = await readFile(invocation.input, 'utf8');
+  } catch (error) {
+    io.err(`blueprint4llm: cannot read ${invocation.input}: ${errorMessage(error)}\n`);
+    return EXIT_FAILURE;
+  }
+
+  let result: Awaited<ReturnType<typeof checkMarkdown>>;
+  try {
+    result = await checkMarkdown(markdown, { sourceFile: invocation.input });
+  } catch (error) {
+    const diagnostic = toDiagnosticError(error, 'Markdown check failed', {
+      sourceFile: invocation.input,
+    });
+    io.err(`blueprint4llm: ${diagnostic.format()}\n`);
+    return EXIT_FAILURE;
+  }
+
+  for (const warning of result.warnings) {
+    io.err(`blueprint4llm: warning: ${warning}\n`);
+  }
+  for (const error of result.errors) {
+    io.err(`blueprint4llm: error: ${error}\n`);
+  }
+  if (result.errors.length > 0) {
+    return EXIT_FAILURE;
+  }
+
+  io.out(`${invocation.input}: OK\n`);
+  return EXIT_OK;
 }
 
 async function runServe(

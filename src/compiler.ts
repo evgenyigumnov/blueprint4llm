@@ -45,6 +45,11 @@ export interface CompiledBlueprint {
   errors?: string[];
 }
 
+export interface MarkdownCheckResult {
+  warnings: string[];
+  errors: string[];
+}
+
 /**
  * Compiles Markdown into a complete standalone HTML5 document.
  *
@@ -55,13 +60,7 @@ export async function compileMarkdown(
   markdown: string,
   options: CompileOptions,
 ): Promise<CompiledBlueprint> {
-  const byteLength = Buffer.byteLength(markdown, 'utf8');
-  if (byteLength > MAX_MARKDOWN_BYTES) {
-    throw new DiagnosticError(
-      `source Markdown is too large: ${byteLength} bytes (limit ${MAX_MARKDOWN_BYTES} bytes)`,
-      { sourceFile: options.sourceFile },
-    );
-  }
+  assertMarkdownSize(markdown, options.sourceFile);
 
   let headingTitle: string | undefined;
   const warnings: string[] = [];
@@ -116,6 +115,63 @@ export async function compileMarkdown(
   const html = renderHtmlPage({ lang, title, bodyHtml });
 
   return { html, title, assets, warnings, errors };
+}
+
+/** Checks Markdown, supported diagrams, and local image references without serializing HTML. */
+export async function checkMarkdown(
+  markdown: string,
+  options: CompileOptions,
+): Promise<MarkdownCheckResult> {
+  assertMarkdownSize(markdown, options.sourceFile);
+
+  const warnings: string[] = [];
+  const errors: string[] = [];
+  const assets: LocalAsset[] = [];
+  const processor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkLocalAssetsPlugin, {
+      sourceFile: options.sourceFile,
+      assets,
+      ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
+    })
+    .use(remarkDiagramPlugin, {
+      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer],
+      sourceFile: options.sourceFile,
+      warnings,
+      errors,
+      ...(options.signal === undefined ? {} : { signal: options.signal }),
+      ...(options.diagramCache === undefined ? {} : { cache: options.diagramCache }),
+    })
+    .use(remarkRehype, {
+      handlers: {
+        html: (_h, node) => ({ type: 'text', value: node.value }),
+      },
+    })
+    .use(rehypeDiagramContainersPlugin)
+    .use(remarkSafeLinksPlugin)
+    .use(wrapTablesPlugin);
+
+  try {
+    const tree = processor.parse(markdown);
+    await processor.run(tree);
+  } catch (error) {
+    throw toDiagnosticError(error, 'Markdown check failed', {
+      sourceFile: options.sourceFile,
+    });
+  }
+
+  return { warnings, errors };
+}
+
+function assertMarkdownSize(markdown: string, sourceFile: string): void {
+  const byteLength = Buffer.byteLength(markdown, 'utf8');
+  if (byteLength > MAX_MARKDOWN_BYTES) {
+    throw new DiagnosticError(
+      `source Markdown is too large: ${byteLength} bytes (limit ${MAX_MARKDOWN_BYTES} bytes)`,
+      { sourceFile },
+    );
+  }
 }
 
 /** Detects the dominant document language from the presence of Cyrillic letters. */

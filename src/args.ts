@@ -5,6 +5,7 @@ export type OutputFormat = 'html' | 'pdf';
 export type CliInvocation =
   | { kind: 'help' }
   | { kind: 'version' }
+  | { kind: 'check'; input: string }
   | { kind: 'build'; input: string; outputFile: string; format: OutputFormat }
   | { kind: 'serve'; input: string; port: number };
 
@@ -22,14 +23,16 @@ export const DEFAULT_PORT = 8080;
 export const USAGE = `Usage:
   blueprint4llm <input.md> --out=<file> [--format=html|pdf]
   blueprint4llm <input.md> --serve [--port=<1..65535>]
+  blueprint4llm <input.md> --check
   blueprint4llm --help
   blueprint4llm --version
 
 Options:
-  --out <file>         write the output file to <file> (required unless --serve)
+  --out <file>         write output to <file> (required unless --serve or --check)
   --format <format>    html | pdf, default: html; only with --out
   --serve              run a local preview server with live reload (no --out)
   --port <port>        server port 1..65535, default: ${DEFAULT_PORT}; only with --serve
+  --check              validate Markdown, diagrams, and local images without writing output
   -h, --help           display help
   -V, --version        display version`;
 
@@ -54,6 +57,7 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
     .option('--format <format>', 'html | pdf', parseFormat, 'html')
     .option('--serve', 'run a local preview server with live reload')
     .option('--port <port>', `server port 1..65535 (default: ${DEFAULT_PORT})`, parsePort)
+    .option('--check', 'validate Markdown, diagrams, and local images without writing output')
     .showHelpAfterError(false)
     .showSuggestionAfterError(true)
     .configureOutput({ writeOut: () => undefined, writeErr: () => undefined })
@@ -79,6 +83,7 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
     format: OutputFormat;
     serve?: boolean;
     port?: number;
+    check?: boolean;
   }>();
   const args = program.processedArgs as [string | undefined];
   const input = args[0];
@@ -90,12 +95,26 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
   const serveSpecified = wasProvided(program, 'serve');
   const portSpecified = wasProvided(program, 'port');
   const formatSpecified = wasProvided(program, 'format');
+  const checkSpecified = wasProvided(program, 'check');
+
+  if (checkSpecified && outSpecified) {
+    throw new UsageError('--out and --check are mutually exclusive');
+  }
+  if (checkSpecified && serveSpecified) {
+    throw new UsageError('--check and --serve are mutually exclusive');
+  }
+  if (checkSpecified && formatSpecified) {
+    throw new UsageError('--format cannot be used with --check');
+  }
+  if (checkSpecified && portSpecified) {
+    throw new UsageError('--port cannot be used with --check');
+  }
 
   if (options.serve === true && outSpecified) {
     throw new UsageError('--out and --serve are mutually exclusive');
   }
-  if (!serveSpecified && !outSpecified) {
-    throw new UsageError('one of --out or --serve is required');
+  if (!serveSpecified && !outSpecified && !checkSpecified) {
+    throw new UsageError('one of --out, --serve, or --check is required');
   }
   if (serveSpecified && formatSpecified) {
     throw new UsageError('--format cannot be used with --serve (PDF is served at /document.pdf)');
@@ -106,6 +125,9 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
 
   if (serveSpecified) {
     return { kind: 'serve', input, port: options.port ?? DEFAULT_PORT };
+  }
+  if (checkSpecified) {
+    return { kind: 'check', input };
   }
   return { kind: 'build', input, outputFile: options.out ?? '', format: options.format };
 }

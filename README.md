@@ -45,6 +45,14 @@ blueprint4llm examples/blueprint.md --out=./dist-pdf/blueprint.pdf --format=pdf
 
 `--out` указывает полный путь выходного файла; родительские каталоги создаются автоматически. CLI создаёт один формат за запуск. SVG Mermaid, PlantUML и Wiremark встраиваются в HTML, отдельные SVG-файлы не создаются. Локальные изображения сохраняются в `assets/` рядом с HTML. Созданный HTML можно открыть напрямую через `file://`.
 
+Проверка перед ревью или публикацией, например в CI:
+
+```bash
+blueprint4llm examples/blueprint.md --check
+```
+
+`--check` разбирает Markdown, запускает рендереры диаграмм и проверяет локальные изображения, но не создаёт HTML или PDF. Предупреждения выводятся в stderr; ошибки проверки завершают команду с кодом `1`.
+
 Локальный предпросмотр с автоматическим обновлением:
 
 ```bash
@@ -65,11 +73,12 @@ blueprint4llm examples/blueprint.md --serve --port=8081
 ```text
 blueprint4llm <input.md> --out=<file> [--format=html|pdf]
 blueprint4llm <input.md> --serve [--port=<1..65535>]
+blueprint4llm <input.md> --check
 blueprint4llm --help
 blueprint4llm --version
 ```
 
-Для `--format=html` передайте путь HTML-файла, для `--format=pdf` — путь PDF-файла. CLI создаёт только указанный формат за запуск. `--out` и `--serve` взаимоисключающие. `--format` доступен только с `--out`, а `--port` — только с `--serve`. Ошибка аргументов завершается с кодом `2`, ошибка чтения, компиляции или вывода — с кодом `1`.
+Для `--format=html` передайте путь HTML-файла, для `--format=pdf` — путь PDF-файла. CLI создаёт только указанный формат за запуск. `--out`, `--serve` и `--check` выбирают взаимоисключающие режимы. `--format` доступен только с `--out`, а `--port` — только с `--serve`. Ошибка аргументов завершается с кодом `2`, ошибка чтения, проверки, компиляции или вывода — с кодом `1`.
 
 ## Формат Markdown
 
