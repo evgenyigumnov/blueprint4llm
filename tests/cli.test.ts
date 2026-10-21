@@ -39,7 +39,10 @@ describe('CLI main', () => {
 
     const version = captureIo();
     expect(await main(['--version'], version.io)).toBe(EXIT_OK);
-    expect(version.stdout.join('')).toBe('0.1.0\n');
+    const packageJson = JSON.parse(
+      await readFile(new URL('../package.json', import.meta.url), 'utf8'),
+    ) as { version: string };
+    expect(version.stdout.join('')).toBe(`${packageJson.version}\n`);
   });
 
   it('returns usage code and prints usage for invalid arguments', async () => {

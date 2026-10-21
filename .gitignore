@@ -5,4 +5,8 @@ coverage/
 *.log
 
 package-lock.json
+!vscode-extension/package-lock.json
 article.md
+.vscode-test/
+vscode-extension/out/
+vscode-extension/*.vsix

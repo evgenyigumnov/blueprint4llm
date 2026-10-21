@@ -10,14 +10,14 @@
 
 ## Что уже есть в проекте
 
-| Возможность | Текущая точка входа |
-|---|---|
-| Компиляция текста Markdown в полный HTML-документ | `compileMarkdown()` в `src/compiler.ts` |
-| Mermaid и Wiremark в SVG | `src/renderers/mermaid.ts`, `src/renderers/wiremark.ts` |
-| Проверка ссылок и SVG, безопасное экранирование HTML | `src/plugins/remark-safe-links.ts`, `src/svg/` и `src/compiler.ts` |
-| Сбор локальных изображений в результат компиляции | `src/assets.ts`; `CompiledBlueprint.assets` содержит байты и метаданные |
-| Повторная сборка и просмотр сохранённого файла в браузере | `startPreviewServer()` в `src/server.ts` |
-| Экспорт в PDF | `renderPdf()` в `src/pdf.ts` |
+| Возможность                                               | Текущая точка входа                                                     |
+| --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Компиляция текста Markdown в полный HTML-документ         | `compileMarkdown()` в `src/compiler.ts`                                 |
+| Mermaid и Wiremark в SVG                                  | `src/renderers/mermaid.ts`, `src/renderers/wiremark.ts`                 |
+| Проверка ссылок и SVG, безопасное экранирование HTML      | `src/plugins/remark-safe-links.ts`, `src/svg/` и `src/compiler.ts`      |
+| Сбор локальных изображений в результат компиляции         | `src/assets.ts`; `CompiledBlueprint.assets` содержит байты и метаданные |
+| Повторная сборка и просмотр сохранённого файла в браузере | `startPreviewServer()` в `src/server.ts`                                |
+| Экспорт в PDF                                             | `renderPdf()` в `src/pdf.ts`                                            |
 
 Для предпросмотра внутри редактора следует вызывать `compileMarkdown()` напрямую с текстом из `TextDocument.getText()`. `startPreviewServer()` читает файл с диска, поэтому не увидит несохранённые изменения без доработки своего контракта.
 
@@ -35,7 +35,7 @@
 
 Редактор остаётся стандартным редактором VS Code; расширение показывает справа результат компиляции. Каждая Wiremark-диаграмма ниже описывает один отдельный экранный макет.
 
-~~~wireframe
+````wireframe
 Wireframe #blueprint-preview landscape
   Stack row gap=2 padding=2
     Card
@@ -67,13 +67,13 @@ Wireframe #blueprint-preview landscape
                 TableCell "Проверяет и сохраняет заявку"
           Typography h4 "Поток обработки"
           Typography body2 "Скомпилированная диаграмма Mermaid / Wiremark"
-~~~
+````
 
 ## Экран ошибки сборки
 
 При ошибке компиляции оставить панель открытой и показать диагностику с путём к файлу и строкой, если они доступны. После исправления документа автоматически вернуть нормальный предпросмотр.
 
-~~~wireframe
+````wireframe
 Wireframe #blueprint-preview-error landscape
   Stack column gap=2 padding=3
     Typography h3 "Не удалось построить предпросмотр"
@@ -85,11 +85,11 @@ Wireframe #blueprint-preview-error landscape
         Typography body2 "```mermaid"
         Typography body2 "flowchart LR"
         Typography body2 "A -->"
-~~~
+````
 
 ## Поток данных и обновления
 
-~~~mermaid
+```mermaid
 flowchart LR
     A[Пользователь открывает .md] --> B[Команда Blueprint Preview]
     B --> C[Extension host получает TextDocument]
@@ -102,7 +102,7 @@ flowchart LR
     J --> K[Отменить устаревшую сборку]
     K --> D
     L[Закрытие панели] --> M[Отменить сборку и очистить кеш / временные файлы]
-~~~
+```
 
 ## Структура пакета расширения
 
@@ -124,11 +124,11 @@ vscode-extension/
 
 ## Команды и настройки расширения
 
-| ID / настройка | Назначение |
-|---|---|
-| `blueprint4llm.openPreview` | Открыть или сфокусировать предпросмотр активного Markdown-файла |
-| `blueprint4llm.exportPdf` | Экспортировать текущий результат предпросмотра в PDF; этап 4 |
-| `blueprint4llm.preview.debounceMs` | Задержка перед пересборкой, по умолчанию около 200 мс |
+| ID / настройка                     | Назначение                                                      |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `blueprint4llm.openPreview`        | Открыть или сфокусировать предпросмотр активного Markdown-файла |
+| `blueprint4llm.exportPdf`          | Экспортировать текущий результат предпросмотра в PDF; этап 4    |
+| `blueprint4llm.preview.debounceMs` | Задержка перед пересборкой, по умолчанию около 200 мс           |
 
 ## Проверки и тесты
 
@@ -158,12 +158,15 @@ vscode-extension/
 
 ## Этапы реализации
 
-### 1. Проверка runtime и упаковки
+### 1. Проверка runtime и упаковки — выполнено 2026-10-21
 
-- Создать минимальный пакет `vscode-extension/` и проверить запуск расширения в Extension Development Host.
-- Проверить требование `blueprint4llm`: Node.js `>=22.13.0`, Mermaid CLI, Puppeteer и установленный Chrome. Уточнить, совместим ли Node runtime целевой версии VS Code с этим требованием.
-- Собрать тестовый VSIX и проверить, что зависимости и Mermaid CLI разрешаются из установленного пакета. Браузер Chrome не встраивать автоматически; при его отсутствии показать понятную инструкцию установки из README.
-- Зафиксировать минимальную версию VS Code и поддерживаемые ОС после проверки Node/Puppeteer.
+- [x] Создан отдельный минимальный пакет `vscode-extension/` с manifest, TypeScript-сборкой, Extension Development Host smoke-тестом и VSIX smoke-тестом. Локальная зависимость `file:..` устанавливается как копия через `.npmrc` (`install-links=true`), поэтому VSIX не зависит от symlink на каталог репозитория.
+- [x] Нижняя граница VS Code установлена на `1.101.0` (`engines.vscode: ^1.101.0`). В release notes версии 1.101 указано, что Node.js extension host обновлён до `22.15.1`; минимальное требование проекта и Mermaid CLI — Node.js `>=22.13.0`, Puppeteer 25 требует `>=22.12.0`. Проверено фактическим запуском VS Code 1.101.0: Extension Development Host сообщает Node.js `22.15.1`.
+- [x] Поддерживаемая граница платформ выбрана по пересечению требований VS Code и Chrome for Testing из Puppeteer: Windows x64, macOS x64/arm64, Linux x64/arm64 на совместимых дистрибутивах. Windows arm64 исключён: Puppeteer не предлагает там загрузку Chrome for Testing. На этой машине Extension Development Host и VSIX проверены только на Linux x64; остальные платформы зафиксированы по опубликованным требованиям, но отдельно здесь не запускались. Источники: [Node.js в VS Code 1.101](https://code.visualstudio.com/updates/v1_101), [требования Puppeteer](https://pptr.dev/guides/system-requirements), [платформы VS Code](https://code.visualstudio.com/Docs/supporting/requirements).
+- [x] Собран VSIX размером 88.59 MiB. Тест распаковывает архив во временную папку, запускает именно этот пакет в Extension Development Host, проверяет импорт `blueprint4llm`, разрешение Mermaid CLI и Puppeteer и рендерит Mermaid в SVG. Отдельные проверки подтверждают отсутствие Chrome binary и npm-пакета `vscode` в VSIX.
+- [x] Chrome остаётся внешним браузером в кеше Puppeteer. Smoke-тест с пустым `PUPPETEER_CACHE_DIR` проверяет, что ошибка содержит команду `npx puppeteer browsers install chrome`; эта инструкция также добавлена в `vscode-extension/README.md`.
+- [x] VSCE сообщает advisory о большом production dependency tree (22 842 файла, 7 332 JavaScript-файла) и рекомендует bundling. Зафиксирован unbundled вариант с runtime-зависимостями: smoke-тест подтверждает работу Mermaid CLI/Puppeteer из VSIX. Размер артефакта — 88.59 MiB; сокращение пакета перед публикацией в Marketplace оставлено за границами этого этапа.
+- [x] Проверки этапа: `xvfb-run -a npm test --prefix vscode-extension` (Extension Development Host и упакованный VSIX), корневые `npm test` (129/129), `npm run build`, `npm run typecheck` и `npm run lint` прошли. В `tests/cli.test.ts` фиксированная версия `0.1.0` заменена сравнением с версией корневого `package.json`. Изменённые файлы проходят Prettier; общий `npm run format:check` пока указывает на шесть ранее неформатированных файлов в `dev-docs/` и `examples/`, не затронутых этим этапом.
 
 ### 2. Контроллер предпросмотра
 
