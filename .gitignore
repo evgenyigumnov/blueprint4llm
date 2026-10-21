@@ -10,3 +10,4 @@ article.md
 .vscode-test/
 vscode-extension/out/
 vscode-extension/*.vsix
+.env
