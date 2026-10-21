@@ -13,6 +13,21 @@ import {
 import { DiagnosticError } from '../src/errors.js';
 
 describe('compileMarkdown', () => {
+  it('compiles PlantUML through the shared validated SVG diagram pipeline', async () => {
+    const compiled = await compileMarkdown(
+      '# PlantUML\n\n```plantuml\n@startuml\nAlice -> Bob: Привет\n@enduml\n```',
+      { sourceFile: 'plantuml.md' },
+    );
+
+    expect(compiled.html).toContain(
+      '<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--plantuml" data-diagram-id="bp-diagram-001">',
+    );
+    expect(compiled.html).toContain('<svg');
+    expect(compiled.html).toContain('Привет');
+    expect(compiled.html).not.toContain('<script');
+    expect(compiled.errors).toEqual([]);
+  }, 60_000);
+
   it('renders GFM Markdown into a complete standalone HTML page', async () => {
     const markdown = `# Blueprint
 

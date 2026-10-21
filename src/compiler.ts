@@ -15,6 +15,7 @@ import { remarkDiagramPlugin } from './plugins/remark-diagrams.js';
 import { rehypeDiagramContainersPlugin } from './plugins/rehype-diagram-containers.js';
 import { remarkSafeLinksPlugin } from './plugins/remark-safe-links.js';
 import { mermaidRenderer } from './renderers/mermaid.js';
+import { plantumlRenderer } from './renderers/plantuml.js';
 import { wiremarkRenderer } from './renderers/wiremark.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { renderHtmlPage } from './template.js';
@@ -80,7 +81,7 @@ export async function compileMarkdown(
       ...(options.watchPaths === undefined ? {} : { watchPaths: options.watchPaths }),
     })
     .use(remarkDiagramPlugin, {
-      renderers: [mermaidRenderer, wiremarkRenderer],
+      renderers: [mermaidRenderer, plantumlRenderer, wiremarkRenderer],
       sourceFile: options.sourceFile,
       warnings,
       errors,
