@@ -68,18 +68,6 @@ blueprint4llm examples/blueprint.md --serve --port=8081
 
 Для сборки VSIX и требований к Chrome смотрите [инструкцию расширения](vscode-extension/README.md).
 
-Основные аргументы:
-
-```text
-blueprint4llm <input.md> --out=<file> [--format=html|pdf]
-blueprint4llm <input.md> --serve [--port=<1..65535>]
-blueprint4llm <input.md> --check
-blueprint4llm --help
-blueprint4llm --version
-```
-
-Для `--format=html` передайте путь HTML-файла, для `--format=pdf` — путь PDF-файла. CLI создаёт только указанный формат за запуск. `--out`, `--serve` и `--check` выбирают взаимоисключающие режимы. `--format` доступен только с `--out`, а `--port` — только с `--serve`. Ошибка аргументов завершается с кодом `2`, ошибка чтения, проверки, компиляции или вывода — с кодом `1`.
-
 ## Формат Markdown
 
 Поддерживаются CommonMark и GitHub Flavored Markdown: заголовки, списки, таблицы, чекбоксы, ссылки, изображения, цитаты и блоки кода. Диаграммы задаются fenced-блоками:
