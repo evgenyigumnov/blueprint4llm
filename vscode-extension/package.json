@@ -3,7 +3,7 @@
   "type": "module",
   "displayName": "Blueprint4llm Preview",
   "description": "Preview blueprint4llm Markdown documents inside Visual Studio Code.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "blueprint4llm",
   "license": "MIT",
   "repository": {

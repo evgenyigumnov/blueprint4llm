@@ -46,6 +46,20 @@ async function testLocalAssetsAndContentSecurityPolicy(temporaryRoot: string): P
   assert.match(result.html, /Content-Security-Policy/);
   assert.match(result.html, /script-src &#39;none&#39;/);
   assert.match(result.html, /vscode-webview:\/\/test\/image\.png\?width=2/);
+  assert.match(
+    result.html,
+    /body\.vscode-light[\s\S]*body\.vscode-dark[\s\S]*body\.vscode-high-contrast/,
+  );
+  assert.match(result.html, /--bp-text: var\(--vscode-editor-foreground/);
+  assert.match(result.html, /--bp-muted: var\(--vscode-descriptionForeground/);
+  assert.match(result.html, /--vscode-contrastBorder/);
+  assert.match(result.html, /--bp-surface: var\(--vscode-editor-background/);
+  assert.match(result.html, /--bp-page-bg: var\(--vscode-editor-background/);
+  assert.match(result.html, /--bp-accent: var\(--vscode-textLink-foreground/);
+  assert.match(result.html, /--bp-code-bg: var\(--vscode-textCodeBlock-background/);
+  assert.match(result.html, /body\.vscode-light \{\s*color-scheme: light;/);
+  assert.match(result.html, /body\.vscode-dark,[\s\S]*color-scheme: dark;/);
+  assert.match(result.html, /filter: invert\(1\) hue-rotate\(180deg\)/);
   assert.doesNotMatch(result.html, new RegExp(outputUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.equal(
     await readFile(path.join(result.assetDirectory, 'image.png'), 'utf8'),
@@ -79,4 +93,6 @@ function testDiagnosticTextIsEscaped(): void {
   assert.match(html, /&lt;script&gt;alert\(&quot;x&quot;\)&lt;\/script&gt;/);
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /&lt;bad&gt;\.md:4:1/);
+  assert.match(html, /body\.vscode-high-contrast/);
+  assert.match(html, /var\(--vscode-editor-foreground/);
 }

@@ -55,7 +55,10 @@ export async function createPreviewHtml(
     "form-action 'none'",
   ].join('; ');
   const policyTag = `<meta http-equiv="Content-Security-Policy" content="${escapeHtml(csp)}">`;
-  html = html.replace(/<head(?:\s[^>]*)?>/i, (head) => `${head}\n${policyTag}`);
+  html = html.replace(
+    /<head(?:\s[^>]*)?>/i,
+    (head) => `${head}\n${policyTag}\n<style>${PREVIEW_THEME_CSS}</style>`,
+  );
   return { html, assetDirectory };
 }
 
@@ -70,9 +73,10 @@ export function createDiagnosticHtml(diagnostic: PreviewDiagnostic, cspSource: s
 <meta http-equiv="Content-Security-Policy" content="${escapeHtml(csp)}">
 <title>Blueprint Preview Error</title>
 <style>
-body { margin: 0; padding: 2rem; color: var(--vscode-foreground); background: var(--vscode-editor-background); font: 14px/1.6 var(--vscode-font-family); }
+body { margin: 0; min-height: 100vh; padding: 2rem; color: var(--vscode-editor-foreground, var(--vscode-foreground, #1f2328)); background: var(--vscode-editor-background, #fff); font: 14px/1.6 var(--vscode-font-family, system-ui, sans-serif); }
 h1 { font-size: 1.25rem; }
-pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--vscode-errorForeground); }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--vscode-errorForeground, #b42318); border: 1px solid var(--vscode-contrastBorder, var(--vscode-editorWidget-border, currentColor)); padding: 1rem; }
+body.vscode-high-contrast { border: 1px solid var(--vscode-contrastBorder, currentColor); }
 </style>
 </head>
 <body>
@@ -84,6 +88,44 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--vscode-errorF
 </body>
 </html>`;
 }
+
+const PREVIEW_THEME_CSS = `
+body.vscode-light,
+body.vscode-dark,
+body.vscode-high-contrast {
+  --bp-text: var(--vscode-editor-foreground, #1f2328);
+  --bp-muted: var(--vscode-descriptionForeground, var(--vscode-editor-foreground, #656d76));
+  --bp-border: var(--vscode-editorWidget-border, var(--vscode-contrastBorder, #d0d7de));
+  --bp-surface: var(--vscode-editor-background, #ffffff);
+  --bp-page-bg: var(--vscode-editor-background, #f6f8fa);
+  --bp-accent: var(--vscode-textLink-foreground, #0a5bd3);
+  --bp-code-bg: var(--vscode-textCodeBlock-background, var(--vscode-editor-background, #f6f8fa));
+  font-family: var(--vscode-font-family, system-ui, sans-serif);
+}
+
+body.vscode-light {
+  color-scheme: light;
+}
+
+body.vscode-dark,
+body.vscode-high-contrast {
+  color-scheme: dark;
+}
+
+body.vscode-high-contrast {
+  --bp-border: var(--vscode-contrastBorder, var(--vscode-editorWidget-border, currentColor));
+}
+
+a:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder, var(--vscode-contrastActiveBorder, currentColor));
+  outline-offset: 2px;
+}
+
+body.vscode-dark .bp-diagram > svg,
+body.vscode-high-contrast .bp-diagram > svg {
+  filter: invert(1) hue-rotate(180deg);
+}
+`;
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (character) => {
