@@ -6,9 +6,11 @@ import path from 'node:path';
 import * as vscode from 'vscode';
 
 import { runPreviewControllerTests } from './preview-controller.test.js';
+import { runPdfExportTests } from './pdf-export.test.js';
 import { runWebviewHtmlTests } from './webview-html.test.js';
 
 const OPEN_PREVIEW_COMMAND = 'blueprint4llm.openPreview';
+const EXPORT_PDF_COMMAND = 'blueprint4llm.exportPdf';
 
 type CompileMarkdown = (
   markdown: string,
@@ -37,17 +39,19 @@ export async function run(): Promise<void> {
   );
 
   await runPreviewControllerTests();
+  await runPdfExportTests();
   await runWebviewHtmlTests();
   await testPreviewCommand(extension.exports);
 
   console.log(
-    `Extension Development Host Node.js ${hostNodeVersion}: preview command, controller, Webview HTML, and core package passed`,
+    `Extension Development Host Node.js ${hostNodeVersion}: preview and PDF export commands, controller, Webview HTML, and core package passed`,
   );
 }
 
 async function testPreviewCommand(extension: { getPreviewCount(): number }): Promise<void> {
   const registeredCommands = await vscode.commands.getCommands(true);
   assert.ok(registeredCommands.includes(OPEN_PREVIEW_COMMAND));
+  assert.ok(registeredCommands.includes(EXPORT_PDF_COMMAND));
 
   const temporaryDirectory = await mkdtemp(path.join(os.tmpdir(), 'blueprint-extension-test-'));
   const sourceFile = path.join(temporaryDirectory, 'preview.md');

@@ -1,3 +1,5 @@
+import type { CompiledBlueprint } from 'blueprint4llm';
+
 export interface PreviewDocument {
   uri: string;
   fileName: string;
@@ -10,19 +12,7 @@ export interface PreviewDisposable {
   dispose(): void;
 }
 
-export interface PreviewAsset {
-  outputUrl: string;
-  outputName: string;
-  bytes: Uint8Array;
-}
-
-export interface CompiledPreview {
-  html: string;
-  title: string;
-  assets: PreviewAsset[];
-  warnings: string[];
-  errors?: string[];
-}
+export type CompiledPreview = CompiledBlueprint;
 
 export interface PreviewDiagramCache {
   clear(): void;
@@ -106,6 +96,7 @@ interface PreviewSession {
   abortController: AbortController | undefined;
   generation: number;
   latestVersion: number;
+  displayedCompiled: CompiledPreview | undefined;
   closed: boolean;
 }
 
@@ -145,6 +136,7 @@ export class PreviewController {
       abortController: undefined,
       generation: 0,
       latestVersion: document.version,
+      displayedCompiled: undefined,
       closed: false,
     };
     this.sessions.set(document.uri, session);
@@ -171,6 +163,11 @@ export class PreviewController {
 
   get panelCount(): number {
     return this.sessions.size;
+  }
+
+  /** Returns the last successful result still shown in an open preview panel. */
+  getDisplayedCompilation(documentUri: string): CompiledPreview | undefined {
+    return this.sessions.get(documentUri)?.displayedCompiled;
   }
 
   private scheduleBuild(session: PreviewSession, document: PreviewDocument): void {
@@ -224,12 +221,16 @@ export class PreviewController {
       }
 
       await session.panel.render(compiled, isCurrent, generation);
+      if (isCurrent()) {
+        session.displayedCompiled = compiled;
+      }
     } catch (error) {
       if (!isCurrent()) {
         return;
       }
       const diagnostic = createDiagnostic(error, document.fileName);
       this.options.output(diagnostic.format());
+      session.displayedCompiled = undefined;
       session.panel.renderError(diagnostic);
     } finally {
       if (session.abortController === abortController) {
@@ -243,6 +244,7 @@ export class PreviewController {
       return;
     }
     session.closed = true;
+    session.displayedCompiled = undefined;
     this.sessions.delete(session.documentUri);
     if (session.timer !== undefined) {
       this.scheduler.cancel(session.timer);

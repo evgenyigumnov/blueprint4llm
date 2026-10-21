@@ -6,15 +6,20 @@ import * as vscode from 'vscode';
 
 import { isSupportedMarkdownDocument, PreviewController } from './preview-controller.js';
 import type { PreviewDocument, PreviewPanel, PreviewCompiler } from './preview-controller.js';
+import { exportPreviewPdf } from './pdf-export.js';
 import { createDiagnosticHtml, createPreviewHtml } from './webview-html.js';
 
 export const OPEN_PREVIEW_COMMAND = 'blueprint4llm.openPreview';
+export const EXPORT_PDF_COMMAND = 'blueprint4llm.exportPdf';
 
 /** Activates the VS Code preview command and its per-document controller. */
 export async function activate(context: vscode.ExtensionContext): Promise<{
   hostNodeVersion: string;
   compileMarkdown: PreviewCompiler;
   getPreviewCount(): number;
+  getDisplayedCompilation(
+    documentUri: string,
+  ): ReturnType<PreviewController['getDisplayedCompilation']>;
 }> {
   const blueprint = await import('blueprint4llm');
   const compile: PreviewCompiler = (markdown, options) =>
@@ -69,12 +74,74 @@ export async function activate(context: vscode.ExtensionContext): Promise<{
       lastPreviewUri = document.uri.toString();
       controller.open(previewDocument);
     }),
+    vscode.commands.registerCommand(EXPORT_PDF_COMMAND, async () => {
+      const activeDocument = vscode.window.activeTextEditor?.document;
+      const document =
+        activeDocument !== undefined &&
+        isSupportedMarkdownDocument(toPreviewDocument(activeDocument))
+          ? activeDocument
+          : findDocument(lastPreviewUri);
+
+      if (document === undefined || !isSupportedMarkdownDocument(toPreviewDocument(document))) {
+        void vscode.window.showWarningMessage(
+          'Откройте предпросмотр Markdown-файла перед экспортом Blueprint в PDF.',
+        );
+        return;
+      }
+
+      const compiled = controller.getDisplayedCompilation(document.uri.toString());
+      if (compiled === undefined) {
+        void vscode.window.showWarningMessage(
+          'Для этого файла нет готового предпросмотра. Сначала откройте предпросмотр и дождитесь его сборки.',
+        );
+        return;
+      }
+
+      try {
+        const savedPath = await exportPreviewPdf(compiled, document.uri.fsPath, {
+          chooseDestination: async (defaultPath) => {
+            const destination = await vscode.window.showSaveDialog({
+              defaultUri: vscode.Uri.file(defaultPath),
+              filters: { PDF: ['pdf'] },
+              saveLabel: 'Export PDF',
+            });
+            if (destination === undefined) {
+              return undefined;
+            }
+            if (destination.scheme !== 'file') {
+              throw new Error('PDF export currently supports local file destinations only');
+            }
+            return destination.fsPath;
+          },
+          renderPdf: async (result) =>
+            await vscode.window.withProgress(
+              {
+                location: vscode.ProgressLocation.Notification,
+                title: 'Exporting Blueprint PDF…',
+                cancellable: false,
+              },
+              () => blueprint.renderPdf(result),
+            ),
+          writeFile: async (filePath, contents) => {
+            await vscode.workspace.fs.writeFile(vscode.Uri.file(filePath), contents);
+          },
+        });
+        if (savedPath !== undefined) {
+          void vscode.window.showInformationMessage(`PDF сохранён: ${savedPath}`);
+        }
+      } catch (error) {
+        const message = errorMessage(error);
+        output.appendLine(`${document.uri.fsPath}: PDF export failed: ${message}`);
+        void vscode.window.showErrorMessage(`Не удалось экспортировать PDF: ${message}`);
+      }
+    }),
   );
 
   return {
     hostNodeVersion: process.versions.node,
     compileMarkdown: compile,
     getPreviewCount: () => controller.panelCount,
+    getDisplayedCompilation: (documentUri) => controller.getDisplayedCompilation(documentUri),
   };
 }
 
@@ -142,7 +209,7 @@ class VSCodePreviewPanel implements PreviewPanel {
     const previousAssetDirectory = this.currentAssetDirectory;
     this.currentAssetDirectory = result.assetDirectory;
     if (previousAssetDirectory !== undefined && previousAssetDirectory !== result.assetDirectory) {
-      await rm(previousAssetDirectory, { recursive: true, force: true }).catch((error: unknown) => {
+      void rm(previousAssetDirectory, { recursive: true, force: true }).catch((error: unknown) => {
         this.output.appendLine(`Could not remove stale preview images: ${errorMessage(error)}`);
       });
     }

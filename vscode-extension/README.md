@@ -24,6 +24,8 @@ npx puppeteer browsers install chrome --install-deps
 
 Open a Markdown file and run **Blueprint: Open Preview to the Side** from the Command Palette, editor title, or editor context menu. The same command focuses the existing preview for that file. Edits refresh the preview after the configured debounce, which defaults to 200 ms. Change it with `blueprint4llm.preview.debounceMs`.
 
+With a successful preview open, run **Blueprint: Export Preview as PDF**. The export uses the exact compiled result currently shown in the panel, opens a save dialog next to the Markdown file, and includes local images. External images cannot be embedded in the PDF; save them beside the Markdown file and use a relative path. PDF generation uses the same Puppeteer-managed Chrome installation described above.
+
 Local images are copied into per-document Webview resource folders and removed when the panel closes. The Webview has scripts disabled and receives a restrictive Content Security Policy. Mermaid and Wiremark use the same compiler as the CLI.
 
 The preview follows VS Code light, dark, and high contrast themes. Text, links, code blocks, and borders use the active theme's Webview color variables; diagrams are adjusted for dark and high contrast backgrounds.

@@ -17,10 +17,50 @@ const createEmptyCache = () => ({ clear: () => {} });
 export async function runPreviewControllerTests(): Promise<void> {
   await testDebounceAndPanelReuse();
   await testCancelsAndIgnoresStaleBuilds();
+  await testTracksCompilationShownInPreview();
   await testDocumentIsolationAndCloseCleanup();
   await testPanelCloseAbortsBuild();
   await testNonfatalDiagnosticsAreLogged();
   await testCompilationDiagnostics();
+}
+
+async function testTracksCompilationShownInPreview(): Promise<void> {
+  const scheduler = new FakeScheduler();
+  const panel = new FakePanel();
+  const displayedResult = compiled('# Shown in preview');
+  const controller = new PreviewController({
+    createPanel: () => panel,
+    createCache: createEmptyCache,
+    output: () => {},
+    scheduler,
+    compiler: async (markdown) => {
+      if (markdown.includes('broken')) {
+        throw new Error('invalid diagram');
+      }
+      return displayedResult;
+    },
+  });
+  const document = new FakeDocument('file:///docs/export.md', '/docs/export.md', '# Preview');
+
+  controller.open(document);
+  assert.equal(controller.getDisplayedCompilation(document.uri), undefined);
+  scheduler.flush();
+  await settle();
+  assert.equal(controller.getDisplayedCompilation(document.uri), displayedResult);
+
+  document.edit('# broken');
+  controller.documentChanged(document);
+  assert.equal(
+    controller.getDisplayedCompilation(document.uri),
+    displayedResult,
+    'the displayed result remains exportable until the error page replaces it',
+  );
+  scheduler.flush();
+  await settle();
+  assert.equal(controller.getDisplayedCompilation(document.uri), undefined);
+
+  controller.dispose();
+  assert.equal(controller.getDisplayedCompilation(document.uri), undefined);
 }
 
 async function testDebounceAndPanelReuse(): Promise<void> {

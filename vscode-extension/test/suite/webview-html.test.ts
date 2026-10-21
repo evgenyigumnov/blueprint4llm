@@ -26,9 +26,12 @@ async function testLocalAssetsAndContentSecurityPolicy(temporaryRoot: string): P
       title: 'Preview',
       assets: [
         {
+          originalUrl: 'image.png',
           outputUrl,
           outputName: 'image.png',
+          sourcePath: '/docs/image.png',
           bytes: Buffer.from('image bytes'),
+          mimeType: 'image/png',
         },
       ],
       warnings: [],
