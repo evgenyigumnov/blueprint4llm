@@ -12,6 +12,7 @@ export { renderPdf, PDF_RENDER_TIMEOUT_MS } from './pdf.js';
 export type { RenderPdfOptions } from './pdf.js';
 export { startPreviewServer } from './server.js';
 export type { PreviewServerHandle, PreviewServerOptions } from './server.js';
+export { DiagramRenderCache } from './renderers/cache.js';
 export { DiagnosticError, toDiagnosticError } from './errors.js';
 export type { DiagnosticLocation } from './errors.js';
 export { DEFAULT_PORT, parseCliArgs, UsageError, USAGE } from './args.js';

@@ -1,6 +1,6 @@
 # Blueprint4llm Preview for VS Code
 
-This package is the desktop VS Code shell for the existing `blueprint4llm` renderer. The first implementation stage sets up its runtime and VSIX packaging; preview commands are added in the next stage.
+This package is the desktop VS Code shell for the existing `blueprint4llm` renderer. It opens `.md` documents in a Webview beside the editor, compiles unsaved text, and refreshes the panel as the document changes.
 
 ## Requirements
 
@@ -20,6 +20,12 @@ On Debian or Ubuntu, install Chrome's required system packages as well:
 npx puppeteer browsers install chrome --install-deps
 ```
 
+## Usage
+
+Open a Markdown file and run **Blueprint: Open Preview to the Side** from the Command Palette, editor title, or editor context menu. The same command focuses the existing preview for that file. Edits refresh the preview after the configured debounce, which defaults to 200 ms. Change it with `blueprint4llm.preview.debounceMs`.
+
+Local images are copied into per-document Webview resource folders and removed when the panel closes. The Webview has scripts disabled and receives a restrictive Content Security Policy. Mermaid and Wiremark use the same compiler as the CLI.
+
 ## Development
 
 From the repository root, install and build the core package first. Then install the extension's development dependencies:
@@ -30,6 +36,7 @@ npm run build
 cd vscode-extension
 npm install
 npm run test:host
+npm run test:package
 npm run package
 ```
 

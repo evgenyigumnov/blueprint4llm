@@ -1,8 +1,9 @@
 {
   "name": "blueprint4llm-vscode",
+  "type": "module",
   "displayName": "Blueprint4llm Preview",
   "description": "Preview blueprint4llm Markdown documents inside Visual Studio Code.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "blueprint4llm",
   "license": "MIT",
   "repository": {
@@ -13,10 +14,55 @@
     "vscode": "^1.101.0"
   },
   "main": "./out/src/extension.js",
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:blueprint4llm.openPreview"
+  ],
   "categories": [
     "Other"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "blueprint4llm.openPreview",
+        "title": "Blueprint: Open Preview to the Side",
+        "category": "Blueprint"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "blueprint4llm.openPreview",
+          "when": "editorLangId == markdown"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "blueprint4llm.openPreview",
+          "when": "resourceLangId == markdown",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "blueprint4llm.openPreview",
+          "when": "resourceLangId == markdown",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Blueprint4llm",
+      "properties": {
+        "blueprint4llm.preview.debounceMs": {
+          "type": "number",
+          "default": 200,
+          "minimum": 0,
+          "maximum": 2000,
+          "description": "Delay in milliseconds before rebuilding the Blueprint preview after an edit."
+        }
+      }
+    }
+  },
   "scripts": {
     "preinstall": "npm --prefix .. run build",
     "build": "npm --prefix .. run build && tsc -p .",
@@ -26,9 +72,6 @@
     "test": "npm run test:host && npm run test:package",
     "package": "vsce package"
   },
-  "dependencies": {
-    "blueprint4llm": "file:.."
-  },
   "devDependencies": {
     "@types/node": "^22.19.15",
     "@types/vscode": "^1.101.0",
@@ -36,5 +79,8 @@
     "@vscode/vsce": "^3.9.2",
     "typescript": "^6.0.3",
     "yauzl": "^3.2.1"
+  },
+  "dependencies": {
+    "blueprint4llm": "file:.."
   }
 }

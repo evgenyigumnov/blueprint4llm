@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { log } from 'node:console';
 import { createWriteStream } from 'node:fs';
-import { mkdir, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
@@ -27,6 +27,7 @@ try {
 
   const packagedExtensionPath = path.join(unpackedPath, 'extension');
   const corePackagePath = path.join(packagedExtensionPath, 'node_modules', 'blueprint4llm');
+  const packagedHostSmokePath = path.join(packagedExtensionPath, 'out', 'package-host-smoke.js');
   const rendererPath = path.join(corePackagePath, 'dist', 'src', 'renderers', 'mermaid.js');
   const rendererRequire = createRequire(rendererPath);
   const cliPackageEntry = rendererRequire.resolve('@mermaid-js/mermaid-cli');
@@ -51,10 +52,30 @@ try {
     'Chrome browser binaries must not be embedded in the VSIX',
   );
 
+  await writeFile(
+    packagedHostSmokePath,
+    `import assert from 'node:assert/strict';
+import * as vscode from 'vscode';
+
+export async function run() {
+  const extension = vscode.extensions.getExtension('blueprint4llm.blueprint4llm-vscode');
+  assert.ok(extension, 'packaged extension is registered in the Extension Development Host');
+  const api = await extension.activate();
+  assert.equal(api.hostNodeVersion, process.versions.node);
+  const compiled = await api.compileMarkdown('# Packaged extension host smoke check', {
+    sourceFile: '/tmp/blueprint4llm-packaged-extension.md',
+  });
+  assert.ok(compiled.html.includes('<h1>Packaged extension host smoke check</h1>'));
+  assert.equal(api.getPreviewCount(), 0);
+  console.log('Packaged extension loaded the runtime and compiled Markdown');
+}
+`,
+  );
+
   await vscodeTest.runTests({
     version: process.env.BLUEPRINT4LLM_VSCODE_TEST_VERSION ?? '1.101.0',
     extensionDevelopmentPath: packagedExtensionPath,
-    extensionTestsPath: path.join(extensionRoot, 'out', 'test', 'suite'),
+    extensionTestsPath: packagedHostSmokePath,
     launchArgs: ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'],
   });
 
