@@ -48,6 +48,16 @@ blueprint4llm --help
 
 You can also run the CLI with `node dist/cli.js`.
 
+## Agent skill
+
+Install the `blueprint4llm` skill in Codex or another compatible coding agent:
+
+```bash
+npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm
+```
+
+The skill guides an agent to create or revise visual plans with Mermaid and Wiremark, validate them, and render HTML or PDF with the CLI. Install the CLI first; see [Requirements and installation](#requirements-and-installation).
+
 ## Usage
 
 Try the example shown above with a live preview:
