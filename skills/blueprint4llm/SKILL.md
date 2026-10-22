@@ -37,7 +37,15 @@ Use this skill to create or revise a technical plan that people can review as a 
    blueprint4llm ./plan.md --out=./plan.pdf --format=pdf
    ```
 
-10. After creating or changing a visual plan, start a live preview in a separate, persistent terminal session:
+10. When a user reports a visual issue in one diagram or UI prototype, export that block as an image and inspect the result with an available image viewing tool. SVG, PNG, and JPEG are supported. The export input must contain exactly one supported visual block. If the source has more, copy the reported block into a temporary Markdown file; headings and text are allowed.
+
+    ```bash
+    blueprint4llm ./reported-block.md --out=./reported-block.png --format=png
+    ```
+
+    Use PNG for visual inspection. Do not claim that you inspected the rendered result if no image viewing tool is available.
+
+11. After creating or changing a visual plan, start a live preview in a separate, persistent terminal session:
 
     ```bash
     blueprint4llm ./plan.md --serve --port=8811
@@ -45,7 +53,7 @@ Use this skill to create or revise a technical plan that people can review as a 
 
     Wait for the preview URL. Keep the server running while you inspect the page. If port `8811` is in use by an earlier `blueprint4llm` preview, stop that preview before starting this one. If another service owns the port, use a free port and report it.
 
-11. Open the local preview in an available browser, for example:
+12. Open the local preview in an available browser, for example:
 
     ```bash
     chromium http://127.0.0.1:8811/
@@ -53,7 +61,7 @@ Use this skill to create or revise a technical plan that people can review as a 
 
     Use another installed browser or a browser tool if Chromium is unavailable and it can access the local server. Confirm that the browser displays the correct plan; a running server or URL alone is not enough. If no browser can access the local server, say so and provide the preview URL without claiming that you viewed it.
 
-12. Leave the server running while the user reviews the preview. Stop it when the user is done.
+13. Leave the server running while the user reviews the preview. Stop it when the user is done.
 
 ## Supported visual formats
 
