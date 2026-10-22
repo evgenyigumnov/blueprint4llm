@@ -1,118 +1,133 @@
 # blueprint4llm
 
-`blueprint4llm` помогает наглядно читать и проверять планы разработки, написанные человеком или ИИ-агентом. Он превращает обычный Markdown в HTML или PDF, заранее отрисовывая диаграммы Mermaid, PlantUML, draw.io JSON, Pencil `.pen` и Balsamiq Mockups 3 JSON, а также макеты интерфейсов Wiremark: так проще увидеть, как устроена система и как будут выглядеть её экраны. Для работы над черновиком есть локальный предпросмотр с автообновлением и загрузкой актуального PDF. Markdown остаётся исходником, сам инструмент не вызывает LLM.
+Turn long development plans into visual documents with diagrams and UI prototypes.
 
-## Почему `blueprint4llm`
+![Markdown source on the left becomes a visual document with a Mermaid diagram and a Wiremark UI prototype on the right](docs/assets/markdown-to-visual.png)
 
-`blueprint` — это технический план продукта: текст, таблицы, диаграммы и макеты интерфейсов. `4llm` читается как «for LLM»: Markdown удобен и для LLM-агентов, которые создают или меняют план, и для людей, которые его проверяют. Название отражает назначение инструмента: сделать такие планы наглядными для чтения и обсуждения как для человека так и для LLM-агентов.
+_The same Markdown, before and after rendering. [View the example source](examples/blueprint-overview.md)._
 
-## Требования и установка
+`blueprint4llm` converts Markdown into HTML or PDF so people can review plans written by humans or AI agents. It renders Mermaid, PlantUML, draw.io JSON, Pencil `.pen`, Balsamiq Mockups 3 JSON, Figma frames, and Wiremark UI prototypes. Use the local preview to see changes as you edit and download the current PDF. Markdown stays the source of truth. The tool does not call an LLM.
+
+## Why blueprint4llm?
+
+A **blueprint** is a technical plan for a product: text, tables, diagrams, and UI prototypes. **4llm** means “for LLM”: agents can write and update the Markdown, while people can review the system design and screens as a visual document.
+
+## Requirements and installation
 
 - Node.js `>=22.13.0`.
-- npm и браузер Chrome, установленный через Puppeteer.
+- npm and Chrome installed through Puppeteer.
 
-Сборка из клона репозитория:
+Build from a repository clone:
 
 ```bash
-npm install
 npm ci
 npx puppeteer browsers install chrome
 npm run build
 ```
 
-Для команды `blueprint4llm` можно создать глобальную npm-ссылку из каталога проекта:
+To make the `blueprint4llm` command available globally, run this from the project directory:
 
 ```bash
 npm link
 blueprint4llm --help
 ```
 
-Без ссылки CLI доступен через `node dist/cli.js`.
+You can also run the CLI with `node dist/cli.js`.
 
-## Использование
+## Usage
 
-Сборка HTML (формат по умолчанию):
+Try the example shown above with a live preview:
+
+```bash
+blueprint4llm examples/blueprint-overview.md --serve
+```
+
+Open the URL printed in the terminal. The preview updates when you save the Markdown.
+
+Build HTML (the default format):
 
 ```bash
 blueprint4llm examples/blueprint.md --out=./dist-preview/blueprint.html
 ```
 
-Экспорт в PDF:
+Export to PDF:
 
 ```bash
 blueprint4llm examples/blueprint.md --out=./dist-pdf/blueprint.pdf --format=pdf
 ```
 
-`--out` указывает полный путь выходного файла; родительские каталоги создаются автоматически. CLI создаёт один формат за запуск. SVG Mermaid, PlantUML, Wiremark, draw.io, Pencil и Balsamiq встраиваются в HTML, отдельные SVG-файлы не создаются. Локальные изображения сохраняются в `assets/` рядом с HTML. Созданный HTML можно открыть напрямую через `file://`.
+`--out` specifies the output file path. Parent directories are created automatically. The CLI produces one format per run. Diagram SVGs are embedded in the HTML; no separate SVG files are created. Local images are saved in `assets/` next to the HTML. You can open the generated HTML directly with `file://`.
 
-Проверка перед ревью или публикацией, например в CI:
+Validate a document before review or publication, for example in CI:
 
 ```bash
 blueprint4llm examples/blueprint.md --check
 ```
 
-`--check` разбирает Markdown, запускает рендереры диаграмм и проверяет локальные изображения, но не создаёт HTML или PDF. Предупреждения выводятся в stderr; ошибки проверки завершают команду с кодом `1`.
+`--check` parses Markdown, runs the diagram renderers, and checks local images without creating HTML or PDF. Warnings go to stderr. Validation errors exit with code `1`.
 
-Локальный предпросмотр с автоматическим обновлением:
+Start a local preview with automatic updates:
 
 ```bash
 blueprint4llm examples/blueprint.md --serve
 blueprint4llm examples/blueprint.md --serve --port=8081
 ```
 
-Сервер слушает только `127.0.0.1`, отслеживает Markdown и используемые локальные изображения и завершает работу по `Ctrl+C`. Предпросмотр растягивается по ширине окна браузера. Рядом со ссылкой Download PDF находится переключатель Dark mode; выбор темы сохраняется в браузере. PDF строится при первом запросе и кэшируется до изменения документа. Браузер автоматически не открывается.
+The server listens on `127.0.0.1` only. It watches the Markdown and referenced local images. Press `Ctrl+C` to stop it. The preview fills the browser window width. A **Dark mode** switch sits next to **Download PDF**, and the browser remembers the selected theme. The PDF is generated on the first request and cached until the document changes. The browser does not open automatically.
 
-### Предпросмотр в Visual Studio Code
+### Visual Studio Code preview
 
-Пакет расширения находится в `vscode-extension/`. Установите собранный VSIX командой `code --install-extension <путь-к-файлу.vsix>`, откройте файл `.md` и выполните **Blueprint: Open Preview to the Side** из Command Palette или заголовка редактора. Предпросмотр компилирует текущий буфер, обновляется после правок с задержкой 200 мс и показывает ошибки компиляции, не закрывая панель. Задержку можно изменить настройкой `blueprint4llm.preview.debounceMs`.
+The extension package is in `vscode-extension/`. Install a built VSIX with `code --install-extension <path-to-file.vsix>`, open a `.md` file, and run **Blueprint: Open Preview to the Side** from the Command Palette or editor title bar. The preview compiles the current editor buffer, updates 200 ms after edits, and shows compilation errors without closing the panel. Change the delay with `blueprint4llm.preview.debounceMs`.
 
-Для сборки VSIX и требований к Chrome смотрите [инструкцию расширения](vscode-extension/README.md).
+See the [extension instructions](vscode-extension/README.md) for VSIX build steps and Chrome requirements.
 
-## Формат Markdown
+## Markdown format
 
-Поддерживаются CommonMark и GitHub Flavored Markdown: заголовки, списки, таблицы, чекбоксы, ссылки, изображения, цитаты и блоки кода. Диаграммы задаются fenced-блоками:
+CommonMark and GitHub Flavored Markdown are supported: headings, lists, tables, task lists, links, images, quotes, and code blocks. Use fenced code blocks for diagrams:
 
-- `mermaid` — Mermaid через локальный официальный Mermaid CLI.
-- `plantuml` — PlantUML через локальный JavaScript/Wasm-движок [`@plantuml/core`](https://github.com/plantuml/plantuml/blob/master/PUBLISHING_NPM.md).
-- `wireframe` — канонический идентификатор Blackburn-Labs Wiremark.
-- `wiremark` — дополнительный алиас для удобства.
-- `drawio` и `draw.io` — структурный JSON-экспорт draw.io с локальной автоматической раскладкой.
-- `pencil` и `pen` — встроенный JSONC-документ Pencil версии `2.21`, преобразованный в локальный SVG.
-- `balsamiq` — JSON одного mockup из Balsamiq Mockups 3, преобразованный в локальный SVG.
+| Block language          | Renderer                                                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `mermaid`               | Official Mermaid CLI, run locally.                                                                                    |
+| `plantuml`              | Local JavaScript/Wasm engine, [`@plantuml/core`](https://github.com/plantuml/plantuml/blob/master/PUBLISHING_NPM.md). |
+| `wireframe`, `wiremark` | Blackburn-Labs Wiremark UI prototypes. `wireframe` is the canonical identifier.                                       |
+| `drawio`, `draw.io`     | Structural draw.io JSON export with automatic local layout.                                                           |
+| `pencil`, `pen`         | Embedded Pencil `2.21` JSONC document rendered as local SVG.                                                          |
+| `balsamiq`              | A single Balsamiq Mockups 3 mockup in JSON, rendered as local SVG.                                                    |
+| `figma`                 | Figma REST API JSON rendered locally, or a frame URL exported through the Figma API.                                  |
 
-Для Mermaid renderer задаёт вертикальное направление (`TB`/`TD`) для типов диаграмм, которые поддерживают настройку направления. У типов с фиксированной компоновкой, например `sequenceDiagram`, сохраняется их естественная раскладка.
+The Mermaid renderer sets a vertical direction (`TB`/`TD`) for diagram types that support it. Types with a fixed layout, such as `sequenceDiagram`, keep their native layout.
 
-PlantUML-блок содержит одну диаграмму с обычными директивами `@start...` и `@end...`. Движок `@plantuml/core@1.2026.9` работает локально в Chromium, который уже используется для PDF и предпросмотра; отдельная установка Java не требуется. Рендеринг не отправляет исходник на сервер и работает без сети. Внешние запросы, локальные `!include`, `!includeurl` и стандартные библиотеки отключены. Размер SVG ограничен 8192 px по стороне, одновременно выполняются не более двух PlantUML-рендеров.
+Each PlantUML block contains one diagram with standard `@start...` and `@end...` directives. `@plantuml/core@1.2026.9` runs locally in Chromium, which is also used for PDF and preview. Java is not required. Rendering works offline and does not send the source to a server. External requests, local `!include`, `!includeurl`, and standard libraries are disabled. SVG dimensions are limited to 8192 px per side. Up to two PlantUML renders can run at once.
 
-Обычные fenced-блоки кода с известной Shiki языковой меткой подсвечиваются при компиляции: цветовые токены уже встроены в HTML, поэтому standalone HTML работает без JavaScript и сети. В локальном предпросмотре цвета кода переключаются вместе с тёмной темой; PDF сохраняет светлую палитру. Блок без метки языка или с неизвестной меткой остаётся обычным безопасно экранированным кодом, а inline-код не меняется. Отдельный блок больше 64 КиБ в UTF-8 тоже остаётся обычным экранированным кодом, чтобы ограничить время компиляции. Mermaid, PlantUML, Wiremark, draw.io, Pencil и Balsamiq обрабатываются как диаграммы и встраиваются в виде SVG.
+Code blocks with a recognized Shiki language label receive syntax highlighting during compilation. Color tokens are embedded in the HTML, so standalone HTML works without JavaScript or a network connection. Code colors follow the dark theme in local preview; PDF uses the light palette. Blocks with no language label or an unknown label stay as escaped plain code. Inline code is unchanged. Blocks larger than 64 KiB in UTF-8 also stay as plain code to limit compilation time. Diagram blocks are rendered as SVG.
 
-### Макеты Pencil
+### Pencil layouts
 
-Вставьте JSONC из `.pen` в fenced-блок `pencil` или `pen`. В первой версии поддерживается встроенный документ схемы `2.21`, без сетевых запросов. Рендерер поддерживает frame и group, прямоугольники, эллипсы, многоугольники, SVG path и текст; также поддерживает однотонную заливку и обводку, прозрачность, поворот, скругления, clipping у frame и простой layout. Текст с `textGrowth: "fixed-width"` переносится по ширине с приблизительной оценкой символов, поэтому перенос может отличаться от pen.dev.
+Paste JSONC from a `.pen` file into a `pencil` or `pen` fenced block. The initial implementation supports embedded schema `2.21` documents without network requests. It renders frames, groups, rectangles, ellipses, polygons, SVG paths, and text. Supported properties include solid fills and strokes, opacity, rotation, rounded corners, frame clipping, and basic layout. Text with `textGrowth: "fixed-width"` wraps using approximate character widths, so line breaks can differ from pen.dev.
 
-Импорты, ссылки на компоненты, переменные и темы, изображения, градиенты, эффекты и скрипты не поддерживаются. Такие свойства и неизвестные видимые свойства завершают рендеринг с диагностикой. JSONC ограничен 1 MiB, документ — 10 000 узлами и глубиной 100, многоугольник — 256 сторонами, текст — 10 000 строк, итоговый SVG — 4 MiB и 16 384 px на сторону. Пример находится в [`examples/blueprint-pencil.md`](examples/blueprint-pencil.md).
+Imports, component references, variables, themes, images, gradients, effects, and scripts are not supported. These properties, and unknown visual properties, stop rendering with a diagnostic. Limits: 1 MiB of JSONC, 10,000 nodes, depth 100, 256 sides per polygon, 10,000 text lines, and an output SVG of 4 MiB with up to 16,384 px per side. See [`examples/blueprint-pencil.md`](examples/blueprint-pencil.md).
 
-### Макеты Balsamiq
+### Balsamiq mockups
 
-Вставьте JSON одного mockup из Balsamiq Mockups 3 в блок `balsamiq`. Рендерер сохраняет координаты, порядок слоёв и текст, затем строит локальный inline SVG. Пример находится в [`examples/blueprint-balsamiq.md`](examples/blueprint-balsamiq.md).
+Paste the JSON for one Balsamiq Mockups 3 mockup into a `balsamiq` block. The renderer preserves coordinates, layer order, and text, then builds a local inline SVG. See [`examples/blueprint-balsamiq.md`](examples/blueprint-balsamiq.md).
 
-Поддерживаются `Canvas`, `Label`, `Title`, `SubTitle`, `Paragraph`, `TextInput`, `TextArea`, `Button`, `CheckBox`, `RadioButton`, `ComboBox`, `List`, `Rectangle` и `Line`. Размеры макета берутся из `measuredW`/`measuredH`; совместимые поля `mockupW`/`mockupH` и размеры control `Canvas` служат запасными источниками. JSON ограничен 256 KiB, 3 000 controls и глубиной 100; сторона макета ограничена 4 056 px, SVG — 4 MiB. `.bmpr`, `.bmml`, внешние assets, symbols и точная имитация Balsamiq skin не поддерживаются. Лимит canvas взят из [документации Mockups 3](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf).
+Supported controls: `Canvas`, `Label`, `Title`, `SubTitle`, `Paragraph`, `TextInput`, `TextArea`, `Button`, `CheckBox`, `RadioButton`, `ComboBox`, `List`, `Rectangle`, and `Line`. Layout dimensions come from `measuredW`/`measuredH`, with `mockupW`/`mockupH` and the `Canvas` control dimensions as fallbacks. Limits: 256 KiB of JSON, 3,000 controls, depth 100, 4,056 px per side, and 4 MiB of SVG. `.bmpr`, `.bmml`, external assets, symbols, and exact reproduction of the Balsamiq skin are not supported. The canvas limit follows the [Mockups 3 documentation](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf).
 
-### Диаграммы draw.io
+### draw.io diagrams
 
-Скопируйте JSON через **File → Export as → JSON** в fenced-блок `drawio` или `draw.io`. Пример с узлами, группой и связями есть в [`examples/blueprint-draw.io.md`](examples/blueprint-draw.io.md).
+Copy JSON from **File → Export as → JSON** into a `drawio` or `draw.io` fenced block. See [`examples/blueprint-draw.io.md`](examples/blueprint-draw.io.md) for nodes, a group, and connections.
 
-Если экспорт содержит одну страницу, renderer выберет её сам. Для нескольких страниц укажите ID параметром `page=<id>`. Направление задаёт `direction=TB` (сверху вниз, по умолчанию) или `direction=LR` (слева направо). Например: `page=release direction=LR`.
+For a single page, the renderer selects it automatically. For multiple pages, set `page=<id>`. Set `direction=TB` for top to bottom (the default), or `direction=LR` for left to right. For example: `page=release direction=LR`.
 
-JSON сохраняет связи, подписи и группы, но не геометрию и стили исходного файла. Renderer строит новую схему со стандартными прямоугольниками и направленными стрелками. Поля `html` и `data` не отображаются; подписи остаются обычным текстом. `.drawio` XML пока не поддерживается. Рендеринг локальный, без сетевых запросов; inline SVG используется в HTML, `--serve`, предпросмотре VS Code и PDF. Изменение Markdown автоматически перестраивает предпросмотр.
+The JSON preserves connections, labels, and groups. The renderer creates a new layout with standard rectangles and directed arrows; it does not preserve the original geometry or styles. The `html` and `data` fields are not displayed. Labels remain plain text. `.drawio` XML is not yet supported. Rendering runs locally without network requests. The inline SVG works in HTML, `--serve`, VS Code preview, and PDF. Markdown edits rebuild the preview automatically.
 
-### Кадры Figma
+### Figma frames
 
-Блок `figma` принимает ответ Figma REST API в JSON или HTTPS-ссылку на кадр из `/design/` или `/file/`. JSON должен содержать `document` типа `DOCUMENT`; локальный режим не требует токена и сети. Если в документе несколько кадров верхнего уровня, укажите ID кадра в metadata блока: ` ```figma node=12:34 `.
+A `figma` block accepts a Figma REST API JSON response or an HTTPS frame URL from `/design/` or `/file/`. JSON must contain a `document` of type `DOCUMENT`. Local rendering needs no token or network connection. If the document has multiple top-level frames, select a frame in the block metadata: ` ```figma node=12:34 `.
 
-Локальный рендерер поддерживает контейнеры `FRAME`, `GROUP`, `COMPONENT`, `INSTANCE`; фигуры `RECTANGLE`, `ELLIPSE`, `LINE`; текст `TEXT` и векторные пути `VECTOR` с `geometry=paths`. Он отображает solid fills и strokes, прозрачность, скругления и поворот. Градиенты, эффекты, маски, растровые данные из JSON и сложные текстовые переопределения не поддерживаются. Для таких макетов используйте URL-режим или экспортируйте кадр в обычное Markdown-изображение. JSON-блок ограничен 1 MiB, 10 000 узлами и глубиной 100 уровней.
+The local renderer supports `FRAME`, `GROUP`, `COMPONENT`, and `INSTANCE` containers; `RECTANGLE`, `ELLIPSE`, and `LINE` shapes; `TEXT`; and `VECTOR` paths with `geometry=paths`. It renders solid fills and strokes, opacity, rounded corners, and rotation. Gradients, effects, masks, raster data from JSON, and complex text overrides are not supported. For these layouts, use URL mode or export the frame as a regular Markdown image. JSON limits: 1 MiB, 10,000 nodes, and depth 100.
 
-URL-режим требует персональный токен Figma с разрешением `file_content:read`. Компилятор ищет его в таком порядке: `CompileOptions.figmaAccessToken`, `FIGMA_ACCESS_TOKEN`, затем `.env` в текущей рабочей папке. Например:
+URL mode requires a Figma personal access token with `file_content:read` permission. The compiler checks `CompileOptions.figmaAccessToken`, then `FIGMA_ACCESS_TOKEN`, then `.env` in the current working directory. For example:
 
 ```ts
 const compiled = await compileMarkdown(markdown, {
@@ -121,27 +136,29 @@ const compiled = await compileMarkdown(markdown, {
 });
 ```
 
-Токен передаётся только `api.figma.com`. API-запрос и скачивание временного SVG выполняются только для URL-блока. Компилятор проверяет SVG и встраивает его в HTML; готовый HTML и PDF не требуют сети. Остальные query-параметры ссылки, включая `t`, не передаются API. Диагностики указывают файл и строку блока и не содержат токен, исходный JSON или временную ссылку. Полный пример JSON и URL находится в [`examples/blueprint-figma.md`](examples/blueprint-figma.md).
+The token is sent only to `api.figma.com`. API requests and temporary SVG downloads occur only for URL blocks. The compiler validates the SVG and embeds it in the HTML. The resulting HTML and PDF work offline. Other URL query parameters, including `t`, are not sent to the API. Diagnostics include the source file and block line, but omit the token, source JSON, and temporary URL. See [`examples/blueprint-figma.md`](examples/blueprint-figma.md) for JSON and URL examples.
 
-Произвольный HTML в Markdown экранируется. SVG всех диаграмм проходят общую проверку на активные элементы, обработчики событий и внешние ресурсы; небезопасные URL в ссылках удаляются.
+### HTML, images, and PDF
 
-Локальные изображения разрешаются относительно каталога Markdown и копируются в `assets/` рядом с выходным HTML-файлом. Сборка запрещает выход из каталога проекта через `..` или symlink. Внешние HTTP(S)-картинки остаются внешними в HTML. Для PDF они не разрешены: сохраните такую картинку локально и используйте относительный путь. PDF собирается в A4 с локальным Noto Sans; текст и ссылки остаются доступными в PDF.
+Raw HTML in Markdown is escaped. All diagram SVGs are checked for active elements, event handlers, and external resources. Unsafe link URLs are removed.
 
-## Ограничения
+Local image paths are resolved relative to the Markdown directory. Images are copied into `assets/` next to the output HTML. Paths that escape the project directory through `..` or a symlink are rejected. External HTTP(S) images remain external in HTML. PDF does not allow them: save the image locally and use a relative path. PDF uses A4 pages and local Noto Sans fonts. Text and links remain accessible in the PDF.
 
-- Размер исходного Markdown — до 5 MiB, до 100 диаграмм и до 256 KiB исходника на одну диаграмму, если renderer не задаёт отдельный лимит.
-- Один draw.io JSON-блок ограничен 1 MiB, страница — 10 000 ячейками, документ — 100 страницами. SVG ограничен 4 MiB и 16 384 px на сторону; раскладка завершается по тайм-ауту 5 секунд.
-- Mermaid- и PlantUML-блоки ограничены тайм-аутом 30 секунд; сборка PDF — 60 секунд.
-- PDF использует установленный Puppeteer Chrome/Chromium и требует подходящих системных библиотек на Linux. Установите браузер командой `npx puppeteer browsers install chrome`.
-- Chromium sandbox включён по умолчанию. Если ОС запрещает запуск sandbox, Mermaid и PDF автоматически повторят запуск с `--no-sandbox`. Переменная `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` оставлена для принудительного запуска без sandbox.
-- Raw HTML, выполнение пользовательского JavaScript, графическое редактирование и форматы, кроме HTML/PDF, не входят в текущую версию.
-- Отдельные картинки SVG хранятся inline в HTML; соседние `.svg` для диаграмм не создаются.
+## Limits
 
-Ошибки Mermaid, PlantUML и Wiremark включают исходный файл и строку блока. Если PlantUML вернул SVG с ошибкой синтаксиса, оно остаётся видимым в предпросмотре, а диагностика указывает строку внутри диаграммы. Ошибочная сборка в режиме `--serve` показывает диагностику, не завершая сервер; после исправления файла предпросмотр обновится.
+- Markdown source: up to 5 MiB, 100 diagrams, and 256 KiB of source per diagram, unless a renderer defines its own limit.
+- draw.io: 1 MiB per JSON block, 10,000 cells per page, and 100 pages per document. SVG output is limited to 4 MiB and 16,384 px per side. Layout times out after 5 seconds.
+- Mermaid and PlantUML rendering time out after 30 seconds. PDF generation times out after 60 seconds.
+- PDF uses Puppeteer's installed Chrome/Chromium and requires the appropriate system libraries on Linux. Install the browser with `npx puppeteer browsers install chrome`.
+- The Chromium sandbox is enabled by default. If the OS blocks sandbox startup, Mermaid and PDF automatically retry with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force a launch without the sandbox.
+- Raw HTML, user JavaScript execution, graphical editing, and output formats other than HTML/PDF are not supported.
+- Diagram SVGs are embedded in the HTML. Separate `.svg` files are not created.
 
-## Программный API
+Mermaid, PlantUML, and Wiremark errors include the source file and block line. If PlantUML returns an SVG with a syntax error, it stays visible in the preview, and the diagnostic points to the line within the diagram. A failed build in `--serve` mode shows diagnostics while the server keeps running. Fix the file to update the preview.
 
-Пакет экспортирует компилятор Markdown, PDF renderer, функции записи и сервер предпросмотра:
+## Programmatic API
+
+The package exports the Markdown compiler, PDF renderer, output writers, and preview server:
 
 ```ts
 import { compileMarkdown, renderPdf, writeBlueprintOutput } from 'blueprint4llm';
@@ -158,11 +175,11 @@ await writeBlueprintOutput('/project/output.html', {
 });
 ```
 
-`compileMarkdown()` возвращает `CompiledBlueprint` с `html`, `title`, `assets` и предупреждениями. `renderPdf()` принимает этот же результат и необязательный `{ signal: AbortSignal }`. `writeBlueprintOutput(outputFile, options)` записывает содержимое по указанному пути; при передаче обоих форматов создаёт соседний файл второго формата и возвращает абсолютные пути результатов.
+`compileMarkdown()` returns a `CompiledBlueprint` with `html`, `title`, `assets`, and warnings. `renderPdf()` accepts this result and an optional `{ signal: AbortSignal }`. `writeBlueprintOutput(outputFile, options)` writes to the given path. If both formats are supplied, it also creates a neighboring file for the second format. It returns absolute output paths.
 
-`startPreviewServer({ input, port, signal })` запускает предпросмотр и возвращает handle с `url`, выбранным `port` и асинхронным `close()`. Публичные типы `CompiledBlueprint`, `CompileOptions`, `RenderPdfOptions`, `PreviewServerOptions` и `PreviewServerHandle` доступны из корневого экспорта.
+`startPreviewServer({ input, port, signal })` starts the preview and returns a handle with `url`, the selected `port`, and an asynchronous `close()` method. Public types `CompiledBlueprint`, `CompileOptions`, `RenderPdfOptions`, `PreviewServerOptions`, and `PreviewServerHandle` are available from the package root.
 
-## Разработка и проверки
+## Development and checks
 
 ```bash
 npm run build
@@ -172,4 +189,4 @@ npm run format:check
 npm test
 ```
 
-`npm test` сначала собирает `dist/cli.js`, затем запускает unit- и интеграционные тесты; для PDF/CLI smoke-тестов Chrome должен быть установлен. В тестовом Linux-контейнере sandbox явно отключается переменной окружения только для тестовых процессов.
+`npm test` builds `dist/cli.js`, then runs unit and integration tests. Chrome must be installed for PDF/CLI smoke tests. In the Linux test container, an environment variable explicitly disables the sandbox for test processes only.
