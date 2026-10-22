@@ -6,6 +6,7 @@
 - `src` contains the source code.
 - `tests` contains the tests.
 - `dev-docs` contains old plans used to create and change the project. Use the source code, tests, and `README.md` as the primary sources of current information.
+- `skills/blueprint4llm` contains the `blueprint4llm` skill instructions.
 - `vscode-extension` contains the Visual Studio Code extension code.
 
 ## Code rules
