@@ -1,13 +1,14 @@
 ---
 name: blueprint4llm
-description: Create or revise visual software plans in Markdown with any supported blueprint4llm diagram or UI prototype format, then validate and render them. Use when a user requests a development plan, architecture diagram, UI prototype, or rendered blueprint.
+description: Create or revise visual software plans in Markdown with supported blueprint4llm formats, validate them, visually inspect every diagram and UI prototype, and render the plan. Use when a user requests a development plan, architecture diagram, UI prototype, or rendered blueprint.
 license: MIT
-compatibility: Requires the blueprint4llm CLI, Node.js >=22.13.0, npm, and Puppeteer's Chrome for rendering.
 ---
 
 # Create and render a blueprint
 
 Use this skill to create or revise a technical plan that people can review as a visual document. `blueprint4llm` renders Markdown; it does not generate plans or call an LLM.
+
+Rendering requires the blueprint4llm CLI, Node.js >=22.13.0, npm, and Puppeteer's Chrome. Visual review requires an image viewing tool or a browser tool that can show screenshots.
 
 ## Choose the plan content
 
@@ -33,25 +34,19 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 
    Replace `./plan.md` with the actual path. Fix renderer errors, then run the check again.
 
-8. For a new visual plan, create a companion HTML file after validation unless the user asks for Markdown only. Use a user-provided output path when available; otherwise use the Markdown path with an `.html` extension. Do not overwrite an existing output file; choose a new name or ask the user.
+8. Visually inspect every diagram and UI prototype as described in [Visual review](#visual-review). Do this for every new or edited visual plan, including Markdown-only output. A successful `--check` does not prove that content fits or is readable. Fix failed blocks and inspect them again before continuing.
+
+9. For a new visual plan, create a companion HTML file after visual review unless the user asks for Markdown only. Use a user-provided output path when available; otherwise use the Markdown path with an `.html` extension. Do not overwrite an existing output file; choose a new name or ask the user.
 
    ```bash
    blueprint4llm ./plan.md --out=./plan.html
    ```
 
-9. Export PDF only when requested:
-
-   ```bash
-   blueprint4llm ./plan.md --out=./plan.pdf --format=pdf
-   ```
-
-10. When a user reports a visual issue in one diagram or UI prototype, export that block as an image and inspect the result with an available image viewing tool. SVG, PNG, and JPEG are supported. The export input must contain exactly one supported visual block. If the source has more, copy the reported block into a temporary Markdown file; headings and text are allowed.
+10. Export PDF only when requested:
 
     ```bash
-    blueprint4llm ./reported-block.md --out=./reported-block.png --format=png
+    blueprint4llm ./plan.md --out=./plan.pdf --format=pdf
     ```
-
-    Use PNG for visual inspection. Do not claim that you inspected the rendered result if no image viewing tool is available.
 
 11. After creating or changing a visual plan, start a live preview in a separate, persistent terminal session:
 
@@ -67,9 +62,24 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
     chromium http://127.0.0.1:8811/
     ```
 
-    Use another installed browser or a browser tool if Chromium is unavailable and it can access the local server. Confirm that the browser displays the correct plan; a running server or URL alone is not enough. If no browser can access the local server, say so and provide the preview URL without claiming that you viewed it.
+    Use another installed browser or a browser tool if Chromium is unavailable and it can access the local server. Confirm that the browser displays the correct plan; a running server or URL alone is not enough. Inspect every visual in the final page, including its bottom edge. If this reveals a defect, fix the Markdown, repeat visual review, and regenerate the outputs. If no browser can access the local server, say so and provide the preview URL without claiming that you viewed it.
 
 13. Leave the server running while the user reviews the preview. Stop it when the user is done.
+
+## Visual review
+
+1. List every supported visual block by heading or source line. Track which ones you have inspected. Review all blocks, not a sample.
+2. Export each block to PNG in a temporary directory. Each export input must contain exactly one supported visual block. Copy the complete fence, including its language and metadata, without changing the block. Headings and text are allowed. Keep relative asset paths valid.
+
+   ```bash
+   blueprint4llm /tmp/blueprint-review/block-01.md --out=/tmp/blueprint-review/block-01.png --format=png
+   ```
+
+3. Open each PNG with an available image viewing tool. A browser screenshot of the complete rendered block is also acceptable. Inspect the full height and width at a readable scale. For large visuals, inspect overlapping sections. A screenshot of only the visible browser viewport is insufficient if the block extends below it.
+4. Compare the image with the source. Confirm that all intended content is visible, especially the last row, bottom controls, footer, and frame border. Check for clipping, overlap, unreadable labels, missing content, and cut-off arrows. An SVG can contain text that is outside its visible frame, so source or text checks alone are insufficient.
+5. Fix defects in the source Markdown. Re-render and inspect each corrected block. Continue until every block passes. Do not edit generated SVG or HTML to hide a source layout problem.
+
+If no image viewing or screenshot tool is available, complete the checks you can and report that visual review is incomplete. Do not mark unviewed blocks as passed.
 
 ## Supported visual formats
 
@@ -110,4 +120,5 @@ When prose is needed, follow ASD-STE100 (STE) principles: use short, clear sente
 
 - Keep the Markdown file as the source of truth.
 - Report the paths of the Markdown and generated files.
+- State how many visual blocks you inspected and whether any visual defects remain. Report inspection limits explicitly.
 - Mention validation warnings. Do not claim the plan is implemented or verified in code unless you checked the project.
