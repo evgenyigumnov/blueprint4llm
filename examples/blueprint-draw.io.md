@@ -1,6 +1,6 @@
-# Диаграмма draw.io JSON
+# draw.io JSON diagram
 
-Экспортируйте диаграмму через **File → Export as → JSON** и вставьте содержимое в блок `drawio`. Для нескольких страниц используйте `page=<id>`. Параметр `direction=LR` задаёт направление слева направо; по умолчанию используется `TB`.
+Export a diagram with **File → Export as → JSON** and paste its contents into a `drawio` block. For multiple pages, use `page=<id>`. The `direction=LR` option sets a left-to-right layout; the default is `TB`.
 
 ```drawio page=release direction=LR
 {
@@ -8,28 +8,28 @@
   "pages": [
     {
       "id": "release",
-      "name": "Релиз",
+      "name": "Release",
       "cells": [
         { "id": "layer-1", "type": "layer" },
-        { "id": "build", "type": "group", "parent": "layer-1", "label": "Сборка и тесты" },
-        { "id": "compile", "type": "node", "parent": "build", "label": "Собрать" },
-        { "id": "test", "type": "node", "parent": "build", "label": "Проверить" },
+        { "id": "build", "type": "group", "parent": "layer-1", "label": "Build and test" },
+        { "id": "compile", "type": "node", "parent": "build", "label": "Build" },
+        { "id": "test", "type": "node", "parent": "build", "label": "Test" },
         {
           "id": "compile-test",
           "type": "edge",
           "parent": "build",
           "source": "compile",
           "target": "test",
-          "label": "успешно"
+          "label": "success"
         },
-        { "id": "publish", "type": "node", "parent": "layer-1", "label": "Опубликовать" },
+        { "id": "publish", "type": "node", "parent": "layer-1", "label": "Publish" },
         {
           "id": "test-publish",
           "type": "edge",
           "parent": "layer-1",
           "source": "test",
           "target": "publish",
-          "label": "релиз"
+          "label": "release"
         }
       ]
     }
@@ -37,4 +37,4 @@
 }
 ```
 
-Компилятор сохраняет подписи и связи, затем строит новую inline SVG-диаграмму с автоматической раскладкой. Исходная геометрия и стили из draw.io JSON не переносятся.
+The compiler preserves labels and connections, then creates a new inline SVG diagram with an automatic layout. Original geometry and styles from draw.io JSON are not preserved.

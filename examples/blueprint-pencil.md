@@ -1,6 +1,6 @@
-# Pencil-макет профиля
+# Pencil profile mockup
 
-Документ Pencil находится прямо в fenced-блоке. Компилятор строит из него безопасный SVG без сети.
+The Pencil document is in the fenced block. The compiler creates a safe SVG from it without network access.
 
 ```pencil
 {
@@ -27,7 +27,7 @@
           "type": "text",
           "width": 280,
           "height": 32,
-          "content": "Профиль",
+          "content": "Profile",
           "textGrowth": "fixed-width",
           "fontFamily": "Arial",
           "fontSize": 24,
@@ -69,7 +69,7 @@
               "y": 6,
               "width": 280,
               "height": 36,
-              "content": "Сохранить",
+              "content": "Save",
               "textGrowth": "fixed-width",
               "textAlign": "center",
               "textAlignVertical": "middle",
@@ -85,4 +85,4 @@
 }
 ```
 
-Поддерживаются frame/group, rectangle, ellipse, polygon, path и text; координаты корневых объектов могут быть отрицательными. Внешние файлы, картинки, переменные, импорты, компоненты, скрипты, эффекты и градиенты отклоняются с диагностикой.
+Supported types are frame/group, rectangle, ellipse, polygon, path, and text. Root objects can have negative coordinates. External files, images, variables, imports, components, scripts, effects, and gradients are rejected with diagnostics.
