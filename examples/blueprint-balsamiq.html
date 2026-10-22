@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Макет входа Balsamiq</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
+
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
+
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
+
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
+
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--bp-code-bg);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
+
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
+
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
+
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
+
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Макет входа Balsamiq</h1>
+<p>Вставьте JSON отдельного mockup из Balsamiq Mockups 3. Блок преобразуется в inline SVG локально.</p>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--balsamiq" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640"><title>Balsamiq mockup</title><rect class="balsamiq-canvas" x="0" y="0" width="360" height="640" fill="#ffffff"></rect><g class="balsamiq-control balsamiq-control--title" data-control-id="1"><title>1</title><text x="24" y="36.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="22" font-weight="700" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="24" dy="0">Вход</tspan></text></g><g class="balsamiq-control balsamiq-control--label" data-control-id="2"><title>2</title><text x="24" y="97.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="24" dy="0">Электронная почта</tspan></text></g><g class="balsamiq-control balsamiq-control--textinput" data-control-id="3"><title>3</title><rect x="24" y="120" width="312" height="44" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"></rect><text x="32" y="133.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="32" dy="0">anna@example.com</tspan></text></g><g class="balsamiq-control balsamiq-control--label" data-control-id="4"><title>4</title><text x="24" y="185.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="24" dy="0">Пароль</tspan></text></g><g class="balsamiq-control balsamiq-control--textinput" data-control-id="5"><title>5</title><rect x="24" y="208" width="312" height="44" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"></rect><text x="32" y="221.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="32" dy="0">••••••••</tspan></text></g><g class="balsamiq-control balsamiq-control--checkbox" data-control-id="6"><title>6</title><rect x="26" y="284" width="16" height="16" rx="2" fill="#ffffff" stroke="#64748b" stroke-width="1.5"></rect><path d="M29.2 292.32 l3.52 3.52 l6.72 -7.68" fill="none" stroke="#2563eb" stroke-width="2"></path><text x="48" y="285" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="48" dy="0">Запомнить меня</tspan></text></g><g class="balsamiq-control balsamiq-control--button" data-control-id="7"><title>7</title><rect x="24" y="336" width="312" height="48" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"></rect><text x="180" y="351.25" fill="#111827" font-family="Arial, sans-serif" font-size="14" font-weight="500" font-style="normal" text-anchor="middle" dominant-baseline="hanging"><tspan x="180" dy="0">Продолжить</tspan></text></g><g class="balsamiq-control balsamiq-control--line" data-control-id="8"><title>8</title><line x1="24" y1="424" x2="336" y2="424" stroke="#64748b" stroke-width="2"></line></g></svg></figure></pre>
+<p>Рендерер отображает <code>Canvas</code>, <code>Label</code>, <code>Title</code>, <code>SubTitle</code>, <code>Paragraph</code>, <code>TextInput</code>, <code>TextArea</code>, <code>Button</code>, <code>CheckBox</code>, <code>RadioButton</code>, <code>ComboBox</code>, <code>List</code>, <code>Rectangle</code> и <code>Line</code>. Он принимает JSON одного mockup с размерами <code>measuredW</code>/<code>measuredH</code>; <code>.bmpr</code>, <code>.bmml</code>, assets и symbols не поддерживаются.</p>
+</main>
+
+</body>
+</html>

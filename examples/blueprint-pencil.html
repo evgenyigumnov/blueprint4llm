@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pencil-макет профиля</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
+
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
+
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
+
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
+
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--bp-code-bg);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
+
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
+
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
+
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
+
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Pencil-макет профиля</h1>
+<p>Документ Pencil находится прямо в fenced-блоке. Компилятор строит из него безопасный SVG без сети.</p>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--pencil" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="323" height="247" viewBox="-13.5 -1.5 323 247"><title>Pencil diagram</title><g><path d="M 0 0 H 296 A 12 12 0 0 1 308 12 V 232 A 12 12 0 0 1 296 244 H 0 A 12 12 0 0 1 -12 232 V 12 A 12 12 0 0 1 0 0 Z" fill="#FFFFFF" stroke="#D8DEE9" stroke-width="1"></path><defs><clipPath id="bp-diagram-001-pencil-clip-1" clipPathUnits="userSpaceOnUse"><path d="M 0 0 H 296 A 12 12 0 0 1 308 12 V 232 A 12 12 0 0 1 296 244 H 0 A 12 12 0 0 1 -12 232 V 12 A 12 12 0 0 1 0 0 Z"></path></clipPath></defs><g clip-path="url(#bp-diagram-001-pencil-clip-1)"><g><text x="8" y="45.6" text-anchor="start" font-size="24" font-family="Arial" font-weight="600" font-style="normal" letter-spacing="0" fill="#202124" stroke="none"><tspan x="8" dy="0">Профиль</tspan></text></g><g><ellipse cx="32" cy="88" rx="24" ry="24" fill="#C7D2FE" stroke="#315DEB" stroke-width="2"></ellipse></g><g><text x="8" y="147.6" text-anchor="start" font-size="14" font-family="sans-serif" font-weight="400" font-style="normal" letter-spacing="0" fill="#475569" stroke="none"><tspan x="8" dy="0">anna@example.com</tspan></text></g><g><path d="M 16 172 H 280 A 8 8 0 0 1 288 180 V 212 A 8 8 0 0 1 280 220 H 16 A 8 8 0 0 1 8 212 V 180 A 8 8 0 0 1 16 172 Z" fill="#315DEB" stroke="none"></path><g><text x="148" y="202.4" text-anchor="middle" font-size="16" font-family="sans-serif" font-weight="600" font-style="normal" letter-spacing="0" fill="#FFFFFF" stroke="none"><tspan x="148" dy="0">Сохранить</tspan></text></g></g></g></g></svg></figure></pre>
+<p>Поддерживаются frame/group, rectangle, ellipse, polygon, path и text; координаты корневых объектов могут быть отрицательными. Внешние файлы, картинки, переменные, импорты, компоненты, скрипты, эффекты и градиенты отклоняются с диагностикой.</p>
+</main>
+
+</body>
+</html>
