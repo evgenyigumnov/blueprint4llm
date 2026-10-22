@@ -11,7 +11,7 @@ Use this skill to create or revise a technical plan that people can review as a 
 
 ## Workflow
 
-1. Read the relevant `AGENTS.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
+1. Read the relevant `AGENTS.md`, `CLAUDE.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
 2. Use the path requested by the user. If the user gives no path, follow the repository's plan convention or use `plan.md`.
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
 4. Make the plan visual first. Prefer diagrams for architecture and flows, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
