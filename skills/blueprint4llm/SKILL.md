@@ -65,24 +65,34 @@ Use this skill to create or revise a technical plan that people can review as a 
 
 ## Supported visual formats
 
+Use these criteria when the user leaves format choice open or asks for a recommendation. A file's format alone does not determine the format for unrelated new content. Preserve it when the task is to edit or extend that artifact.
+
 ### Diagrams
 
-| Format | Fence | Choose it when |
+| Format | Fence | Best fit and trade-off |
 | --- | --- | --- |
-| Mermaid | `mermaid` | A concise architecture, flow, sequence, or process diagram is enough. |
-| PlantUML | `plantuml` | The user wants UML notation or the project already uses PlantUML. |
-| draw.io JSON | `drawio` or `draw.io` | The user provides a draw.io JSON export or needs structured nodes and connections. Use **File → Export as → JSON**; `.drawio` XML is not supported. |
+| Mermaid | `mermaid` | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement. |
+| PlantUML | `plantuml` | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes. |
+| draw.io JSON | `drawio` or `draw.io` | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
+
+Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid; a flow with UML activity semantics or a UML model is usually PlantUML. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
+
+draw.io JSON is a project-specific subset. Read the project's [draw.io documentation](../../README.md#drawio-diagrams) and [example](../../examples/blueprint-draw.io.md) before authoring it.
 
 ### UI prototypes
 
-| Format | Fence | Choose it when |
+| Format | Fence | Best fit and trade-off |
 | --- | --- | --- |
-| Wiremark | `wireframe` (canonical) or `wiremark` | A quick text-based screen prototype is easiest. Follow the [Wiremark guide](https://docs.wiremark.dev/wiremark-llm.md). |
-| Balsamiq Mockups 3 | `balsamiq` | The user provides a Mockups 3 JSON mockup. Other Balsamiq formats, including `.bmpr` and `.bmml`, are not supported. |
-| Pencil | `pencil` or `pen` | The user provides a `.pen` document or wants Pencil-style frames. Use the supported embedded JSONC schema 2.21 subset. |
-| Figma | `figma` | The user provides a Figma REST API JSON response or a frame URL. JSON rendering supports a subset; URL mode needs a configured Figma access token. |
+| Wiremark | `wireframe` (canonical) or `wiremark` | Use for low-fidelity screens and screen states that are easy to describe as text. It is fast to review, but does not give pixel-level visual control. |
+| Balsamiq Mockups 3 | `balsamiq` | Use for rough screen layouts built from common UI controls. It preserves positions and text, but supports a limited control set and does not reproduce the Balsamiq skin exactly. `.bmpr` and `.bmml` are not supported. |
+| Pencil | `pencil` or `pen` | Use when custom frame geometry and vector shapes need more control than a text-first prototype. The renderer supports embedded schema 2.21 and common shapes, but not images, gradients, effects, or components. |
+| Figma | `figma` | Use to show a more detailed design from Figma frame data. JSON rendering supports a subset of Figma objects; URL mode needs a configured access token. |
 
-Use the user's existing source format when possible. For new content, pick the format that expresses the requirement with the least extra syntax. Read the relevant project example or format guide when the format is unfamiliar. Do not invent Figma credentials or convert source files unless asked.
+Choose by fidelity and the kind of information the screen must show: Wiremark for structure and content, Balsamiq for rough control layouts, Pencil for custom vector geometry, and Figma for detailed design data. If the requested fidelity exceeds the renderer's supported subset, explain the limitation.
+
+**Wiremark rule:** If you choose `wireframe` or `wiremark`, read the full [Wiremark guide](https://docs.wiremark.dev/wiremark-llm.md) before writing or editing a block. Follow its syntax and component rules. Do not draft a Wiremark block before reading the guide.
+
+Use project examples for project-specific format subsets. Do not read external documentation by default for common formats such as Mermaid or PlantUML; consult it only when syntax or renderer support is unclear. Do not invent Figma credentials or convert source files unless asked.
 
 ## Prose style
 
