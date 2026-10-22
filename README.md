@@ -1,12 +1,12 @@
 # blueprint4llm
 
-Turn long development plans into visual documents with diagrams and UI prototypes.
+Render Markdown plans as HTML or PDF, with diagrams, UI prototypes, live preview, and SVG/PNG/JPEG export.
 
-![Markdown source on the left becomes a visual document with a Mermaid diagram and a Wiremark UI prototype on the right](docs/assets/markdown-to-visual.png)
+![Markdown source on the left becomes a visual document with a Mermaid diagram and a Wiremark UI prototype on the right](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
 
-_The same Markdown, before and after rendering. [View the example source](examples/blueprint-overview.md)._
+_The same Markdown, before and after rendering. [View the example source](https://github.com/evgenyigumnov/blueprint4llm/blob/main/examples/blueprint-overview.md)._
 
-`blueprint4llm` converts Markdown into HTML or PDF so people can review plans written by humans or AI agents. It can also export one diagram or UI prototype as SVG, PNG, or JPEG for visual inspection by an LLM. It renders Mermaid, PlantUML, draw.io JSON, Pencil `.pen`, Balsamiq Mockups 3 JSON, Figma frames, and Wiremark UI prototypes. Use the local preview to see changes as you edit and download the current PDF. Markdown stays the source of truth. The tool does not call an LLM.
+`blueprint4llm` turns Markdown plans into reviewable HTML and PDF. It renders diagrams and UI prototypes from Mermaid, PlantUML, draw.io, Pencil, Balsamiq, Figma, and Wiremark blocks. The CLI server and VS Code extension provide live previews. Export one diagram or prototype as SVG, PNG, or JPEG. Markdown stays the source of truth; the tool does not call an LLM.
 
 ## Why blueprint4llm?
 
@@ -15,7 +15,21 @@ A **blueprint** is a technical plan for a product: text, tables, diagrams, and U
 ## Requirements and installation
 
 - Node.js `>=22.13.0`.
-- npm and Chrome installed through Puppeteer.
+- npm.
+- Chrome managed by Puppeteer.
+
+Install the CLI globally:
+
+```bash
+npm install --global blueprint4llm
+blueprint4llm --help
+```
+
+Puppeteer downloads a compatible Chrome during installation. If your package manager blocks install scripts, install Chrome manually:
+
+```bash
+npm exec --yes --package=puppeteer@25.14.0 -- puppeteer browsers install chrome
+```
 
 Build from a repository clone:
 

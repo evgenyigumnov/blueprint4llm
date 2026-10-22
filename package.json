@@ -1,9 +1,27 @@
 {
   "name": "blueprint4llm",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "CLI generator of software blueprints: Markdown diagrams and UI prototypes to standalone HTML, PDF, SVG, PNG, or JPEG",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evgenyigumnov/blueprint4llm.git"
+  },
+  "homepage": "https://github.com/evgenyigumnov/blueprint4llm#readme",
+  "bugs": {
+    "url": "https://github.com/evgenyigumnov/blueprint4llm/issues"
+  },
+  "keywords": [
+    "blueprint",
+    "markdown",
+    "mermaid",
+    "plantuml",
+    "wiremark",
+    "diagrams",
+    "ui-prototypes",
+    "cli"
+  ],
   "engines": {
     "node": ">=22.13.0"
   },
