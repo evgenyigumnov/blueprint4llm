@@ -71,7 +71,7 @@ JSON должен содержать корневой узел `DOCUMENT`. Ес�
 
 ## Кадр по ссылке
 
-Для URL-режима нужен персональный токен Figma с разрешением `file_content:read`. Задайте его через `CompileOptions.figmaAccessToken`, переменную окружения `FIGMA_ACCESS_TOKEN` или `.env` в текущей папке. Код поиска токена и примеры параметров приведены в [README](../README.md#кадры-figma).
+Для URL-режима нужен персональный токен Figma с разрешением `file_content:read`. Задайте его через `CompileOptions.figmaAccessToken`, переменную окружения `FIGMA_ACCESS_TOKEN` или `.env` в текущей папке. Порядок поиска токена приведён в [README](../README.md#figma-frames).
 
 ```figma
 https://www.figma.com/design/zLHKskbfyMxqt2Clt6iYui/test?node-id=1-2&t=ZyN0zfK7kUYBitwx-4

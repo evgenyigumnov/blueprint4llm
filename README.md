@@ -1,221 +1,158 @@
 # blueprint4llm
 
-Render Markdown plans as HTML or PDF, with diagrams, UI prototypes, live preview, and SVG/PNG/JPEG export.
+**Markdown plans → diagrams, UI prototypes, HTML, and PDF.**
 
-![Markdown source on the left becomes a visual document with a Mermaid diagram and a Wiremark UI prototype on the right](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
+Write a plan yourself or with an agent. Review the system and screens before implementation.
+Markdown stays the source of truth; the CLI renders it without calling an LLM.
 
-_The same Markdown, before and after rendering. [View the example source](https://github.com/evgenyigumnov/blueprint4llm/blob/main/examples/blueprint-overview.md)._
+![Markdown source beside its rendered Mermaid diagram and Wiremark screen](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
 
-`blueprint4llm` turns Markdown plans into reviewable HTML and PDF. It renders diagrams and UI prototypes from Mermaid, PlantUML, draw.io, Pencil, Balsamiq, Figma, and Wiremark blocks. The CLI server and VS Code extension provide live previews. Export one diagram or prototype as SVG, PNG, or JPEG. Markdown stays the source of truth; the tool does not call an LLM.
+## Quick start
 
-## Why blueprint4llm?
-
-A **blueprint** is a technical plan for a product: text, tables, diagrams, and UI prototypes. **4llm** means “for LLM”: agents can write and update the Markdown, while people can review the system design and screens as a visual document.
-
-## Requirements and installation
-
-- Node.js `>=22.13.0`.
-- npm.
-- Chrome managed by Puppeteer.
-
-Install the CLI globally:
+Requires **Node.js ≥22.13.0**, npm, and Puppeteer's Chrome.
 
 ```bash
 npm install --global blueprint4llm
-blueprint4llm --help
 ```
 
-Puppeteer downloads a compatible Chrome during installation. If your package manager blocks install scripts, install Chrome manually:
+Save this as `plan.md`:
+
+````markdown
+# Request workflow
+
+```mermaid
+flowchart TD
+    Form[Request form] --> API[API validation]
+    API --> Queue[Processing queue]
+```
+````
+
+```bash
+blueprint4llm plan.md --serve
+```
+
+Open the printed URL, normally `http://127.0.0.1:8080/`. Saving the Markdown or a referenced
+local image refreshes the preview. The toolbar offers dark mode and PDF download. Stop with `Ctrl+C`.
+
+Chrome is normally installed automatically. If install scripts were blocked, install it manually:
 
 ```bash
 npm exec --yes --package=puppeteer@25.14.0 -- puppeteer browsers install chrome
 ```
 
-Build from a repository clone:
+## How it works
+
+![A Markdown plan is validated and rendered into live previews, HTML or PDF documents, or a single SVG, PNG, or JPEG visual](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/workflow.svg)
+
+## Formats
+
+Use fenced blocks alongside CommonMark and GitHub Flavored Markdown: text, tables, lists,
+links, images, and code. Ordinary code blocks receive syntax highlighting.
+
+| Format   | Fence                   | Input and support                                                                                                          |
+| -------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Mermaid  | `mermaid`               | Flows, sequences, classes, states, and ER diagrams. Uses a vertical layout where supported.                                |
+| PlantUML | `plantuml`              | Standard `@start…` / `@end…` diagrams. Local engine; no Java, external includes, or network requests.                      |
+| draw.io  | `drawio`, `draw.io`     | Structural JSON with nodes, groups, labels, and edges. Automatic layout; no XML.                                           |
+| Wiremark | `wireframe`, `wiremark` | Screens and controls described as text. `wireframe` is the canonical fence.                                                |
+| Pencil   | `pencil`, `pen`         | Embedded `.pen` JSONC, schema 2.21. Frames, groups, shapes, paths, and text; no images, components, gradients, or effects. |
+| Balsamiq | `balsamiq`              | One Mockups 3 JSON mockup with common controls. Preserves positions and text; no `.bmpr`, `.bmml`, assets, or symbols.     |
+| Figma    | `figma`                 | REST API JSON rendered locally, or a frame URL exported through the Figma API. URL mode needs a token.                     |
+
+|                                                                  draw.io · release flow                                                                   |                                                                   Pencil · profile screen                                                                   |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Release flow with a build-and-test group and a publish step](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg) | ![Profile screen with an avatar, email address, and save button](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg) |
+
+### draw.io diagrams
+
+Embed structural JSON in a `drawio` or `draw.io` fence. For multiple pages, select one with
+`page=<id>` in the fence metadata. Use `direction=TB` (default) or `direction=LR`.
+The renderer builds a new layout; original coordinates and styles are not preserved.
+The package includes a complete example in `examples/blueprint-draw.io.md`.
+
+### Figma frames
+
+JSON mode needs a root `DOCUMENT` and works offline without a token. Select a frame with
+`node=12:34` in the fence metadata. The local renderer supports containers, basic shapes,
+vector paths, text, and solid fills; use URL mode for gradients, effects, masks, and images.
+
+URL mode accepts HTTPS `/design/` or `/file/` frame URLs. Use a personal access token with
+`file_content:read` permission. Token lookup order: `CompileOptions.figmaAccessToken`,
+`FIGMA_ACCESS_TOKEN`, then `.env` in the current working directory. The token is sent only
+to `api.figma.com`; exported SVGs are embedded in the result.
+
+## Commands
+
+| Task            | Command                                                 |
+| --------------- | ------------------------------------------------------- |
+| Live preview    | `blueprint4llm plan.md --serve --port=8080`             |
+| Validate for CI | `blueprint4llm plan.md --check`                         |
+| Export HTML     | `blueprint4llm plan.md --out=plan.html`                 |
+| Export PDF      | `blueprint4llm plan.md --out=plan.pdf --format=pdf`     |
+| Export SVG      | `blueprint4llm plan.md --out=visual.svg --format=svg`   |
+| Export PNG      | `blueprint4llm plan.md --out=visual.png --format=png`   |
+| Export JPEG     | `blueprint4llm plan.md --out=visual.jpeg --format=jpeg` |
+
+Image exports require **exactly one supported visual block**; the quick start example qualifies.
+`--out` creates parent directories. Each invocation produces one format; HTML is the default.
+`--check` validates Markdown, diagrams, and local images without writing output. Errors exit with
+code `1`; warnings go to stderr. In live preview, fixing the source clears the diagnostic page.
+
+## Output and limits
+
+| Topic           | Behavior                                                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML            | Embeds diagram SVGs; local images are copied to an adjacent `assets/` folder. Open the output directly in a browser.                                                |
+| PDF             | A4 pages with local Noto Sans fonts and selectable text. External images must be saved locally before export.                                                       |
+| Image paths     | Resolve relative to the Markdown file. Paths and symlinks that escape its directory are rejected.                                                                   |
+| Offline use     | Local renderers need no network; Figma URL blocks fetch during compilation. HTML still needs a connection for external images.                                      |
+| Safety          | Raw HTML is escaped. SVGs are checked for active content and external resources. User scripts and graphical editing are not supported.                              |
+| Document limits | 5 MiB of Markdown, 100 visual blocks, and normally 256 KiB per block.                                                                                               |
+| JSON limits     | draw.io, Pencil, and Figma: 1 MiB and 10,000 cells/nodes. Balsamiq: 256 KiB and 3,000 controls.                                                                     |
+| Timeouts        | Mermaid and PlantUML: 30 seconds. draw.io layout: 5 seconds. PDF: 60 seconds.                                                                                       |
+| Chrome on Linux | Requires Chrome system libraries. If sandbox startup fails, rendering retries with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force this mode. |
+
+## Agent and editor workflows
+
+| Workflow     | Setup                                                                                                                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Coding agent | Install the CLI, then run `npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm`. The skill guides visual planning, validation, and review.                                      |
+| VS Code      | Install a built VSIX with `code --install-extension <file.vsix>`. Open a Markdown file and run **Blueprint: Open Preview to the Side**. Use **Blueprint: Export Preview as PDF** to save it. |
+
+The VS Code preview compiles unsaved edits with a 200 ms delay, configurable through
+`blueprint4llm.preview.debounceMs`. It requires desktop VS Code ≥1.101.0 and Puppeteer's Chrome.
+
+## Programmatic API
+
+Install locally with `npm install blueprint4llm`, then use the ESM exports:
+
+```js
+import { compileMarkdown, writeBlueprintOutput } from 'blueprint4llm';
+
+const compiled = await compileMarkdown('# Plan\n\nReady for review.', {
+  sourceFile: './plan.md',
+});
+
+await writeBlueprintOutput('./plan.html', {
+  html: compiled.html,
+  assets: compiled.assets,
+});
+```
+
+| Export                                        | Purpose                                                               |
+| --------------------------------------------- | --------------------------------------------------------------------- |
+| `compileMarkdown(markdown, options)`          | Returns `html`, `title`, `assets`, `warnings`, and optional `errors`. |
+| `renderPdf(compiled, { signal }?)`            | Generates PDF bytes; pass them as `pdf` to `writeBlueprintOutput()`.  |
+| `writeBlueprintOutput(path, options)`         | Writes HTML and/or PDF with assets; returns absolute output paths.    |
+| `startPreviewServer({ input, port, signal })` | Returns `url`, `port`, and an asynchronous `close()` method.          |
+
+## Development
+
+From a repository clone:
 
 ```bash
 npm ci
 npx puppeteer browsers install chrome
-npm run build
-```
-
-To make the `blueprint4llm` command available globally, run this from the project directory:
-
-```bash
-npm link
-blueprint4llm --help
-```
-
-You can also run the CLI with `node dist/cli.js`.
-
-## Agent skill
-
-Install the `blueprint4llm` skill in Codex or another compatible coding agent:
-
-```bash
-npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm
-```
-
-The skill guides an agent to create or revise visual plans with Mermaid and Wiremark, validate them, and render HTML or PDF with the CLI. Install the CLI first; see [Requirements and installation](#requirements-and-installation).
-
-## Usage
-
-Try the example shown above with a live preview:
-
-```bash
-blueprint4llm examples/blueprint-overview.md --serve
-```
-
-Open the URL printed in the terminal. The preview updates when you save the Markdown.
-
-Build HTML (the default format):
-
-```bash
-blueprint4llm examples/blueprint.md --out=./dist-preview/blueprint.html
-```
-
-Export to PDF:
-
-```bash
-blueprint4llm examples/blueprint.md --out=./dist-pdf/blueprint.pdf --format=pdf
-```
-
-Export one diagram or UI prototype as an image:
-
-```bash
-blueprint4llm examples/one-diagram.md --out=./diagram.svg --format=svg
-blueprint4llm examples/one-diagram.md --out=./diagram.png --format=png
-blueprint4llm examples/one-diagram.md --out=./diagram.jpeg --format=jpeg
-```
-
-SVG, PNG, and JPEG exports require exactly one supported diagram code block in the Markdown. Text and headings are allowed. The command reports an error when it finds zero or multiple diagrams. PNG and JPEG use local Chromium to rasterize the rendered SVG.
-
-`--out` specifies the output file path. Parent directories are created automatically. The CLI produces one format per run. HTML embeds diagram SVGs, and local Markdown images are saved in `assets/` next to the HTML. You can open the generated HTML directly with `file://`.
-
-Validate a document before review or publication, for example in CI:
-
-```bash
-blueprint4llm examples/blueprint.md --check
-```
-
-`--check` parses Markdown, runs the diagram renderers, and checks local images without creating HTML or PDF. Warnings go to stderr. Validation errors exit with code `1`.
-
-Start a local preview with automatic updates:
-
-```bash
-blueprint4llm examples/blueprint.md --serve
-blueprint4llm examples/blueprint.md --serve --port=8081
-```
-
-The server listens on `127.0.0.1` only. It watches the Markdown and referenced local images. Press `Ctrl+C` to stop it. The preview fills the browser window width. A **Dark mode** switch sits next to **Download PDF**, and the browser remembers the selected theme. The PDF is generated on the first request and cached until the document changes. The browser does not open automatically.
-
-### Visual Studio Code preview
-
-The extension package is in `vscode-extension/`. Install a built VSIX with `code --install-extension <path-to-file.vsix>`, open a `.md` file, and run **Blueprint: Open Preview to the Side** from the Command Palette or editor title bar. The preview compiles the current editor buffer, updates 200 ms after edits, and shows compilation errors without closing the panel. Change the delay with `blueprint4llm.preview.debounceMs`.
-
-See the [extension instructions](vscode-extension/README.md) for VSIX build steps and Chrome requirements.
-
-## Markdown format
-
-CommonMark and GitHub Flavored Markdown are supported: headings, lists, tables, task lists, links, images, quotes, and code blocks. Use fenced code blocks for diagrams:
-
-| Block language          | Renderer                                                                                                              |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `mermaid`               | Official Mermaid CLI, run locally.                                                                                    |
-| `plantuml`              | Local JavaScript/Wasm engine, [`@plantuml/core`](https://github.com/plantuml/plantuml/blob/master/PUBLISHING_NPM.md). |
-| `wireframe`, `wiremark` | Blackburn-Labs Wiremark UI prototypes. `wireframe` is the canonical identifier.                                       |
-| `drawio`, `draw.io`     | Structural draw.io JSON export with automatic local layout.                                                           |
-| `pencil`, `pen`         | Embedded Pencil `2.21` JSONC document rendered as local SVG.                                                          |
-| `balsamiq`              | A single Balsamiq Mockups 3 mockup in JSON, rendered as local SVG.                                                    |
-| `figma`                 | Figma REST API JSON rendered locally, or a frame URL exported through the Figma API.                                  |
-
-The Mermaid renderer sets a vertical direction (`TB`/`TD`) for diagram types that support it. Types with a fixed layout, such as `sequenceDiagram`, keep their native layout.
-
-Each PlantUML block contains one diagram with standard `@start...` and `@end...` directives. `@plantuml/core@1.2026.9` runs locally in Chromium, which is also used for PDF and preview. Java is not required. Rendering works offline and does not send the source to a server. External requests, local `!include`, `!includeurl`, and standard libraries are disabled. SVG dimensions are limited to 8192 px per side. Up to two PlantUML renders can run at once.
-
-Code blocks with a recognized Shiki language label receive syntax highlighting during compilation. Color tokens are embedded in the HTML, so standalone HTML works without JavaScript or a network connection. Code colors follow the dark theme in local preview; PDF uses the light palette. Blocks with no language label or an unknown label stay as escaped plain code. Inline code is unchanged. Blocks larger than 64 KiB in UTF-8 also stay as plain code to limit compilation time. Diagram blocks are rendered as SVG.
-
-### Pencil layouts
-
-Paste JSONC from a `.pen` file into a `pencil` or `pen` fenced block. The initial implementation supports embedded schema `2.21` documents without network requests. It renders frames, groups, rectangles, ellipses, polygons, SVG paths, and text. Supported properties include solid fills and strokes, opacity, rotation, rounded corners, frame clipping, and basic layout. Text with `textGrowth: "fixed-width"` wraps using approximate character widths, so line breaks can differ from pen.dev.
-
-Imports, component references, variables, themes, images, gradients, effects, and scripts are not supported. These properties, and unknown visual properties, stop rendering with a diagnostic. Limits: 1 MiB of JSONC, 10,000 nodes, depth 100, 256 sides per polygon, 10,000 text lines, and an output SVG of 4 MiB with up to 16,384 px per side. See [`examples/blueprint-pencil.md`](examples/blueprint-pencil.md).
-
-### Balsamiq mockups
-
-Paste the JSON for one Balsamiq Mockups 3 mockup into a `balsamiq` block. The renderer preserves coordinates, layer order, and text, then builds a local inline SVG. See [`examples/blueprint-balsamiq.md`](examples/blueprint-balsamiq.md).
-
-Supported controls: `Canvas`, `Label`, `Title`, `SubTitle`, `Paragraph`, `TextInput`, `TextArea`, `Button`, `CheckBox`, `RadioButton`, `ComboBox`, `List`, `Rectangle`, and `Line`. Layout dimensions come from `measuredW`/`measuredH`, with `mockupW`/`mockupH` and the `Canvas` control dimensions as fallbacks. Limits: 256 KiB of JSON, 3,000 controls, depth 100, 4,056 px per side, and 4 MiB of SVG. `.bmpr`, `.bmml`, external assets, symbols, and exact reproduction of the Balsamiq skin are not supported. The canvas limit follows the [Mockups 3 documentation](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf).
-
-### draw.io diagrams
-
-Copy JSON from **File → Export as → JSON** into a `drawio` or `draw.io` fenced block. See [`examples/blueprint-draw.io.md`](examples/blueprint-draw.io.md) for nodes, a group, and connections.
-
-For a single page, the renderer selects it automatically. For multiple pages, set `page=<id>`. Set `direction=TB` for top to bottom (the default), or `direction=LR` for left to right. For example: `page=release direction=LR`.
-
-The JSON preserves connections, labels, and groups. The renderer creates a new layout with standard rectangles and directed arrows; it does not preserve the original geometry or styles. The `html` and `data` fields are not displayed. Labels remain plain text. `.drawio` XML is not yet supported. Rendering runs locally without network requests. The inline SVG works in HTML, `--serve`, VS Code preview, and PDF. Markdown edits rebuild the preview automatically.
-
-### Figma frames
-
-A `figma` block accepts a Figma REST API JSON response or an HTTPS frame URL from `/design/` or `/file/`. JSON must contain a `document` of type `DOCUMENT`. Local rendering needs no token or network connection. If the document has multiple top-level frames, select a frame in the block metadata: ` ```figma node=12:34 `.
-
-The local renderer supports `FRAME`, `GROUP`, `COMPONENT`, and `INSTANCE` containers; `RECTANGLE`, `ELLIPSE`, and `LINE` shapes; `TEXT`; and `VECTOR` paths with `geometry=paths`. It renders solid fills and strokes, opacity, rounded corners, and rotation. Gradients, effects, masks, raster data from JSON, and complex text overrides are not supported. For these layouts, use URL mode or export the frame as a regular Markdown image. JSON limits: 1 MiB, 10,000 nodes, and depth 100.
-
-URL mode requires a Figma personal access token with `file_content:read` permission. The compiler checks `CompileOptions.figmaAccessToken`, then `FIGMA_ACCESS_TOKEN`, then `.env` in the current working directory. For example:
-
-```ts
-const compiled = await compileMarkdown(markdown, {
-  sourceFile: '/project/blueprint.md',
-  figmaAccessToken: process.env.FIGMA_ACCESS_TOKEN,
-});
-```
-
-The token is sent only to `api.figma.com`. API requests and temporary SVG downloads occur only for URL blocks. The compiler validates the SVG and embeds it in the HTML. The resulting HTML and PDF work offline. Other URL query parameters, including `t`, are not sent to the API. Diagnostics include the source file and block line, but omit the token, source JSON, and temporary URL. See [`examples/blueprint-figma.md`](examples/blueprint-figma.md) for JSON and URL examples.
-
-### HTML, images, and PDF
-
-Raw HTML in Markdown is escaped. All diagram SVGs are checked for active elements, event handlers, and external resources. Unsafe link URLs are removed.
-
-Local image paths are resolved relative to the Markdown directory. Images are copied into `assets/` next to the output HTML. Paths that escape the project directory through `..` or a symlink are rejected. External HTTP(S) images remain external in HTML. PDF does not allow them: save the image locally and use a relative path. PDF uses A4 pages and local Noto Sans fonts. Text and links remain accessible in the PDF.
-
-## Limits
-
-- Markdown source: up to 5 MiB, 100 diagrams, and 256 KiB of source per diagram, unless a renderer defines its own limit.
-- draw.io: 1 MiB per JSON block, 10,000 cells per page, and 100 pages per document. SVG output is limited to 4 MiB and 16,384 px per side. Layout times out after 5 seconds.
-- Mermaid and PlantUML rendering time out after 30 seconds. PDF generation times out after 60 seconds.
-- PDF uses Puppeteer's installed Chrome/Chromium and requires the appropriate system libraries on Linux. Install the browser with `npx puppeteer browsers install chrome`.
-- The Chromium sandbox is enabled by default. If the OS blocks sandbox startup, Mermaid, PDF, PNG, and JPEG rendering automatically retry with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force a launch without the sandbox.
-- Raw HTML, user JavaScript execution, and graphical editing are not supported.
-- Standalone diagram image formats are SVG, PNG, and JPEG. They require exactly one supported diagram block.
-
-Mermaid, PlantUML, and Wiremark errors include the source file and block line. If PlantUML returns an SVG with a syntax error, it stays visible in the preview, and the diagnostic points to the line within the diagram. A failed build in `--serve` mode shows diagnostics while the server keeps running. Fix the file to update the preview.
-
-## Programmatic API
-
-The package exports the Markdown compiler, PDF renderer, output writers, and preview server:
-
-```ts
-import { compileMarkdown, renderPdf, writeBlueprintOutput } from 'blueprint4llm';
-
-const compiled = await compileMarkdown(markdown, {
-  sourceFile: '/project/blueprint.md',
-});
-const pdf = await renderPdf(compiled);
-
-await writeBlueprintOutput('/project/output.html', {
-  html: compiled.html,
-  assets: compiled.assets,
-  pdf,
-});
-```
-
-`compileMarkdown()` returns a `CompiledBlueprint` with `html`, `title`, `assets`, and warnings. `renderPdf()` accepts this result and an optional `{ signal: AbortSignal }`. `writeBlueprintOutput(outputFile, options)` writes to the given path. If both formats are supplied, it also creates a neighboring file for the second format. It returns absolute output paths.
-
-`startPreviewServer({ input, port, signal })` starts the preview and returns a handle with `url`, the selected `port`, and an asynchronous `close()` method. Public types `CompiledBlueprint`, `CompileOptions`, `RenderPdfOptions`, `PreviewServerOptions`, and `PreviewServerHandle` are available from the package root.
-
-## Development and checks
-
-```bash
 npm run build
 npm run typecheck
 npm run lint
@@ -223,4 +160,6 @@ npm run format:check
 npm test
 ```
 
-`npm test` builds `dist/cli.js`, then runs unit and integration tests. Chrome must be installed for PDF/CLI smoke tests. In the Linux test container, an environment variable explicitly disables the sandbox for test processes only.
+Run the CLI directly with `node dist/cli.js`, or use `npm link` to expose the command globally.
+`npm test` builds the CLI and runs unit and integration tests; Chrome must be installed.
+To build the VSIX, run `npm install` and `npm run package` from `vscode-extension/`.

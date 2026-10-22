@@ -95,7 +95,7 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid; a flow with UML activity semantics or a UML model is usually PlantUML. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
-draw.io JSON is a project-specific subset. Read the project's [draw.io documentation](../../README.md#drawio-diagrams) and [example](../../examples/blueprint-draw.io.md) before authoring it.
+draw.io JSON is a project-specific subset. Read the [draw.io renderer documentation](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/README.md#drawio-diagrams) before authoring it.
 
 ### UI prototypes
 
@@ -110,7 +110,7 @@ Choose by fidelity and the kind of information the screen must show: Wiremark fo
 
 **Wiremark rule:** If you choose `wireframe` or `wiremark`, read the full [Wiremark guide](https://docs.wiremark.dev/wiremark-llm.md) before writing or editing a block. Follow its syntax and component rules. Do not draft a Wiremark block before reading the guide.
 
-Use project examples for project-specific format subsets. Do not read external documentation by default for common formats such as Mermaid or PlantUML; consult it only when syntax or renderer support is unclear. Do not invent Figma credentials or convert source files unless asked.
+Fetch linked documentation directly from the internet; a local blueprint4llm checkout is not required. Do not read external documentation by default for common formats such as Mermaid or PlantUML; consult it only when syntax or renderer support is unclear. Do not invent Figma credentials or convert source files unless asked.
 
 ## Prose style
 

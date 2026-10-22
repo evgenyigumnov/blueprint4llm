@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FMT-02: Excalidraw в Markdown-планах</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bp-text: #1f2328;
+        --bp-muted: #656d76;
+        --bp-border: #d0d7de;
+        --bp-surface: #ffffff;
+        --bp-page-bg: #f6f8fa;
+        --bp-accent: #0a5bd3;
+        --bp-code-bg: #f6f8fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bp-page-bg);
+        color: var(--bp-text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans',
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .bp-document {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 1.5rem 4rem;
+        background: var(--bp-surface);
+        border: none;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        line-height: 1.3;
+        margin: 1.8em 0 0.7em;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--bp-border);
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+      }
+
+      h4,
+      h5,
+      h6 {
+        font-size: 1.05rem;
+      }
+
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
+
+      a {
+        color: var(--bp-accent);
+        text-decoration: none;
+        overflow-wrap: break-word;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      blockquote {
+        margin: 1em 0;
+        padding: 0.2em 1em;
+        color: var(--bp-muted);
+        border-left: 4px solid var(--bp-border);
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        background: var(--bp-code-bg);
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        overflow-wrap: break-word;
+      }
+
+      pre {
+        margin: 1em 0;
+        padding: 0.9em 1em;
+        background: var(--bp-code-bg);
+        border: 1px solid var(--bp-border);
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+
+      pre.bp-diagram-container {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 0.875em;
+        line-height: 1.5;
+      }
+
+      pre.shiki {
+        color: var(--shiki-light);
+        background-color: var(--shiki-light-bg, var(--bp-code-bg));
+      }
+
+      pre.shiki span {
+        color: var(--shiki-light);
+      }
+
+      :root[data-bp-theme='dark'] pre.shiki,
+      :root[data-bp-theme='dark'] pre.shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg, transparent) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
+
+      .bp-table {
+        margin: 1em 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
+
+      table {
+        border-collapse: collapse;
+        font-size: 0.95em;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--bp-border);
+        padding: 0.4em 0.8em;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      thead th {
+        background: var(--bp-code-bg);
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid var(--bp-border);
+        margin: 2em 0;
+      }
+
+      ul[data-task-list] li,
+      li > input[type='checkbox'] {
+        margin-right: 0.4em;
+      }
+
+      .bp-diagram {
+        max-width: 100%;
+        margin: 1.5rem 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
+
+      .bp-diagram > svg {
+        display: block;
+        max-width: none;
+        width: auto;
+        height: auto;
+        margin: 0;
+      }
+
+      @media screen and (max-width: 640px) {
+        .bp-document {
+          padding: 1.25rem 1rem 3rem;
+          border: none;
+        }
+
+        body {
+          font-size: 15px;
+        }
+      }
+
+      @media print {
+        :root {
+          --bp-page-bg: #ffffff;
+        }
+
+        body {
+          background: #ffffff;
+          font-size: 11pt;
+          line-height: 1.5;
+        }
+
+        .bp-document {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+
+        pre {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          overflow: visible;
+        }
+
+        pre.shiki {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
+
+        pre.shiki span {
+          color: var(--shiki-light) !important;
+        }
+
+        :root[data-bp-theme='dark'] pre.shiki,
+        :root[data-bp-theme='dark'] pre.shiki span {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
+
+        code {
+          overflow-wrap: break-word;
+        }
+
+        .bp-table {
+          overflow: visible;
+        }
+
+        .bp-diagram {
+          overflow: visible;
+        }
+
+        .bp-diagram > svg {
+          max-width: 100% !important;
+        }
+
+        table {
+          width: 100%;
+          table-layout: fixed;
+        }
+
+        thead {
+          display: table-header-group;
+        }
+
+        tr,
+        img,
+        figure,
+        .bp-diagram,
+        blockquote {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="bp-document">
+      <h1>FMT-02: Excalidraw в Markdown-планах</h1>
+      <p>
+        Статус: план реализации; задача остаётся открытой. Источник:
+        <a
+          href="plan-features-todo.md#%D0%BD%D0%BE%D0%B2%D1%8B%D0%B5-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D1%8B"
+          >FMT-02 в очереди форматов</a
+        >.
+      </p>
+      <h2>Цель и границы первой версии</h2>
+      <p>
+        Автор вставляет JSON существующего архитектурного наброска в блок <code>excalidraw</code>.
+        Читатель видит фигуры, подписи, стрелки и группы с исходными координатами. Сцена
+        превращается в локальный SVG и проходит через существующий конвейер экспорта.
+      </p>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Решение</th>
+              <th>Граница поддержки</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Вход</td>
+              <td>
+                Один JSON-документ из файла <code>.excalidraw</code> внутри fence
+                <code>excalidraw</code>; содержимое вставляется целиком, без чтения файла по пути
+              </td>
+            </tr>
+            <tr>
+              <td>Версия</td>
+              <td>
+                Корневые <code>type: "excalidraw"</code> и <code>version: 2</code>; другие версии
+                отклонять с указанием поддерживаемой версии
+              </td>
+            </tr>
+            <tr>
+              <td>Основные элементы</td>
+              <td>
+                <code>rectangle</code>, <code>ellipse</code>, <code>diamond</code>,
+                <code>text</code>, <code>line</code> и обычная <code>arrow</code> с сохранённой
+                ломаной
+              </td>
+            </tr>
+            <tr>
+              <td>Размещение</td>
+              <td>
+                Координаты, размеры, поворот и порядок элементов; принадлежность группам без
+                автоматической раскладки
+              </td>
+            </tr>
+            <tr>
+              <td>Среды</td>
+              <td>
+                HTML, браузерный preview, VS Code, PDF и существующий экспорт одной схемы в
+                SVG/PNG/JPEG
+              </td>
+            </tr>
+            <tr>
+              <td>Рендеринг</td>
+              <td>
+                Статический SVG с ровными контурами; без редактора, React, сетевых запросов и новых
+                runtime-зависимостей
+              </td>
+            </tr>
+            <tr>
+              <td>За пределами версии</td>
+              <td>
+                Clipboard JSON, библиотеки <code>.excalidrawlib</code>, URL сцен, встроенные сцены
+                из PNG/SVG, изображения и оригинальные шрифты Excalidraw
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Корневая версия относится к документу. Поле <code>version</code> каждого элемента описывает
+        его изменения и не выбирает версию формата. Это поддержка выбранного подмножества, а не
+        полная совместимость со всеми сценами версии 2. Структура файлов описана в
+        <a href="https://docs.excalidraw.com/docs/codebase/json-schema">официальной JSON Schema</a>.
+      </p>
+      <h2>Сценарий и пример входа</h2>
+      <ol>
+        <li>Сохранить сцену в Excalidraw как <code>.excalidraw</code> и открыть её как текст.</li>
+        <li>
+          Вставить JSON в Markdown-блок <code>excalidraw</code> рядом с пояснением архитектуры.
+        </li>
+        <li>
+          Запустить <code>blueprint4llm plan.md --check</code>, затем открыть preview или
+          экспортировать документ.
+        </li>
+        <li>
+          Если сцена использует неподдерживаемые возможности, прочитать предупреждения и видимые
+          обозначения пропущенных элементов.
+        </li>
+      </ol>
+      <p>
+        Ниже — минимальный пример будущего синтаксиса. Внешний Markdown-fence позволяет показать его
+        в этом плане до появления renderer.
+      </p>
+      <pre
+        class="shiki shiki-themes github-light github-dark"
+        style="
+          --shiki-light: #24292e;
+          --shiki-dark: #e1e4e8;
+          --shiki-light-bg: #fff;
+          --shiki-dark-bg: #24292e;
+        "
+        tabindex="0"
+      ><code class="language-markdown"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```excalidraw</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  "type": "excalidraw",</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  "version": 2,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  "elements": [</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    { "id": "client", "type": "rectangle", "x": -160, "y": 20, "width": 160, "height": 80 },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    { "id": "api", "type": "ellipse", "x": 120, "y": 20, "width": 160, "height": 80 },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    {</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      "id": "request", "type": "arrow", "x": 0, "y": 60,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      "width": 120, "height": 0, "points": [[0, 0], [120, 0]],</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      "startArrowhead": null, "endArrowhead": "arrow"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ],</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  "appState": { "viewBackgroundColor": "#ffffff" },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  "files": {}</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```</span></span></code></pre>
+      <p>
+        Для необязательных полей этого подмножества задать документированные значения:
+        <code>angle: 0</code>, <code>isDeleted: false</code>, <code>groupIds: []</code>,
+        <code>strokeWidth: 1</code>, <code>strokeStyle: "solid"</code>,
+        <code>strokeColor: "#1e1e1e"</code>, <code>backgroundColor: "transparent"</code>,
+        <code>fillStyle: "solid"</code>, <code>opacity: 100</code>, <code>roughness: 0</code>,
+        <code>roundness: null</code>, <code>elbowed: false</code>. Для текста:
+        <code>fontSize: 20</code>, <code>lineHeight: 1.25</code>, <code>textAlign: "left"</code>. Не
+        подменять неверные значения defaults. Приёмочные fixtures дополнительно брать из реальных
+        экспортов Excalidraw; минимальный пример их не заменяет.
+      </p>
+      <h2>Подключение к текущему коду</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-001"><svg id="bp-diagram-001-bp-diagram-001" width="168" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 168px; background-color: transparent;" viewBox="4 4 168 782.4000244140625" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-001-bp-diagram-001{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-001-bp-diagram-001 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .error-icon{fill:#552222;}#bp-diagram-001-bp-diagram-001 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-001-bp-diagram-001 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-001-bp-diagram-001 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-001-bp-diagram-001 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-001-bp-diagram-001 .marker{fill:#333333;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .marker.cross{stroke:#333333;}#bp-diagram-001-bp-diagram-001 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-001-bp-diagram-001 p{margin:0;}#bp-diagram-001-bp-diagram-001 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span{color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span p{background-color:transparent;}#bp-diagram-001-bp-diagram-001 .label text,#bp-diagram-001-bp-diagram-001 span{fill:#333;color:#333;}#bp-diagram-001-bp-diagram-001 .node rect,#bp-diagram-001-bp-diagram-001 .node circle,#bp-diagram-001-bp-diagram-001 .node ellipse,#bp-diagram-001-bp-diagram-001 .node polygon,#bp-diagram-001-bp-diagram-001 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label text,#bp-diagram-001-bp-diagram-001 .node .label text,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-anchor:middle;}#bp-diagram-001-bp-diagram-001 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label,#bp-diagram-001-bp-diagram-001 .node .label,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-align:center;}#bp-diagram-001-bp-diagram-001 .node.clickable{cursor:pointer;}#bp-diagram-001-bp-diagram-001 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .arrowheadPath{fill:#333333;}#bp-diagram-001-bp-diagram-001 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-001-bp-diagram-001 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-001-bp-diagram-001 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .cluster text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster span{color:#333;}#bp-diagram-001-bp-diagram-001 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-001-bp-diagram-001 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-001-bp-diagram-001 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-001-bp-diagram-001 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-001-bp-diagram-001 rect.text{fill:none;stroke-width:0;}#bp-diagram-001-bp-diagram-001 .icon-shape,#bp-diagram-001-bp-diagram-001 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .icon-shape p,#bp-diagram-001-bp-diagram-001 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-001-bp-diagram-001 .icon-shape .label rect,#bp-diagram-001-bp-diagram-001 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-001-bp-diagram-001 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-001-bp-diagram-001 .node .neo-node{stroke:#9370DB;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].cluster rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M88,70.5999984741211L88,106.5999984741211" id="bp-diagram-001-bp-diagram-001-L_INPUT_PLUGIN_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_INPUT_PLUGIN_0" data-points="W3sieCI6ODgsInkiOjcwLjU5OTk5ODQ3NDEyMTF9LHsieCI6ODgsInkiOjExMC41OTk5OTg0NzQxMjExfV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,169.1999969482422L88,205.1999969482422" id="bp-diagram-001-bp-diagram-001-L_PLUGIN_PARSE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_PLUGIN_PARSE_0" data-points="W3sieCI6ODgsInkiOjE2OS4xOTk5OTY5NDgyNDIyfSx7IngiOjg4LCJ5IjoyMDkuMTk5OTk2OTQ4MjQyMn1d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,267.7999954223633L88,303.7999954223633" id="bp-diagram-001-bp-diagram-001-L_PARSE_MODEL_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_PARSE_MODEL_0" data-points="W3sieCI6ODgsInkiOjI2Ny43OTk5OTU0MjIzNjMzfSx7IngiOjg4LCJ5IjozMDcuNzk5OTk1NDIyMzYzM31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,366.3999938964844L88,402.3999938964844" id="bp-diagram-001-bp-diagram-001-L_MODEL_GEOMETRY_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_MODEL_GEOMETRY_0" data-points="W3sieCI6ODgsInkiOjM2Ni4zOTk5OTM4OTY0ODQ0fSx7IngiOjg4LCJ5Ijo0MDYuMzk5OTkzODk2NDg0NH1d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,464.99999237060547L88,500.99999237060547" id="bp-diagram-001-bp-diagram-001-L_GEOMETRY_SVG_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_GEOMETRY_SVG_0" data-points="W3sieCI6ODgsInkiOjQ2NC45OTk5OTIzNzA2MDU0N30seyJ4Ijo4OCwieSI6NTA0Ljk5OTk5MjM3MDYwNTQ3fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,563.5999908447266L88,599.5999908447266" id="bp-diagram-001-bp-diagram-001-L_SVG_SAFE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_SVG_SAFE_0" data-points="W3sieCI6ODgsInkiOjU2My41OTk5OTA4NDQ3MjY2fSx7IngiOjg4LCJ5Ijo2MDMuNTk5OTkwODQ0NzI2Nn1d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,662.1999893188477L88,698.1999893188477" id="bp-diagram-001-bp-diagram-001-L_SAFE_OUTPUT_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_SAFE_OUTPUT_0" data-points="W3sieCI6ODgsInkiOjY2Mi4xOTk5ODkzMTg4NDc3fSx7IngiOjg4LCJ5Ijo3MDIuMTk5OTg5MzE4ODQ3N31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-INPUT-0" data-look="neo" transform="translate(88, 41.29999923706055)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Markdown:</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">блок</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> excalidraw</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-PLUGIN-1" data-look="neo" transform="translate(88, 139.89999771118164)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Общий</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> plugin</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> кеш</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-PARSE-3" data-look="neo" transform="translate(88, 238.49999618530273)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">JSON</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> версия</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Позиции</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> полей</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-MODEL-5" data-look="neo" transform="translate(88, 337.0999946594238)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Модель</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> сцены</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> сообщения</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-GEOMETRY-7" data-look="neo" transform="translate(88, 435.6999931335449)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Фигуры</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> текст</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Границы</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> сцены</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-SVG-9" data-look="neo" transform="translate(88, 534.299991607666)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Локальный</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">SVG</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-SAFE-11" data-look="neo" transform="translate(88, 632.8999900817871)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Проверка</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> SVG</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> изоляция</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> ID</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-OUTPUT-13" data-look="neo" transform="translate(88, 740.2999877929688)"><rect class="basic label-container" style="" x="-76" y="-38.099998474121094" width="152" height="76.19999694824219"></rect><g class="label" style="" transform="translate(0, -26.099998474121094)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">HTML</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> preview</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">PDF</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> и</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="2.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">изображения</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Существующий модуль</th>
+              <th>Что использовать или изменить</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="src/renderers/types.ts">types.ts</a></td>
+              <td>
+                Реализовать <code>DiagramRenderer</code>; возвращать <code>DiagramResult</code> с
+                SVG и относительными позициями предупреждений
+              </td>
+            </tr>
+            <tr>
+              <td><a href="src/compiler.ts">compiler.ts</a></td>
+              <td>
+                Добавить <code>excalidrawRenderer</code> в оба списка:
+                <code>compileMarkdown()</code> и <code>checkMarkdown()</code>
+              </td>
+            </tr>
+            <tr>
+              <td><a href="src/plugins/remark-diagrams.ts">remark-diagrams.ts</a></td>
+              <td>
+                Использовать выбор по языку, лимит размера, координаты Markdown, контейнер
+                <code>bp-diagram--excalidraw</code> и текущую обработку ошибок
+              </td>
+            </tr>
+            <tr>
+              <td><a href="src/renderers/cache.ts">cache.ts</a></td>
+              <td>
+                Кешировать результат через существующий API; включить версию JSON-парсера и правила
+                геометрии, текста и стилей в <code>cacheKey</code>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="src/svg/parse-and-validate.ts">parse-and-validate.ts</a>,
+                <a href="src/svg/scope-ids.ts">scope-ids.ts</a>
+              </td>
+              <td>Сохранить общую проверку SVG и изоляцию ID маркеров между блоками</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="src/image-export.ts">image-export.ts</a>,
+                <a href="src/print-html.ts">print-html.ts</a>
+              </td>
+              <td>
+                Проверить экспорт и печать на новых fixtures; сохранить общие ограничения
+                изображения и печатные шрифты
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="src/server.ts">server.ts</a>,
+                <a href="vscode-extension/src/preview-controller.ts">preview-controller.ts</a>
+              </td>
+              <td>
+                Проверить обновление сцены через существующий компилятор; отдельный путь рендеринга
+                для preview не нужен
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        FMT-02 не зависит от реализации FEAT-03 или FEAT-05. Сейчас исключение renderer прерывает
+        сборку, а предупреждение сохраняет SVG. Продолжение после ошибок и JSON-отчёт описаны в
+        <a href="plan-feat-05-diagnostics.md">плане FEAT-05</a>; новый формат не должен
+        самостоятельно менять это поведение.
+      </p>
+      <h2>Разбор и модель сцены</h2>
+      <p>
+        Использовать уже установленный <code>jsonc-parser</code> со строгими настройками:
+        <code>disallowComments: true</code>, <code>allowTrailingComma: false</code>,
+        <code>allowEmptyContent: false</code>. До рекурсивного разбора ограничить глубину, как это
+        сделано для <a href="src/renderers/balsamiq-json.ts">Balsamiq</a>. Отслеживать дубли ключей,
+        не полагаться на выбор последнего значения.
+      </p>
+      <p>
+        Парсер возвращает нормализованную сцену, список предупреждений и индекс позиций читаемых
+        полей. Для каждого элемента хранить исходный ID, порядковый номер и JSON Pointer. Ошибки
+        содержат <code>line</code> и <code>column</code> с единицы относительно содержимого блока;
+        plugin преобразует их в координаты Markdown. В сообщении указывать путь поля, например
+        <code>elements[2].points[1]</code>, без полного JSON.
+      </p>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Область</th>
+              <th>Правила</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Корень</td>
+              <td>
+                Требовать объект, корректные <code>type</code>, <code>version</code> и массив
+                <code>elements</code>; <code>appState</code> и <code>files</code> необязательны, но
+                при наличии должны быть объектами
+              </td>
+            </tr>
+            <tr>
+              <td>Идентификаторы</td>
+              <td>
+                Требовать непустые уникальные ID; словари строить через <code>Map</code>; не
+                переносить произвольные поля JSON в SVG
+              </td>
+            </tr>
+            <tr>
+              <td>Геометрия</td>
+              <td>
+                Проверять конечные числа; размеры неотрицательны, отрицательные координаты
+                допустимы; нулевая ширина или высота допустима для линии
+              </td>
+            </tr>
+            <tr>
+              <td>Удалённые элементы</td>
+              <td>
+                Учитывать в лимите и проверке уникальности ID; при <code>isDeleted: true</code> не
+                рендерить и не включать в границы сцены
+              </td>
+            </tr>
+            <tr>
+              <td>Порядок</td>
+              <td>
+                Рисовать в порядке массива <code>elements</code>; служебный <code>index</code> не
+                должен менять порядок сохранённого экспорта
+              </td>
+            </tr>
+            <tr>
+              <td>Группы</td>
+              <td>
+                Сохранить <code>groupIds</code> как принадлежность элемента группам; не добавлять
+                рамки, смещения или повторный поворот
+              </td>
+            </tr>
+            <tr>
+              <td>Состояние редактора</td>
+              <td>
+                Читать только <code>appState.viewBackgroundColor</code>; масштаб, прокрутку,
+                выделение и настройки интерфейса игнорировать
+              </td>
+            </tr>
+            <tr>
+              <td>Служебные данные</td>
+              <td>
+                <code>source</code>, <code>seed</code>, история изменения, блокировка и
+                <code>customData</code> не влияют на геометрию; незнакомые служебные поля
+                игнорировать
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Пустая сцена, включая сцену только с удалёнными элементами, даёт небольшой SVG с текстом
+        «Пустая сцена Excalidraw» и предупреждение. Это отличается от некорректного JSON, который
+        считается ошибкой.
+      </p>
+      <h2>Геометрия, текст и связи</h2>
+      <p>
+        Типы элементов и поля связей сверить с
+        <a href="https://github.com/excalidraw/excalidraw/blob/master/packages/element/src/types.ts"
+          >официальными определениями Excalidraw</a
+        >. При реализации сохранить экспорт и ссылку на конкретную ревизию источника рядом с
+        fixture: одна корневая версия не фиксирует все возможности редактора.
+      </p>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-002"><svg id="bp-diagram-002-bp-diagram-002" width="472.3000183105469" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 472.3px; background-color: transparent;" viewBox="4 4 472.3000183105469 1022.5999755859375" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-002-bp-diagram-002{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-002-bp-diagram-002 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-002-bp-diagram-002 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-002-bp-diagram-002 .error-icon{fill:#552222;}#bp-diagram-002-bp-diagram-002 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-002-bp-diagram-002 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-002-bp-diagram-002 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-002-bp-diagram-002 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-002-bp-diagram-002 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-002-bp-diagram-002 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-002-bp-diagram-002 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-002-bp-diagram-002 .marker{fill:#333333;stroke:#333333;}#bp-diagram-002-bp-diagram-002 .marker.cross{stroke:#333333;}#bp-diagram-002-bp-diagram-002 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-002-bp-diagram-002 p{margin:0;}#bp-diagram-002-bp-diagram-002 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-002-bp-diagram-002 .cluster-label text{fill:#333;}#bp-diagram-002-bp-diagram-002 .cluster-label span{color:#333;}#bp-diagram-002-bp-diagram-002 .cluster-label span p{background-color:transparent;}#bp-diagram-002-bp-diagram-002 .label text,#bp-diagram-002-bp-diagram-002 span{fill:#333;color:#333;}#bp-diagram-002-bp-diagram-002 .node rect,#bp-diagram-002-bp-diagram-002 .node circle,#bp-diagram-002-bp-diagram-002 .node ellipse,#bp-diagram-002-bp-diagram-002 .node polygon,#bp-diagram-002-bp-diagram-002 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-002-bp-diagram-002 .rough-node .label text,#bp-diagram-002-bp-diagram-002 .node .label text,#bp-diagram-002-bp-diagram-002 .image-shape .label,#bp-diagram-002-bp-diagram-002 .icon-shape .label{text-anchor:middle;}#bp-diagram-002-bp-diagram-002 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-002-bp-diagram-002 .rough-node .label,#bp-diagram-002-bp-diagram-002 .node .label,#bp-diagram-002-bp-diagram-002 .image-shape .label,#bp-diagram-002-bp-diagram-002 .icon-shape .label{text-align:center;}#bp-diagram-002-bp-diagram-002 .node.clickable{cursor:pointer;}#bp-diagram-002-bp-diagram-002 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-002-bp-diagram-002 .arrowheadPath{fill:#333333;}#bp-diagram-002-bp-diagram-002 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-002-bp-diagram-002 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-002-bp-diagram-002 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-002-bp-diagram-002 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-002-bp-diagram-002 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-002-bp-diagram-002 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-002-bp-diagram-002 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-002-bp-diagram-002 .cluster text{fill:#333;}#bp-diagram-002-bp-diagram-002 .cluster span{color:#333;}#bp-diagram-002-bp-diagram-002 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-002-bp-diagram-002 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-002-bp-diagram-002 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-002-bp-diagram-002 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-002-bp-diagram-002 rect.text{fill:none;stroke-width:0;}#bp-diagram-002-bp-diagram-002 .icon-shape,#bp-diagram-002-bp-diagram-002 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-002-bp-diagram-002 .icon-shape p,#bp-diagram-002-bp-diagram-002 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-002-bp-diagram-002 .icon-shape .label rect,#bp-diagram-002-bp-diagram-002 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-002-bp-diagram-002 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-002-bp-diagram-002 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-002-bp-diagram-002 .node .neo-node{stroke:#9370DB;}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node rect,#bp-diagram-002-bp-diagram-002 [data-look="neo"].cluster rect,#bp-diagram-002-bp-diagram-002 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-002-bp-diagram-002 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-002-bp-diagram-002 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-002-bp-diagram-002 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-002-bp-diagram-002 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-002-bp-diagram-002 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-002-bp-diagram-002_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M192.1500015258789,53L192.1500015258789,89" id="bp-diagram-002-bp-diagram-002-L_ELEMENT_DELETED_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_ELEMENT_DELETED_0" data-points="W3sieCI6MTkyLjE1MDAwMTUyNTg3ODksInkiOjUzfSx7IngiOjE5Mi4xNTAwMDE1MjU4Nzg5LCJ5Ijo5M31d" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M167.6500015258789,235.4999213218689L167.6500015258789,260L167.6500015258789,272.9289321881345Q167.6500015258789,280 160.57893371401343,280L95.07106781186548,280Q88,280 88,287.0710678118655L88,357" id="bp-diagram-002-bp-diagram-002-L_DELETED_SKIP_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 191.82177734375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_DELETED_SKIP_0" data-points="W3sieCI6MTY3LjY1MDAwMTUyNTg3ODksInkiOjIzNS40OTk5MjEzMjE4Njg5fSx7IngiOjE2Ny42NTAwMDE1MjU4Nzg5LCJ5IjoyNjB9LHsieCI6MTY3LjY1MDAwMTUyNTg3ODksInkiOjI4MH0seyJ4Ijo4OCwieSI6MjgwfSx7IngiOjg4LCJ5IjozNjF9XQ==" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M216.6500015258789,235.4999213218689L216.6500015258789,260L216.6500015258789,272.9289321881345Q216.6500015258789,280 223.72106933774438,280L289.22893523989234,280Q296.3000030517578,280 296.3000030517578,287.0710678118655L296.3000030517578,357" id="bp-diagram-002-bp-diagram-002-L_DELETED_KIND_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 191.8218231201172 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_DELETED_KIND_0" data-points="W3sieCI6MjE2LjY1MDAwMTUyNTg3ODksInkiOjIzNS40OTk5MjEzMjE4Njg5fSx7IngiOjIxNi42NTAwMDE1MjU4Nzg5LCJ5IjoyNjB9LHsieCI6MjE2LjY1MDAwMTUyNTg3ODksInkiOjI4MH0seyJ4IjoyOTYuMzAwMDAzMDUxNzU3OCwieSI6MjgwfSx7IngiOjI5Ni4zMDAwMDMwNTE3NTc4LCJ5IjozNjF9XQ==" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M268.8666687011719,518.1666659821494L268.8666687011719,545.6000061035156L268.8666687011719,558.5289382916501Q268.8666687011719,565.6000061035156 261.7956008893064,565.6000061035156L207.3710708636233,565.6000061035156Q200.3000030517578,565.6000061035156 200.3000030517578,572.6710739153812L200.3000030517578,675.9000053405762L200.3000030517578,741.2000045776367" id="bp-diagram-002-bp-diagram-002-L_KIND_PLACEHOLDER_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 282.2716979980469 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_KIND_PLACEHOLDER_0" data-points="W3sieCI6MjY4Ljg2NjY2ODcwMTE3MTksInkiOjUxOC4xNjY2NjU5ODIxNDk0fSx7IngiOjI2OC44NjY2Njg3MDExNzE5LCJ5Ijo1NDUuNjAwMDA2MTAzNTE1Nn0seyJ4IjoyNjguODY2NjY4NzAxMTcxOSwieSI6NTY1LjYwMDAwNjEwMzUxNTZ9LHsieCI6MjAwLjMwMDAwMzA1MTc1NzgsInkiOjU2NS42MDAwMDYxMDM1MTU2fSx7IngiOjIwMC4zMDAwMDMwNTE3NTc4LCJ5Ijo2NzUuOTAwMDA1MzQwNTc2Mn0seyJ4IjoyMDAuMzAwMDAzMDUxNzU3OCwieSI6NzQ1LjIwMDAwNDU3NzYzNjd9XQ==" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M323.73333740234375,518.1666659821494L323.73333740234375,545.6000061035156L323.73333740234375,558.5289382916501Q323.73333740234375,565.6000061035156 330.8044052142092,565.6000061035156L385.22893523989234,565.6000061035156Q392.3000030517578,565.6000061035156 392.3000030517578,572.6710739153812L392.3000030517578,642.6000061035156" id="bp-diagram-002-bp-diagram-002-L_KIND_LOCAL_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 183.67173767089844 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_KIND_LOCAL_0" data-points="W3sieCI6MzIzLjczMzMzNzQwMjM0Mzc1LCJ5Ijo1MTguMTY2NjY1OTgyMTQ5NH0seyJ4IjozMjMuNzMzMzM3NDAyMzQzNzUsInkiOjU0NS42MDAwMDYxMDM1MTU2fSx7IngiOjMyMy43MzMzMzc0MDIzNDM3NSwieSI6NTY1LjYwMDAwNjEwMzUxNTZ9LHsieCI6MzkyLjMwMDAwMzA1MTc1NzgsInkiOjU2NS42MDAwMDYxMDM1MTU2fSx7IngiOjM5Mi4zMDAwMDMwNTE3NTc4LCJ5Ijo2NDYuNjAwMDA2MTAzNTE1Nn1d" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M392.3000030517578,705.2000045776367L392.3000030517578,741.2000045776367" id="bp-diagram-002-bp-diagram-002-L_LOCAL_TRANSFORM_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_LOCAL_TRANSFORM_0" data-points="W3sieCI6MzkyLjMwMDAwMzA1MTc1NzgsInkiOjcwNS4yMDAwMDQ1Nzc2MzY3fSx7IngiOjM5Mi4zMDAwMDMwNTE3NTc4LCJ5Ijo3NDUuMjAwMDA0NTc3NjM2N31d" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M392.3000030517578,803.8000030517578L392.3000030517578,816.7289352398923Q392.3000030517578,823.8000030517578 385.22893523989234,823.8000030517578L325.3710708636233,823.8000030517578Q318.3000030517578,823.8000030517578 318.3000030517578,830.8710708636233L318.3000030517578,839.8000030517578" id="bp-diagram-002-bp-diagram-002-L_TRANSFORM_BOUNDS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67169189453125 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_TRANSFORM_BOUNDS_0" data-points="W3sieCI6MzkyLjMwMDAwMzA1MTc1NzgsInkiOjgwMy44MDAwMDMwNTE3NTc4fSx7IngiOjM5Mi4zMDAwMDMwNTE3NTc4LCJ5Ijo4MjMuODAwMDAzMDUxNzU3OH0seyJ4IjozMTguMzAwMDAzMDUxNzU3OCwieSI6ODIzLjgwMDAwMzA1MTc1Nzh9LHsieCI6MzE4LjMwMDAwMzA1MTc1NzgsInkiOjg0My44MDAwMDMwNTE3NTc4fV0=" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M200.3000030517578,803.8000030517578L200.3000030517578,816.7289352398923Q200.3000030517578,823.8000030517578 207.3710708636233,823.8000030517578L267.22893523989234,823.8000030517578Q274.3000030517578,823.8000030517578 274.3000030517578,830.8710708636233L274.3000030517578,839.8000030517578" id="bp-diagram-002-bp-diagram-002-L_PLACEHOLDER_BOUNDS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67169189453125 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_PLACEHOLDER_BOUNDS_0" data-points="W3sieCI6MjAwLjMwMDAwMzA1MTc1NzgsInkiOjgwMy44MDAwMDMwNTE3NTc4fSx7IngiOjIwMC4zMDAwMDMwNTE3NTc4LCJ5Ijo4MjMuODAwMDAzMDUxNzU3OH0seyJ4IjoyNzQuMzAwMDAzMDUxNzU3OCwieSI6ODIzLjgwMDAwMzA1MTc1Nzh9LHsieCI6Mjc0LjMwMDAwMzA1MTc1NzgsInkiOjg0My44MDAwMDMwNTE3NTc4fV0=" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path><path d="M296.3000030517578,920L296.3000030517578,956" id="bp-diagram-002-bp-diagram-002-L_BOUNDS_VIEWBOX_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_BOUNDS_VIEWBOX_0" data-points="W3sieCI6Mjk2LjMwMDAwMzA1MTc1NzgsInkiOjkyMH0seyJ4IjoyOTYuMzAwMDAzMDUxNzU3OCwieSI6OTYwfV0=" data-look="neo" marker-end="url(#bp-diagram-002-bp-diagram-002_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(87.91796875, 310.5)"><g class="label" data-id="L_DELETED_SKIP_0" transform="translate(-0.05078125, -10.5)"><g><rect class="background" style="" x="-11.8671875" y="0" width="23.8359375" height="21"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Да</tspan></tspan></text></g></g></g><g class="edgeLabel" transform="translate(296.2609405517578, 310.5)"><g class="label" data-id="L_DELETED_KIND_0" transform="translate(-0.3359375, -10.5)"><g><rect class="background" style="" x="-15.625" y="0" width="31.921875" height="21"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Нет</tspan></tspan></text></g></g></g><g class="edgeLabel" transform="translate(200.2609405517578, 596.1000061035156)"><g class="label" data-id="L_KIND_PLACEHOLDER_0" transform="translate(-0.3359375, -10.5)"><g><rect class="background" style="" x="-15.625" y="0" width="31.921875" height="21"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Нет</tspan></tspan></text></g></g></g><g class="edgeLabel" transform="translate(392.2179718017578, 596.1000061035156)"><g class="label" data-id="L_KIND_LOCAL_0" transform="translate(-0.05078125, -10.5)"><g><rect class="background" style="" x="-11.8671875" y="0" width="23.8359375" height="21"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Да</tspan></tspan></text></g></g></g></g><g class="nodes"><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-ELEMENT-0" data-look="neo" transform="translate(192.1500015258789, 32.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Элемент</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> сцены</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-DELETED-1" data-look="neo" transform="translate(192.1500015258789, 176.5)"><polygon points="83.5,0 167,-83.5 83.5,-167 0,-83.5" class="label-container" transform="translate(-83, 83.5)"></polygon><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Удалён?</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-SKIP-3" data-look="neo" transform="translate(88, 381.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Не</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> рисовать</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-KIND-5" data-look="neo" transform="translate(296.3000030517578, 453.3000030517578)"><polygon points="92.29999923706055,0 184.5999984741211,-92.29999923706055 92.29999923706055,-184.5999984741211 0,-92.29999923706055" class="label-container" transform="translate(-91.79999923706055, 92.29999923706055)"></polygon><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Есть</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">поддержка?</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-PLACEHOLDER-7" data-look="neo" transform="translate(200.3000030517578, 774.5000038146973)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Рамка</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> с</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> типом</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> сообщение</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-LOCAL-9" data-look="neo" transform="translate(392.3000030517578, 675.9000053405762)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Локальная</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">геометрия</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-TRANSFORM-11" data-look="neo" transform="translate(392.3000030517578, 774.5000038146973)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Перенос</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> поворот</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-BOUNDS-13" data-look="neo" transform="translate(296.3000030517578, 881.9000015258789)"><rect class="basic label-container" style="" x="-76" y="-38.099998474121094" width="152" height="76.19999694824219"></rect><g class="label" style="" transform="translate(0, -26.099998474121094)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Границы:</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">контуры,</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> текст</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="2.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> стрелки</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-002-bp-diagram-002-flowchart-VIEWBOX-17" data-look="neo" transform="translate(296.3000030517578, 989.2999992370605)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Отступ</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> 16</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> px</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">и</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> SVG</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> viewBox</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-002-bp-diagram-002-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-002-bp-diagram-002-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Часть</th>
+              <th>Правила отображения</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Фигуры</td>
+              <td>
+                Прямоугольник, эллипс и ромб по сохранённым размерам; <code>angle</code> в радианах,
+                поворот вокруг центра элемента
+              </td>
+            </tr>
+            <tr>
+              <td>Линии</td>
+              <td>
+                <code>points</code> задают локальные точки относительно <code>x</code>,
+                <code>y</code>; не менее двух точек; сохранить отрицательные смещения и нулевые
+                сегменты
+              </td>
+            </tr>
+            <tr>
+              <td>Стрелки</td>
+              <td>
+                Рисовать сохранённую ломаную без пересчёта маршрута; поддержать <code>null</code>,
+                <code>arrow</code> и <code>triangle</code> для обоих наконечников; направление брать
+                по ближайшему ненулевому сегменту
+              </td>
+            </tr>
+            <tr>
+              <td>Вырожденные пути</td>
+              <td>
+                Если все точки совпадают, показать точку без наконечника и выдать предупреждение; не
+                делить на нулевую длину
+              </td>
+            </tr>
+            <tr>
+              <td>Привязки</td>
+              <td>
+                <code>startBinding</code>, <code>endBinding</code>, <code>containerId</code> и
+                <code>boundElements</code> не перемещают элементы; отсутствующая или удалённая цель
+                даёт предупреждение, сохранённая геометрия остаётся
+              </td>
+            </tr>
+            <tr>
+              <td>Текст</td>
+              <td>
+                Использовать сохранённый <code>text</code>, переносы строк, координаты,
+                <code>fontSize</code>, <code>lineHeight</code>, <code>textAlign</code> и поворот; не
+                пересчитывать переносы по <code>originalText</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Подписи фигур и стрелок</td>
+              <td>
+                Рисовать соответствующий элемент <code>text</code> один раз на его сохранённом
+                месте; не создавать второй текст из <code>boundElements</code> и не наследовать
+                повторно поворот контейнера
+              </td>
+            </tr>
+            <tr>
+              <td>Группы</td>
+              <td>
+                Оставить плоский порядок отрисовки и экранированные <code>data-group-ids</code>;
+                вложенность групп не превращать в SVG transforms, которые сдвигают элементы
+              </td>
+            </tr>
+            <tr>
+              <td>Границы</td>
+              <td>
+                Объединить повёрнутые фигуры, точки линий, текст и наконечники с учётом толщины
+                обводки; добавить отступ и явные положительные <code>width</code>,
+                <code>height</code>, <code>viewBox</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Для текста использовать <code>sans-serif</code> в HTML/SVG и существующий Noto Sans при
+        печати PDF. Сохранять все строки без обрезки по исходной высоте. При замене шрифта учитывать
+        возможный выход глифов за сохранённый прямоугольник при расчёте границ и проверять его
+        реальным рендерингом. Оригинальная ширина надписей не гарантируется; о замене шрифта
+        сообщать один раз на семейство.
+      </p>
+      <p>
+        Группа не является отдельной фигурой. Не собирать её элементы в общий <code>&#x3C;g></code>,
+        если это меняет перекрытия с элементами других групп. Сохранение групп в первой версии
+        означает сохранение принадлежности и взаимного расположения; интерактивное выделение групп
+        отложено.
+      </p>
+      <h2>Стили и ограничения воспроизведения</h2>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Возможность</th>
+              <th>Поведение первой версии</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Цвет и прозрачность</td>
+              <td>
+                Поддержать <code>#RGB</code>, <code>#RGBA</code>, <code>#RRGGBB</code>,
+                <code>#RRGGBBAA</code>, <code>transparent</code>; <code>strokeWidth</code>,
+                <code>opacity</code> от 0 до 100, <code>solid</code>/<code>dashed</code>/<code
+                  >dotted</code
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>Фон</td>
+              <td>
+                Использовать допустимый <code>viewBackgroundColor</code>, иначе белый; неверный цвет
+                считать ошибкой; тема документа не должна менять исходные цвета сцены
+              </td>
+            </tr>
+            <tr>
+              <td>Заливка</td>
+              <td>
+                <code>solid</code> воспроизводить; hachure и другие виды штриховки заменять сплошной
+                заливкой с предупреждением
+              </td>
+            </tr>
+            <tr>
+              <td>Рисованный контур</td>
+              <td>
+                Ненулевой <code>roughness</code> отображать ровным контуром с предупреждением;
+                побитовое совпадение с RoughJS не входит в задачу
+              </td>
+            </tr>
+            <tr>
+              <td>Скругления</td>
+              <td>
+                Непустой <code>roundness</code> упрощать до острых углов с предупреждением;
+                сохранённые точки обычной линии остаются
+              </td>
+            </tr>
+            <tr>
+              <td>Наконечники</td>
+              <td>
+                Неподдерживаемый непустой вид заменять на <code>arrow</code> с предупреждением;
+                явный <code>null</code> сохранять
+              </td>
+            </tr>
+            <tr>
+              <td>Изображения</td>
+              <td>
+                <code>image</code> обозначать рамкой «Изображение не поддерживается» на исходном
+                месте; содержимое <code>files</code> не декодировать и не загружать
+              </td>
+            </tr>
+            <tr>
+              <td>Остальные элементы</td>
+              <td>
+                <code>freedraw</code>, <code>frame</code>, <code>magicframe</code>,
+                <code>iframe</code>, <code>embeddable</code>, новые типы и <code>arrow</code> с
+                <code>elbowed: true</code> показывать обозначенной рамкой с предупреждением
+              </td>
+            </tr>
+            <tr>
+              <td>Frames</td>
+              <td>
+                Дочерние элементы сохраняют координаты сцены; рамка не вводит clip или смещение;
+                отсутствие clipping явно указать в предупреждении
+              </td>
+            </tr>
+            <tr>
+              <td>Ссылки</td>
+              <td>
+                <code>link</code> не превращать в активную ссылку; непустое значение отмечать
+                предупреждением, без вывода URL в SVG
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        В предупреждении указывать ID и тип элемента либо путь поля. Повторяющиеся упрощения
+        объединять по виду с числом затронутых элементов и позицией первого; сведения о
+        неподдерживаемых элементах дополнительно видны на самой схеме. Чистая fixture из
+        поддерживаемых элементов должна проходить <code>--check</code> без предупреждений.
+      </p>
+      <h2>Лимиты и безопасный SVG</h2>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Ограничение</th>
+              <th>Значение первой версии</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Размер JSON</td>
+              <td>
+                1 MiB UTF-8; установить <code>maxSourceBytes</code> renderer, не менять общий лимит
+                остальных форматов
+              </td>
+            </tr>
+            <tr>
+              <td>Число элементов</td>
+              <td>3 000, включая удалённые и неподдерживаемые</td>
+            </tr>
+            <tr>
+              <td>Глубина JSON</td>
+              <td>100; проверять до рекурсивного AST-разбора</td>
+            </tr>
+            <tr>
+              <td>Точки линий</td>
+              <td>10 000 на элемент и 100 000 на сцену</td>
+            </tr>
+            <tr>
+              <td>Группы</td>
+              <td>Не более 100 ID в <code>groupIds</code> одного элемента</td>
+            </tr>
+            <tr>
+              <td>Числа</td>
+              <td>
+                Модуль координат и размеров до 1 000 000; <code>fontSize</code> от 1 до 512;
+                <code>lineHeight</code> от 0.5 до 4; <code>strokeWidth</code> от 0 до 100
+              </td>
+            </tr>
+            <tr>
+              <td>Размер результата</td>
+              <td>SVG до 4 MiB UTF-8; проверять при накоплении вывода</td>
+            </tr>
+            <tr>
+              <td>Экспорт растра</td>
+              <td>
+                Сохранить существующие ограничения 8 192 px на сторону и 32 млн пикселей; применять
+                общее масштабирование экспорта
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Превышение лимита — ошибка с именем ограничения. Проверки размеров и количества выполнять до
+        построения больших промежуточных массивов. Длинные надписи ограничены размером входа и
+        результата; не обрезать их молча.
+      </p>
+      <p>
+        Текст и атрибуты экранировать. Цвета проверять по разрешённой грамматике, не вставлять
+        произвольный CSS. ID маркеров генерировать из порядковых номеров; не использовать
+        пользовательский ID как fragment без преобразования. Запретить активный HTML,
+        <code>foreignObject</code>, обработчики событий, внешние ресурсы и <code>url()</code> из
+        JSON. Существующая проверка SVG остаётся обязательной; ради нового формата её не ослаблять.
+      </p>
+      <p>
+        Проверять <code>AbortSignal</code> до разбора и между крупными фазами. Не добавлять
+        отдельный кеш. В кешируемом результате хранить локальные позиции, чтобы перенос fence в
+        Markdown обновлял координаты сообщений.
+      </p>
+      <h2>Модули и порядок реализации</h2>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Шаг</th>
+              <th>Файлы</th>
+              <th>Проверяемый результат</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Контракт и fixtures</td>
+              <td>
+                Новые <code>tests/fixtures/excalidraw/</code>,
+                <code>src/renderers/excalidraw-schema.ts</code>
+              </td>
+              <td>
+                Сохранены реальный экспорт версии 2, минимальная сцена, группы, подписи, повороты и
+                неподдерживаемые элементы
+              </td>
+            </tr>
+            <tr>
+              <td>2. Строгий разбор</td>
+              <td>
+                Новые <code>excalidraw-json.ts</code>, <code>excalidraw-json-error.ts</code>, при
+                необходимости <code>excalidraw-json-tree.ts</code> в <code>src/renderers/</code>
+              </td>
+              <td>Модель сцены, defaults, лимиты, дубли ключей и ID, локальные позиции ошибок</td>
+            </tr>
+            <tr>
+              <td>3. Геометрия</td>
+              <td>
+                Новые <code>src/renderers/excalidraw-geometry.ts</code>,
+                <code>excalidraw-svg-text.ts</code>
+              </td>
+              <td>
+                Трансформации, направления наконечников, текст и полные границы; нет повторного
+                смещения групп
+              </td>
+            </tr>
+            <tr>
+              <td>4. SVG и renderer</td>
+              <td>
+                Новые <code>src/renderers/excalidraw-svg.ts</code>, <code>excalidraw.ts</code>
+              </td>
+              <td>
+                Детерминированный SVG, placeholders, предупреждения, отмена и версионированный
+                <code>cacheKey</code>
+              </td>
+            </tr>
+            <tr>
+              <td>5. Интеграция</td>
+              <td><code>src/compiler.ts</code>, существующие интеграционные тесты</td>
+              <td>
+                Новый fence одинаково работает в <code>compileMarkdown()</code>,
+                <code>checkMarkdown()</code>, preview и экспорте
+              </td>
+            </tr>
+            <tr>
+              <td>6. Документация</td>
+              <td>
+                <code>README.md</code>, <code>docs/reference.md</code>, новый
+                <code>examples/blueprint-excalidraw.md</code>,
+                <code>skills/blueprint4llm/SKILL.md</code>
+              </td>
+              <td>
+                Описаны версия, подмножество, изображения, шрифты и упрощения; пример проверен и
+                отрендерен
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Каждому модулю дать одну ответственность. Соблюдать предел 300–500 строк на code-файл;
+        разделять по функциям, сохраняя связность. Каждую новую функцию покрыть unit-тестами. Не
+        импортировать приватные helpers другого формата ради сокращения кода; общий модуль выделять
+        только при реальном совпадении правил.
+      </p>
+      <h2>Проверки и приёмка</h2>
+      <p>
+        Основная fixture: прямоугольник «Клиент» с отрицательными координатами, эллипс «API», ромб
+        решения, подписанная стрелка из нескольких сегментов, повёрнутая фигура, многострочная
+        подпись и две вложенные группы. Добавить удалённый элемент далеко от сцены: он не должен
+        увеличивать её размер. Отдельная fixture показывает изображения, неподдерживаемый тип и
+        замену стилей.
+      </p>
+      <div class="bp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Уровень</th>
+              <th>Тесты и ожидаемый результат</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>JSON и позиции</td>
+              <td>
+                Новый <code>tests/excalidraw-json.test.ts</code>: реальный экспорт и defaults,
+                комментарии, trailing comma, дубли ключей/ID, неверная версия, clipboard, типы,
+                переполнение числа, точные строки/столбцы, CRLF
+              </td>
+            </tr>
+            <tr>
+              <td>Ограничения</td>
+              <td>
+                Пограничные и превышенные размер, глубина, элементы, точки и группы; не смешивать
+                корневую версию и <code>element.version</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Геометрия</td>
+              <td>
+                Новый <code>tests/excalidraw-geometry.test.ts</code>: отрицательные координаты,
+                радианы, поворот центра, направленные наконечники, повторяющиеся точки, текст за
+                исходной высотой, viewBox без удалённых элементов
+              </td>
+            </tr>
+            <tr>
+              <td>SVG и стили</td>
+              <td>
+                Новый <code>tests/excalidraw-svg.test.ts</code>: порядок перекрытий, многострочный
+                текст, группы без transforms, единичные подписи, placeholders, стили и
+                детерминированность SVG
+              </td>
+            </tr>
+            <tr>
+              <td>Безопасность</td>
+              <td>
+                HTML в тексте/ID, CSS и URL в цветах, <code>link</code>, данные <code>files</code>;
+                результат проходит <code>parseAndValidateSvg()</code>; ни renderer, ни экспорт
+                готового документа не обращаются к сети
+              </td>
+            </tr>
+            <tr>
+              <td>Контракт renderer</td>
+              <td>
+                Новый <code>tests/excalidraw-renderer.test.ts</code>: язык, размер блока, warnings,
+                локальная позиция ошибки, abort до работы; менять <code>cacheKey</code> при
+                изменении правил вывода
+              </td>
+            </tr>
+            <tr>
+              <td>Общий конвейер</td>
+              <td>
+                <code>tests/compiler.test.ts</code>, <code>tests/remark-diagrams.test.ts</code>,
+                <code>tests/diagram-cache.test.ts</code>, <code>tests/diagram-limits.test.ts</code>:
+                оба API, смешанный документ, два одинаковых блока с разными SVG ID, перенос fence,
+                общий счётчик блоков
+              </td>
+            </tr>
+            <tr>
+              <td>CLI и экспорт</td>
+              <td>
+                <code>tests/cli-integration.test.ts</code>, <code>tests/image-export.test.ts</code>,
+                <code>tests/pdf.test.ts</code>: <code>--check</code> без выходных файлов,
+                неправильная версия с кодом <code>1</code>, HTML/PDF и одна сцена в SVG/PNG/JPEG
+              </td>
+            </tr>
+            <tr>
+              <td>Preview</td>
+              <td>
+                <code>tests/server.test.ts</code>,
+                <code>vscode-extension/test/suite/preview-controller.test.ts</code>: новая сцена
+                появляется после изменения Markdown; никаких специальных обходов renderer
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Не заменять проверки смыслового результата снимком одной длинной SVG-строки. Проверять
+        конкретные координаты, тексты, порядок элементов, границы и сообщения. Все существующие
+        форматы должны сохранить прежнее поведение.
+      </p>
+      <p>
+        Ручная приёмка: открыть основную fixture в HTML, браузерном preview и VS Code, затем
+        проверить PDF, SVG и PNG. Сравнить координаты и перекрытия с экспортом из Excalidraw;
+        допустимы только перечисленные упрощения. Осмотреть все подписи, нижние элементы и
+        наконечники. Проверить светлую и тёмную темы документа и работу без сети. В сцене с
+        ограничениями должны быть видны placeholders и доступны предупреждения.
+      </p>
+      <p>
+        Большая сцена в PDF подчиняется текущему масштабированию схем до 220 mm по высоте и может
+        стать мелкой. Многостраничную печать одной сцены и точное воспроизведение оригинальных
+        шрифтов отложить; ограничения включить в документацию.
+      </p>
+      <pre
+        class="shiki shiki-themes github-light github-dark"
+        style="
+          --shiki-light: #24292e;
+          --shiki-dark: #e1e4e8;
+          --shiki-light-bg: #fff;
+          --shiki-dark-bg: #24292e;
+        "
+        tabindex="0"
+      ><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> build</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> typecheck</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> lint</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> format:check</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> test</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">npm</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --prefix</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> vscode-extension</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> build</span></span>
+<span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D"># Для headless Linux:</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">xvfb-run</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> -a</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> npm</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --prefix</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> vscode-extension</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> test</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">blueprint4llm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> examples/blueprint-excalidraw.md</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --check</span></span></code></pre>
+      <p>
+        После реализации все тесты и сборки должны пройти без ошибок и предупреждений. Затем
+        увеличить minor-версию корневого пакета по <code>AGENTS.md</code>. FMT-02 отметить
+        выполненной в очереди только после приёмки. Создание этого плана не означает, что формат уже
+        реализован.
+      </p>
+    </main>
+  </body>
+</html>
