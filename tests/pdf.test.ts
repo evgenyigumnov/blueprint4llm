@@ -169,6 +169,51 @@ ${longContent}`;
     expect(text.replaceAll(/\s+/g, '').toLowerCase()).toContain('pencilpdflabel');
   }, 60_000);
 
+  it('prints Balsamiq SVG text in a PDF', async () => {
+    const balsamiqJson = JSON.stringify({
+      mockup: {
+        measuredW: '320',
+        measuredH: '180',
+        controls: {
+          control: [
+            { ID: 'canvas', typeID: 'Canvas', x: '0', y: '0', w: '320', h: '180', zOrder: '0' },
+            {
+              ID: 'heading',
+              typeID: 'Title',
+              x: '16',
+              y: '20',
+              measuredW: '288',
+              measuredH: '36',
+              zOrder: '1',
+              properties: { text: 'Balsamiq PDF label' },
+            },
+          ],
+        },
+      },
+    });
+    const compiled = await compileMarkdown(
+      `# Balsamiq PDF\n\n\`\`\`balsamiq\n${balsamiqJson}\n\`\`\``,
+      { sourceFile: 'balsamiq-pdf.md' },
+    );
+    const pdf = await renderPdf(compiled);
+    const loadingTask = getDocument({ data: Uint8Array.from(pdf) });
+    const document = await loadingTask.promise;
+    let text: string;
+    try {
+      const page = await document.getPage(1);
+      const content = await page.getTextContent();
+      text = content.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .filter(Boolean)
+        .join(' ');
+    } finally {
+      await loadingTask.destroy();
+    }
+
+    expect(Buffer.from(pdf.subarray(0, 5)).toString()).toBe('%PDF-');
+    expect(text.replaceAll(/\s+/g, '').toLowerCase()).toContain('balsamiqpdflabel');
+  }, 60_000);
+
   it('honors an already-aborted signal without launching Chromium', async () => {
     const compiled = await compileMarkdown('# Aborted', { sourceFile: 'aborted.md' });
     const controller = new AbortController();

@@ -21,6 +21,7 @@ import { wiremarkRenderer } from './renderers/wiremark.js';
 import { figmaRenderer } from './renderers/figma.js';
 import { drawioRenderer } from './renderers/drawio.js';
 import { pencilRenderer } from './renderers/pencil.js';
+import { balsamiqRenderer } from './renderers/balsamiq.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { resolveFigmaAccessToken } from './renderers/figma-token.js';
 import { renderHtmlPage } from './template.js';
@@ -108,6 +109,7 @@ export async function compileMarkdown(
         figmaRenderer,
         drawioRenderer,
         pencilRenderer,
+        balsamiqRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,
@@ -174,6 +176,7 @@ export async function checkMarkdown(
         figmaRenderer,
         drawioRenderer,
         pencilRenderer,
+        balsamiqRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,

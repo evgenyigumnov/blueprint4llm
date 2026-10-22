@@ -109,6 +109,52 @@ describe('CLI main', () => {
     expect((await readdir(root)).sort()).toEqual(['pencil.md']);
   });
 
+  it('checks documented Balsamiq JSON through the CLI without creating output files', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'balsamiq.md');
+    const balsamiqJson = JSON.stringify({
+      mockup: {
+        measuredW: '320',
+        measuredH: '180',
+        version: '1.0',
+        controls: {
+          control: [
+            {
+              ID: 'title',
+              typeID: 'Title',
+              x: '16',
+              y: '16',
+              measuredW: '288',
+              measuredH: '32',
+              zOrder: '0',
+              properties: { text: 'Balsamiq CLI check' },
+            },
+          ],
+        },
+      },
+    });
+    await writeFile(input, ['# Balsamiq', '', '```balsamiq', balsamiqJson, '```'].join('\n'));
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_OK);
+    expect(captured.stdout.join('')).toBe(`${input}: OK\n`);
+    expect(captured.stderr.join('')).toBe('');
+    expect((await readdir(root)).sort()).toEqual(['balsamiq.md']);
+  });
+
+  it('prints Balsamiq JSON positions in --check diagnostics', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'broken-balsamiq.md');
+    await writeFile(input, '# Broken\n\n```balsamiq\n{\n  "mockup": }\n```');
+    const captured = captureIo();
+
+    expect(await main([input, '--check'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain(`${input}:5:13: balsamiq render failed:`);
+    expect(captured.stderr.join('')).toContain('invalid Balsamiq JSON');
+    expect((await readdir(root)).sort()).toEqual(['broken-balsamiq.md']);
+  });
+
   it('returns failure for diagram errors in check mode and writes no output', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'broken.md');
