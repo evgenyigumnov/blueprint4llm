@@ -34,6 +34,39 @@ afterEach(async () => {
 });
 
 describe('built CLI integration', () => {
+  it('exports one rendered diagram as SVG, PNG, or JPEG', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'one-diagram.md');
+    await writeFile(
+      input,
+      '# Login screen\n\n```wireframe\nWireframe #login mobile\n  Typography h4 "Sign in"\n```',
+    );
+
+    const svgPath = path.join(root, 'exports', 'login.svg');
+    const svgRun = await runCli([input, '--out', svgPath, '--format', 'svg']);
+    expect(svgRun.code).toBe(0);
+    expect(svgRun.stdout).toBe(`${svgPath}\n`);
+    expect(svgRun.stderr).toBe('');
+    expect(await readFile(svgPath, 'utf8')).toContain('<svg');
+    expect(await readFile(svgPath, 'utf8')).not.toContain('<html');
+
+    const pngPath = path.join(root, 'exports', 'login.png');
+    const pngRun = await runCli([input, '--out', pngPath, '--format', 'png']);
+    expect(pngRun.code).toBe(0);
+    expect(pngRun.stdout).toBe(`${pngPath}\n`);
+    expect(pngRun.stderr).toBe('');
+    expect((await readFile(pngPath)).subarray(0, 8)).toEqual(
+      Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    );
+
+    const jpegPath = path.join(root, 'exports', 'login.jpeg');
+    const jpegRun = await runCli([input, '--out', jpegPath, '--format', 'jpeg']);
+    expect(jpegRun.code).toBe(0);
+    expect(jpegRun.stdout).toBe(`${jpegPath}\n`);
+    expect(jpegRun.stderr).toBe('');
+    expect((await readFile(jpegPath)).subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+  }, 120_000);
+
   it('writes HTML and PDF exports through the executable', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'spec.md');

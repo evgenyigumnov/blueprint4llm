@@ -27,6 +27,29 @@ export async function writeHtmlOutput(
   return outputs.htmlPath!;
 }
 
+/** Atomically writes one SVG or raster output file and returns its absolute path. */
+export async function writeSingleOutput(
+  outputFile: string,
+  content: string | Uint8Array,
+): Promise<string> {
+  const absoluteOutputFile = path.resolve(outputFile);
+  await mkdir(path.dirname(absoluteOutputFile), { recursive: true });
+  await ensureReplaceable(absoluteOutputFile);
+
+  const tempPath = temporaryPath(absoluteOutputFile, 'tmp');
+  try {
+    if (typeof content === 'string') {
+      await writeFile(tempPath, content, 'utf8');
+    } else {
+      await writeFile(tempPath, content);
+    }
+    await rename(tempPath, absoluteOutputFile);
+    return absoluteOutputFile;
+  } finally {
+    await unlink(tempPath).catch(() => undefined);
+  }
+}
+
 /**
  * Writes files to `outputFile`; when both formats are requested, it creates
  * the companion file with the corresponding `.html` or `.pdf` extension.

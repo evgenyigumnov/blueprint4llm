@@ -47,6 +47,8 @@ const SHIKI_PROCESSOR = unified().use(rehypeShiki, SHIKI_OPTIONS);
 export interface CompileOptions {
   /** Path of the source Markdown file, used for diagnostics and the title fallback. */
   sourceFile: string;
+  /** Reject Markdown unless it contains exactly one supported diagram block. */
+  requireSingleDiagram?: boolean;
   /** Optional cache shared across successive live-preview builds. */
   diagramCache?: DiagramRenderCache;
   /** Figma personal access token for URL blocks. Overrides the environment and `.env` file. */
@@ -114,6 +116,9 @@ export async function compileMarkdown(
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      ...(options.requireSingleDiagram === undefined
+        ? {}
+        : { requireSingleDiagram: options.requireSingleDiagram }),
       ...(figmaAccessToken === undefined ? {} : { figmaAccessToken }),
       ...(options.signal === undefined ? {} : { signal: options.signal }),
       ...(options.diagramCache === undefined ? {} : { cache: options.diagramCache }),
@@ -181,6 +186,9 @@ export async function checkMarkdown(
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      ...(options.requireSingleDiagram === undefined
+        ? {}
+        : { requireSingleDiagram: options.requireSingleDiagram }),
       ...(figmaAccessToken === undefined ? {} : { figmaAccessToken }),
       ...(options.signal === undefined ? {} : { signal: options.signal }),
       ...(options.diagramCache === undefined ? {} : { cache: options.diagramCache }),

@@ -6,7 +6,7 @@ Turn long development plans into visual documents with diagrams and UI prototype
 
 _The same Markdown, before and after rendering. [View the example source](examples/blueprint-overview.md)._
 
-`blueprint4llm` converts Markdown into HTML or PDF so people can review plans written by humans or AI agents. It renders Mermaid, PlantUML, draw.io JSON, Pencil `.pen`, Balsamiq Mockups 3 JSON, Figma frames, and Wiremark UI prototypes. Use the local preview to see changes as you edit and download the current PDF. Markdown stays the source of truth. The tool does not call an LLM.
+`blueprint4llm` converts Markdown into HTML or PDF so people can review plans written by humans or AI agents. It can also export one diagram or UI prototype as SVG, PNG, or JPEG for visual inspection by an LLM. It renders Mermaid, PlantUML, draw.io JSON, Pencil `.pen`, Balsamiq Mockups 3 JSON, Figma frames, and Wiremark UI prototypes. Use the local preview to see changes as you edit and download the current PDF. Markdown stays the source of truth. The tool does not call an LLM.
 
 ## Why blueprint4llm?
 
@@ -56,7 +56,17 @@ Export to PDF:
 blueprint4llm examples/blueprint.md --out=./dist-pdf/blueprint.pdf --format=pdf
 ```
 
-`--out` specifies the output file path. Parent directories are created automatically. The CLI produces one format per run. Diagram SVGs are embedded in the HTML; no separate SVG files are created. Local images are saved in `assets/` next to the HTML. You can open the generated HTML directly with `file://`.
+Export one diagram or UI prototype as an image:
+
+```bash
+blueprint4llm examples/one-diagram.md --out=./diagram.svg --format=svg
+blueprint4llm examples/one-diagram.md --out=./diagram.png --format=png
+blueprint4llm examples/one-diagram.md --out=./diagram.jpeg --format=jpeg
+```
+
+SVG, PNG, and JPEG exports require exactly one supported diagram code block in the Markdown. Text and headings are allowed. The command reports an error when it finds zero or multiple diagrams. PNG and JPEG use local Chromium to rasterize the rendered SVG.
+
+`--out` specifies the output file path. Parent directories are created automatically. The CLI produces one format per run. HTML embeds diagram SVGs, and local Markdown images are saved in `assets/` next to the HTML. You can open the generated HTML directly with `file://`.
 
 Validate a document before review or publication, for example in CI:
 
@@ -150,9 +160,9 @@ Local image paths are resolved relative to the Markdown directory. Images are co
 - draw.io: 1 MiB per JSON block, 10,000 cells per page, and 100 pages per document. SVG output is limited to 4 MiB and 16,384 px per side. Layout times out after 5 seconds.
 - Mermaid and PlantUML rendering time out after 30 seconds. PDF generation times out after 60 seconds.
 - PDF uses Puppeteer's installed Chrome/Chromium and requires the appropriate system libraries on Linux. Install the browser with `npx puppeteer browsers install chrome`.
-- The Chromium sandbox is enabled by default. If the OS blocks sandbox startup, Mermaid and PDF automatically retry with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force a launch without the sandbox.
-- Raw HTML, user JavaScript execution, graphical editing, and output formats other than HTML/PDF are not supported.
-- Diagram SVGs are embedded in the HTML. Separate `.svg` files are not created.
+- The Chromium sandbox is enabled by default. If the OS blocks sandbox startup, Mermaid, PDF, PNG, and JPEG rendering automatically retry with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force a launch without the sandbox.
+- Raw HTML, user JavaScript execution, and graphical editing are not supported.
+- Standalone diagram image formats are SVG, PNG, and JPEG. They require exactly one supported diagram block.
 
 Mermaid, PlantUML, and Wiremark errors include the source file and block line. If PlantUML returns an SVG with a syntax error, it stays visible in the preview, and the diagnostic points to the line within the diagram. A failed build in `--serve` mode shows diagnostics while the server keeps running. Fix the file to update the preview.
 

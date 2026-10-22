@@ -226,6 +226,27 @@ describe('CLI main', () => {
     expect(await readFile(output, 'utf8')).toContain('<strong>world</strong>');
   });
 
+  it.each([
+    { markdown: '# No diagram', count: 0 },
+    {
+      markdown: '```wireframe\nWireframe mobile\n```\n\n```wireframe\nWireframe desktop\n```',
+      count: 2,
+    },
+  ])('rejects image export when the Markdown has $count diagrams', async ({ markdown, count }) => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'diagram.md');
+    const output = path.join(root, 'diagram.svg');
+    await writeFile(input, markdown);
+    const captured = captureIo();
+
+    expect(await main([input, '--out', output, '--format', 'svg'], captured.io)).toBe(EXIT_FAILURE);
+    expect(captured.stdout.join('')).toBe('');
+    expect(captured.stderr.join('')).toContain(
+      `exactly one supported diagram block; found ${count}`,
+    );
+    expect((await readdir(root)).sort()).toEqual(['diagram.md']);
+  });
+
   it('copies local Markdown images and emits an HTML page without runtime dependencies', async () => {
     const root = await createTemporaryDirectory();
     const imagesDirectory = path.join(root, 'images');

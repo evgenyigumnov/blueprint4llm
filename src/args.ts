@@ -1,6 +1,6 @@
 import { Command, CommanderError, InvalidArgumentError } from 'commander';
 
-export type OutputFormat = 'html' | 'pdf';
+export type OutputFormat = 'html' | 'pdf' | 'svg' | 'png' | 'jpeg';
 
 export type CliInvocation =
   | { kind: 'help' }
@@ -21,7 +21,7 @@ export const DEFAULT_PORT = 8080;
 
 /** Usage text shown for `--help` and for usage errors (plan §2.3). */
 export const USAGE = `Usage:
-  blueprint4llm <input.md> --out=<file> [--format=html|pdf]
+  blueprint4llm <input.md> --out=<file> [--format=html|pdf|svg|png|jpeg]
   blueprint4llm <input.md> --serve [--port=<1..65535>]
   blueprint4llm <input.md> --check
   blueprint4llm --help
@@ -29,14 +29,15 @@ export const USAGE = `Usage:
 
 Options:
   --out <file>         write output to <file> (required unless --serve or --check)
-  --format <format>    html | pdf, default: html; only with --out
+  --format <format>    html | pdf | svg | png | jpeg, default: html; only with --out
+                       svg, png, and jpeg require exactly one supported diagram
   --serve              run a local preview server with live reload (no --out)
   --port <port>        server port 1..65535, default: ${DEFAULT_PORT}; only with --serve
   --check              validate Markdown, diagrams, and local images without writing output
   -h, --help           display help
   -V, --version        display version`;
 
-const FORMATS: readonly OutputFormat[] = ['html', 'pdf'];
+const FORMATS: readonly OutputFormat[] = ['html', 'pdf', 'svg', 'png', 'jpeg'];
 
 /**
  * Parses and validates CLI arguments.
@@ -50,11 +51,11 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
   const program = new Command();
   program
     .name('blueprint4llm')
-    .description('Generate standalone HTML/PDF blueprints from Markdown with diagrams')
+    .description('Generate HTML/PDF blueprints or standalone diagram images from Markdown')
     .version('0.0.0')
     .argument('<input.md>', 'path to the source Markdown file')
     .option('--out <file>', 'write output file to <file>')
-    .option('--format <format>', 'html | pdf', parseFormat, 'html')
+    .option('--format <format>', 'html | pdf | svg | png | jpeg', parseFormat, 'html')
     .option('--serve', 'run a local preview server with live reload')
     .option('--port <port>', `server port 1..65535 (default: ${DEFAULT_PORT})`, parsePort)
     .option('--check', 'validate Markdown, diagrams, and local images without writing output')

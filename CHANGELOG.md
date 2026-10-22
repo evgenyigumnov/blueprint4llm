@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.16.0] — 2026-10-22
+
+### Added
+
+- Export one supported diagram or UI prototype as a standalone SVG, PNG, or JPEG file. Image export fails when Markdown contains zero or multiple supported diagram blocks.
+
 ## [0.15.0] — 2026-10-22
 
 ### Added

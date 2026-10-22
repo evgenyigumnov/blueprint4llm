@@ -2,6 +2,7 @@ import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import { describe, expect, it } from 'vitest';
 
+import { DiagnosticError } from '../src/errors.js';
 import { remarkDiagramPlugin } from '../src/plugins/remark-diagrams.js';
 import type { DiagramRenderer } from '../src/renderers/types.js';
 
@@ -32,6 +33,7 @@ describe('remarkDiagramPlugin non-fatal errors', () => {
       sourceFile: 'diagram.md',
       warnings,
       errors,
+      requireSingleDiagram: true,
     })(tree);
 
     const diagram = tree.children.find((node) => node.type === 'code');
@@ -45,4 +47,36 @@ describe('remarkDiagramPlugin non-fatal errors', () => {
     ]);
     expect(warnings).toEqual([]);
   });
+
+  it.each([
+    { markdown: '# Text only', count: 0 },
+    { markdown: '```test-diagram\na\n```\n\n```test-diagram\nb\n```', count: 2 },
+  ])(
+    'requires one supported diagram before rendering (found $count)',
+    async ({ markdown, count }) => {
+      const tree = unified().use(remarkParse).parse(markdown);
+      const renderer: DiagramRenderer = {
+        name: 'test-renderer',
+        languages: ['test-diagram'],
+        cacheKey: 'test-renderer-v1',
+        async render() {
+          throw new Error('the renderer must not run when the count is invalid');
+        },
+      };
+
+      await expect(
+        remarkDiagramPlugin({
+          renderers: [renderer],
+          sourceFile: 'diagram.md',
+          warnings: [],
+          errors: [],
+          requireSingleDiagram: true,
+        })(tree),
+      ).rejects.toMatchObject({
+        name: 'DiagnosticError',
+        sourceFile: 'diagram.md',
+        message: `single-diagram export requires exactly one supported diagram block; found ${count}`,
+      } satisfies Partial<DiagnosticError>);
+    },
+  );
 });

@@ -15,6 +15,7 @@ export interface RemarkDiagramOptions {
   sourceFile: string;
   warnings: string[];
   errors: string[];
+  requireSingleDiagram?: boolean;
   figmaAccessToken?: string;
   signal?: AbortSignal;
   cache?: DiagramRenderCache;
@@ -32,6 +33,13 @@ export function remarkDiagramPlugin(options: RemarkDiagramOptions) {
   return async (tree: MdastRoot): Promise<void> => {
     const blocks: DiagramBlock[] = [];
     collectDiagramBlocks(tree, renderersByLanguage, blocks);
+
+    if (options.requireSingleDiagram === true && blocks.length !== 1) {
+      throw new DiagnosticError(
+        `single-diagram export requires exactly one supported diagram block; found ${blocks.length}`,
+        { sourceFile: options.sourceFile },
+      );
+    }
 
     if (blocks.length > MAX_DIAGRAM_BLOCKS) {
       const excessBlock = blocks[MAX_DIAGRAM_BLOCKS];

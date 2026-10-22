@@ -1,7 +1,7 @@
 {
   "name": "blueprint4llm",
-  "version": "0.15.0",
-  "description": "CLI generator of software blueprints: Markdown with Mermaid/PlantUML/draw.io/Pencil/Balsamiq/Wiremark diagrams to standalone HTML and PDF",
+  "version": "0.16.0",
+  "description": "CLI generator of software blueprints: Markdown diagrams and UI prototypes to standalone HTML, PDF, SVG, PNG, or JPEG",
   "type": "module",
   "license": "MIT",
   "engines": {

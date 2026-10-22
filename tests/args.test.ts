@@ -12,12 +12,15 @@ describe('parseCliArgs', () => {
     });
   });
 
-  it.each(['html', 'pdf'] as const)('accepts the %s output format', (format) => {
-    expect(parseCliArgs(['input.md', '--out', 'out', '--format', format])).toMatchObject({
-      kind: 'build',
-      format,
-    });
-  });
+  it.each(['html', 'pdf', 'svg', 'png', 'jpeg'] as const)(
+    'accepts the %s output format',
+    (format) => {
+      expect(parseCliArgs(['input.md', '--out', 'out', '--format', format])).toMatchObject({
+        kind: 'build',
+        format,
+      });
+    },
+  );
 
   it('parses serve mode with the default and explicit valid ports', () => {
     expect(parseCliArgs(['input.md', '--serve'])).toEqual({

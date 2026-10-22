@@ -5,10 +5,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { parseCliArgs, UsageError, USAGE } from './args.js';
 import type { CliInvocation } from './args.js';
-import { writeBlueprintOutput } from './build.js';
+import { writeBlueprintOutput, writeSingleOutput } from './build.js';
 import { checkMarkdown, compileMarkdown } from './compiler.js';
 import type { CompiledBlueprint } from './compiler.js';
 import { toDiagnosticError } from './errors.js';
+import { renderDiagramImage } from './image-export.js';
 import { renderPdf } from './pdf.js';
 import { startPreviewServer } from './server.js';
 
@@ -163,7 +164,12 @@ async function runBuild(
 
   let compiled: CompiledBlueprint;
   try {
-    compiled = await compileMarkdown(markdown, { sourceFile: invocation.input });
+    compiled = await compileMarkdown(markdown, {
+      sourceFile: invocation.input,
+      ...(invocation.format === 'svg' || invocation.format === 'png' || invocation.format === 'jpeg'
+        ? { requireSingleDiagram: true }
+        : {}),
+    });
   } catch (error) {
     const diagnostic = toDiagnosticError(error, 'render failed', {
       sourceFile: invocation.input,
@@ -179,8 +185,30 @@ async function runBuild(
     io.err(`blueprint4llm: error: ${error}\n`);
   }
 
+  if (invocation.format === 'svg' || invocation.format === 'png' || invocation.format === 'jpeg') {
+    let output: string | Uint8Array;
+    try {
+      output = await renderDiagramImage(compiled.html, invocation.format);
+    } catch (error) {
+      const diagnostic = toDiagnosticError(error, 'diagram image render failed', {
+        sourceFile: invocation.input,
+      });
+      io.err(`blueprint4llm: ${diagnostic.format()}\n`);
+      return EXIT_FAILURE;
+    }
+
+    try {
+      const outputPath = await writeSingleOutput(invocation.outputFile, output);
+      io.out(`${outputPath}\n`);
+      return EXIT_OK;
+    } catch (error) {
+      io.err(`blueprint4llm: cannot write output: ${errorMessage(error)}\n`);
+      return EXIT_FAILURE;
+    }
+  }
+
   let pdf: Uint8Array | undefined;
-  if (invocation.format !== 'html') {
+  if (invocation.format === 'pdf') {
     try {
       pdf = await renderPdf(compiled);
     } catch (error) {
