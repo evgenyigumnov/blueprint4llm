@@ -1,53 +1,53 @@
 # AGENTS.md
 
-## Папки проекта
+## Project folders
 
-- `examples` — содержит примеры `.md`-файлов, которые может рендерить проект.
-- `src` — исходный код.
-- `tests` — тесты.
-- `dev-docs` — содержит старые планы, по которым создавался и изменялся проект. Поэтому в первую очередь ориентируйся на исходный код, тесты и `README.md` как на источники актуальной информации.
-- `vscode-extension` - содержит код расширения для Visual Studio Code
+- `examples` contains sample `.md` files that the project can render.
+- `src` contains the source code.
+- `tests` contains the tests.
+- `dev-docs` contains old plans used to create and change the project. Use the source code, tests, and `README.md` as the primary sources of current information.
+- `vscode-extension` contains the Visual Studio Code extension code.
 
-## Правила написания кода
+## Code rules
 
-- Максимальный размер одного файла с кодом — 300–500 строк. Если файл становится больше, выполняй декомпозицию.
-- Главный принцип — одна связная ответственность на модуль.
-- Не жертвуй логической связностью или читаемостью кода ради соблюдения произвольных ограничений на количество строк.
-- Разделяй файлы исходя из их функционального назначения, а не только по количеству строк.
-- Все функции должны быть покрыты unit-тестами.
-- При добавлении или изменении функциональности, а также при исправлении ошибок обязательно добавляй соответствующие unit-тесты.
+- Keep each code file to 300–500 lines at most. Split a file when it grows beyond this range.
+- Give each module one coherent responsibility.
+- Do not reduce logical cohesion or readability to meet an arbitrary line limit.
+- Split files by function, not only by line count.
+- Cover every function with unit tests.
+- Add relevant unit tests when you add or change functionality or fix a bug.
 
-## Правила работы с .md-файлами
+## Markdown rules
 
-- Используй [Wiremark](https://docs.wiremark.dev/wiremark-llm.md) для UI-прототипов и Mermaid для диаграмм, объясняющих, как работает код.
-- При создании планов разработки (например, `plan.md`) делай упор на UI-прототипы и диаграммы, а не на текстовые описания, чтобы человеку было проще визуально понять, как выглядит и работает проект.
-- Когда создаёшь UI-прототипы с помощью блоков Wireframe, не объединяй несколько экранных форм в один блок. Для каждой экранной формы создавай отдельный блок Wireframe.
-- Если во время задачи создан или изменён Markdown-план разработки (например, `plan.md`), перед завершением задачи открой именно этот план в Chromium. Это правило относится только к планам, а не к `README.md`, `AGENTS.md`, примерам и прочей документации.
-- Для каждого созданного или изменённого плана выполни из корня проекта:
-  1. В отдельном терминале запусти `blueprint4llm ./<PLAN_FILENAME>.md --serve --port=8811` и дождись адреса предпросмотра. Не закрывай сервер, пока смотришь план.
-  2. В другом терминале выполни `chromium http://127.0.0.1:8811/` и дождись открытия окна или вкладки Chromium.
-  3. Убедись, что в Chromium открыт предпросмотр нужного плана. Одного запуска сервера или напечатанного URL недостаточно.
-- Если порт `8811` занят старым предпросмотром, останови старый сервер перед запуском нового. Если изменено несколько планов, открой каждый по очереди, повторяя оба шага.
+- Use [Wiremark](https://docs.wiremark.dev/wiremark-llm.md) for UI prototypes. Use Mermaid for diagrams that explain how the code works.
+- When you create development plans, such as `plan.md`, focus on UI prototypes and diagrams instead of text descriptions. This helps people understand the project visually.
+- When you create UI prototypes with Wireframe blocks, do not combine multiple screens in one block. Use a separate Wireframe block for each screen.
+- If you create or change a Markdown development plan, such as `plan.md`, open that plan in Chromium before you finish the task. This rule applies to plans only. It does not apply to `README.md`, `AGENTS.md`, examples, or other documentation.
+- For each new or changed plan, run these steps from the project root:
+  1. Start `blueprint4llm ./<PLAN_FILENAME>.md --serve --port=8811` in a separate terminal. Wait for the preview address. Keep the server running while you view the plan.
+  2. In another terminal, run `chromium http://127.0.0.1:8811/` and wait for a Chromium window or tab to open.
+  3. Confirm that Chromium shows the preview of the correct plan. Starting the server or seeing the URL is not enough.
+- If an old preview is using port `8811`, stop that server before you start a new one. If you change multiple plans, open each plan in turn and repeat both steps.
 
+## Use ASD-STE100 (Simplified Technical English) principles at about 80%
 
-## Следуй принципам ASD-STE100 (Simplified Technical English, STE) примерно на 80%.
+- Write briefly, directly, and clearly.
+- Do not repeat information.
+- Avoid introductory phrases and obvious explanations.
+- Put one idea in each sentence.
+- Do not describe details that are clear from the code or diagram.
+- Use Mermaid for architecture and process diagrams.
+- Use Wiremark for UI prototypes.
+- Keep the text short without losing important details.
 
-- Пиши кратко, прямо и однозначно.
-- Не повторяй уже сказанное.
-- Не используй вводные фразы и очевидные пояснения.
-- Одна мысль — одно предложение.
-- Не описывай то, что понятно из кода или диаграммы.
-- Используй Mermaid для архитектуры и процессов.
-- Используй Wiremark для прототипов UI.
-- Сокращай объём текста без потери важных деталей.
+The goal is to minimize the time people need to understand and review the solution.
 
-Цель — минимальное время, необходимое человеку для понимания и проверки решения.
+## Before you finish
 
-## Проверка перед сдачей
+- All tests and builds must pass without errors or warnings.
+- Do not weaken checks or remove tests to make tests pass.
+- If all tests pass, increment the version in `package.json`. Use the smallest increment for a bug fix and a larger increment for new functionality.
 
-- Все тесты и сборка должны проходить без ошибок и предупреждений.
-- Не ослабляй проверки и не удаляй тесты ради успешного прохождения тестирования.
-- Если все тесты прошли, увеличивай версию в package.json: при багфиксе — минимально, при добавлении новой функциональности — более существенно.
-## Главное правило
+## Main rule
 
-**Никогда не коммить изменения без прямой просьбы пользователя.**
+**Never commit changes unless the user asks you to do so directly.**
