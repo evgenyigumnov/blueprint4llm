@@ -14,7 +14,7 @@ Use this skill to create or revise a technical plan that people can review as a 
 1. Read the relevant `AGENTS.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
 2. Use the path requested by the user. If the user gives no path, follow the repository's plan convention or use `plan.md`.
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
-4. Keep prose short. Choose from the supported formats below. Prefer a format the user supplied or already uses; otherwise choose the simplest suitable format. Mix formats when useful. Do not require Mermaid or Wiremark if another supported format is easier.
+4. Make the plan visual first. Prefer diagrams for architecture and flows, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
 5. Put each UI screen in its own fenced block. Use only syntax supported by the selected renderer.
 6. Check that the CLI is available with `blueprint4llm --version`. If it is missing, continue editing the Markdown, but tell the user that validation and rendering need the CLI. Give the install command `npm install --global blueprint4llm`. Do not install it globally without the user's request.
 7. Validate the Markdown after edits:
@@ -76,18 +76,9 @@ Use this skill to create or revise a technical plan that people can review as a 
 
 Use the user's existing source format when possible. For new content, pick the format that expresses the requirement with the least extra syntax. Read the relevant project example or format guide when the format is unfamiliar. Do not invent Figma credentials or convert source files unless asked.
 
-## Wiremark example
+## Prose style
 
-Use one block for each screen. This example uses components supported by the project:
-
-```wireframe
-Wireframe #request w=420 h=300
-  Stack column gap=2 padding=2
-    Typography h4 "New request"
-    TextField "Title"
-    TextField "Description"
-    Button "Submit request" contained
-```
+When prose is needed, follow ASD-STE100 (STE) principles: use short, clear sentences; keep one topic in each sentence; prefer active voice and simple, consistent terms. Preserve technical meaning and the requested document language. Do not claim formal STE compliance unless you apply its full rules and vocabulary.
 
 ## Output
 
