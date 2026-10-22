@@ -9,13 +9,21 @@ compatibility: Requires the blueprint4llm CLI, Node.js >=22.13.0, npm, and Puppe
 
 Use this skill to create or revise a technical plan that people can review as a visual document. `blueprint4llm` renders Markdown; it does not generate plans or call an LLM.
 
+## Choose the plan content
+
+- When a plan creates or changes a GUI, include UI prototypes of the affected screens and important states. Put them before implementation diagrams. This applies to desktop, web, and mobile apps, regardless of programming language or UI framework.
+- Show layout, visible content, controls, and feedback in the prototypes. Flowcharts, state diagrams, component maps, and lists of controls do not replace screen prototypes.
+- Keep narrower requests within scope. A backend, CLI, library, algorithm, or architecture-only task does not need unrelated UI prototypes. Follow explicit requests to omit UI.
+
+For example, a GUI calculator plan in Rust needs a prototype of the calculator window and relevant result or error states. Module and calculation diagrams can support these prototypes.
+
 ## Workflow
 
 1. Read the relevant `AGENTS.md`, `CLAUDE.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
 2. Use the path requested by the user. If the user gives no path, follow the repository's plan convention or use `plan.md`.
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
 4. Make the plan visual first. Prefer diagrams for architecture and flows, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
-5. Put each UI screen in its own fenced block. Use only syntax supported by the selected renderer.
+5. Put each UI screen or separately illustrated state in its own fenced block. For GUI plans, check that the prototypes show the main user task and relevant feedback before rendering. Use only syntax supported by the selected renderer.
 6. Check that the CLI is available with `blueprint4llm --version`. If it is missing, continue editing the Markdown, but tell the user that validation and rendering need the CLI. Give the install command `npm install --global blueprint4llm`. Do not install it globally without the user's request.
 7. Validate the Markdown after edits:
 
@@ -69,10 +77,10 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 
 ### Diagrams
 
-| Format | Fence | Best fit and trade-off |
-| --- | --- | --- |
-| Mermaid | `mermaid` | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement. |
-| PlantUML | `plantuml` | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes. |
+| Format       | Fence                 | Best fit and trade-off                                                                                                                                                                                                           |
+| ------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mermaid      | `mermaid`             | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
+| PlantUML     | `plantuml`            | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
 | draw.io JSON | `drawio` or `draw.io` | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid; a flow with UML activity semantics or a UML model is usually PlantUML. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
@@ -81,12 +89,12 @@ draw.io JSON is a project-specific subset. Read the project's [draw.io documenta
 
 ### UI prototypes
 
-| Format | Fence | Best fit and trade-off |
-| --- | --- | --- |
-| Wiremark | `wireframe` (canonical) or `wiremark` | Use for low-fidelity screens and screen states that are easy to describe as text. It is fast to review, but does not give pixel-level visual control. |
-| Balsamiq Mockups 3 | `balsamiq` | Use for rough screen layouts built from common UI controls. It preserves positions and text, but supports a limited control set and does not reproduce the Balsamiq skin exactly. `.bmpr` and `.bmml` are not supported. |
-| Pencil | `pencil` or `pen` | Use when custom frame geometry and vector shapes need more control than a text-first prototype. The renderer supports embedded schema 2.21 and common shapes, but not images, gradients, effects, or components. |
-| Figma | `figma` | Use to show a more detailed design from Figma frame data. JSON rendering supports a subset of Figma objects; URL mode needs a configured access token. |
+| Format             | Fence                                 | Best fit and trade-off                                                                                                                                                                                                   |
+| ------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Wiremark           | `wireframe` (canonical) or `wiremark` | Use for low-fidelity screens and screen states that are easy to describe as text. It is fast to review, but does not give pixel-level visual control.                                                                    |
+| Balsamiq Mockups 3 | `balsamiq`                            | Use for rough screen layouts built from common UI controls. It preserves positions and text, but supports a limited control set and does not reproduce the Balsamiq skin exactly. `.bmpr` and `.bmml` are not supported. |
+| Pencil             | `pencil` or `pen`                     | Use when custom frame geometry and vector shapes need more control than a text-first prototype. The renderer supports embedded schema 2.21 and common shapes, but not images, gradients, effects, or components.         |
+| Figma              | `figma`                               | Use to show a more detailed design from Figma frame data. JSON rendering supports a subset of Figma objects; URL mode needs a configured access token.                                                                   |
 
 Choose by fidelity and the kind of information the screen must show: Wiremark for structure and content, Balsamiq for rough control layouts, Pencil for custom vector geometry, and Figma for detailed design data. If the requested fidelity exceeds the renderer's supported subset, explain the limitation.
 
