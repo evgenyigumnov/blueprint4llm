@@ -11,3 +11,4 @@ article.md
 vscode-extension/out/
 vscode-extension/*.vsix
 .env
+article-en.md

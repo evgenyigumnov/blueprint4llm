@@ -1,80 +1,87 @@
 # Changelog
 
+## [0.15.0] — 2026-10-22
+
+### Added
+
+- Support for fenced `balsamiq` blocks containing Balsamiq Mockups 3 JSON. Supported controls are converted to inline SVG locally; coordinates, layer order, and text are preserved.
+- Diagnostics for unsupported controls and limits on input size, nesting depth, control count, canvas dimensions, and SVG output size.
+
 ## [0.14.0] — 2026-10-22
 
-### Добавлено
+### Added
 
-- Поддержка fenced-блоков `pencil` и `pen` с документами Pencil JSONC версии 2.21. Рендерер локально преобразует поддерживаемые фигуры, текст, заливки, обводки и layout в SVG.
-- Диагностика неподдерживаемых свойств Pencil и ограничения размера и сложности документа.
+- Support for fenced `pencil` and `pen` blocks containing Pencil JSONC 2.21 documents. The renderer converts supported shapes, text, fills, strokes, and layouts to SVG locally.
+- Diagnostics for unsupported Pencil properties and limits on document size and complexity.
 
 ## [0.12.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Поддержка fenced-блоков `drawio` и `draw.io` с JSON-экспортом draw.io. Узлы и связи раскладываются локально и преобразуются во встроенный SVG.
-- Выбор страницы и направления раскладки через metadata блока.
+- Support for fenced `drawio` and `draw.io` blocks containing draw.io JSON exports. Nodes and edges are laid out locally and converted to inline SVG.
+- Page selection and layout direction through block metadata.
 
 ## [0.9.5] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Поддержка fenced-блоков `figma` с JSON-ответом Figma REST API или HTTPS-ссылкой на кадр. JSON можно рендерить локально без токена и сети; для URL-режима нужен токен Figma.
-- Локальное преобразование поддерживаемых узлов Figma в SVG и проверка SVG перед встраиванием в результат.
+- Support for fenced `figma` blocks containing a Figma REST API JSON response or an HTTPS link to a frame. JSON can be rendered locally without a token or network access; URL mode requires a Figma token.
+- Local conversion of supported Figma nodes to SVG and SVG validation before embedding in the output.
 
 ## [0.8.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Подсветка синтаксиса fenced-блоков кода с известной Shiki языковой меткой. Цвета встраиваются в HTML, поэтому подсветка работает без JavaScript и сети; в предпросмотре поддерживаются светлая и тёмная темы.
-- Ограничение подсветки: блоки больше 64 КиБ остаются обычным экранированным кодом.
+- Syntax highlighting for fenced code blocks with a recognized Shiki language label. Colors are embedded in the HTML, so highlighting works without JavaScript or network access; the preview supports light and dark themes.
+- Blocks larger than 64 KiB remain escaped plain code without highlighting.
 
 ## [0.7.0] — 2026-10-21
 
-- Функциональных изменений нет: в истории для этой версии зафиксировано только обновление `package.json`.
+No functional changes. This version only updates `package.json` in the project history.
 
 ## [0.6.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Команда `blueprint4llm <input.md> --check` для проверки Markdown, диаграмм и локальных изображений без создания HTML или PDF. Ошибки завершают команду с кодом `1`, предупреждения выводятся отдельно.
+- The `blueprint4llm <input.md> --check` command to validate Markdown, diagrams, and local images without creating HTML or PDF files. Errors exit with code `1`; warnings are reported separately.
 
 ## [0.5.0] — 2026-10-21
 
-### Улучшено
+### Improved
 
-- Добавлены пример PlantUML-диаграммы и проверки её компиляции и экспорта в PDF; документация описывает локальный рендеринг и ограничения PlantUML.
+- Added a PlantUML diagram example and checks for compilation and PDF export. Documentation now describes local rendering and PlantUML limitations.
 
 ## [0.4.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Поддержка fenced-блоков `plantuml` в компиляторе Markdown. Диаграммы рендерятся локальным движком `@plantuml/core` в Chromium; отдельная установка Java и отправка исходника на сервер не требуются.
-- Диагностика ошибок PlantUML, ограничения размера исходника и SVG, тайм-аут и лимит параллельного рендеринга. Внешняя сеть и директивы `!include` отключены.
+- Support for fenced `plantuml` blocks in the Markdown compiler. Diagrams are rendered locally by `@plantuml/core` in Chromium; Java installation and sending source to a server are not required.
+- PlantUML error diagnostics, source and SVG size limits, a timeout, and a concurrent rendering limit. External network access and `!include` directives are disabled.
 
 ## [0.3.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Реализация локального PlantUML-рендерера и его unit-тесты.
+- The local PlantUML renderer and its unit tests.
 
 ## [0.2.0] — 2026-10-21
 
-### Добавлено
+### Added
 
-- Расширение Visual Studio Code с предпросмотром Markdown рядом с редактором. Оно компилирует несохранённый текст, обновляет предпросмотр после правок и показывает ошибки, не закрывая панель.
-- Настраиваемая задержка обновления, отображение локальных изображений, безопасный Webview и поддержка светлой, тёмной и высококонтрастной тем VS Code.
-- Экспорт текущего результата предпросмотра в PDF с локальными изображениями.
+- A Visual Studio Code extension with a Markdown preview beside the editor. It compiles unsaved text, updates the preview after edits, and displays errors without closing the panel.
+- A configurable refresh delay, local image display, a secure Webview, and support for light, dark, and high-contrast VS Code themes.
+- PDF export of the current preview with local images.
 
 ## [0.1.1] — 2026-10-20
 
-### Исправлено
+### Fixed
 
-- Исправлено выравнивание SVG-диаграмм в HTML и PDF.
+- Corrected SVG diagram alignment in HTML and PDF output.
 
 ## [0.1.0] — 2026-10-20
 
-### Добавлено
+### Added
 
-- Базовый CLI и программный API для преобразования Markdown в автономные HTML и PDF, а также локальный сервер предпросмотра с автоматическим обновлением.
-- Поддержка Mermaid, Wiremark, GitHub Flavored Markdown и локальных изображений; встроены шрифты для PDF.
-- Проверки и санация SVG-диаграмм, безопасная обработка ссылок, диагностика с указанием исходного файла и тесты основных компонентов.
+- A basic CLI and programmatic API for converting Markdown to standalone HTML and PDF, plus a local preview server with automatic refresh.
+- Support for Mermaid, Wiremark, GitHub Flavored Markdown, and local images; fonts are embedded for PDF output.
+- SVG validation and sanitization, safe link handling, source-file diagnostics, and tests for core components.
