@@ -291,7 +291,7 @@ describe('ECharts option policy', () => {
       backgroundColor: '#ffffff',
     });
     expect(result.option.textStyle).toMatchObject({
-      fontFamily: 'Noto Sans, "DejaVu Sans", sans-serif',
+      fontFamily: 'Noto Sans, DejaVu Sans, sans-serif',
     });
     expect(result.option.series).toMatchObject([
       { animation: false, silent: true, emphasis: { disabled: true }, select: { disabled: true } },
@@ -300,6 +300,23 @@ describe('ECharts option policy', () => {
       'ECharts animation was requested but is disabled for static SVG output',
       'ECharts interaction was requested but disabled for static SVG output',
     ]);
+  });
+
+  it('rejects font families that would break ECharts SVG style attributes', () => {
+    for (const fontFamily of ['"DejaVu Sans"', 'A&B', 'A<B']) {
+      expect(() => apply({ ...cartesianSeries('bar'), textStyle: { fontFamily } })).toThrow(
+        '/textStyle/fontFamily: must not contain double quotes, ampersands, or less-than signs',
+      );
+    }
+    expect(() =>
+      apply({
+        ...cartesianSeries('bar'),
+        title: { textStyle: { fontFamily: '"DejaVu Sans"' } },
+      }),
+    ).toThrow('/title/textStyle/fontFamily');
+    expect(() =>
+      apply({ ...cartesianSeries('bar'), textStyle: { fontFamily: 'Noto Sans, DejaVu Sans' } }),
+    ).not.toThrow();
   });
 
   it('accepts mixed bar and line, dataset charts, and documented chart-specific options', () => {

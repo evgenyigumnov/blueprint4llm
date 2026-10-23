@@ -31,12 +31,19 @@ import {
   type Schema,
 } from './echarts-options-validators.js';
 
+const fontFamily = (value: unknown, path: Path, context: Context): void => {
+  scalar('text')(value, path, context);
+  if (typeof value === 'string' && /["&<]/.test(value)) {
+    fail(context, path, 'must not contain double quotes, ampersands, or less-than signs');
+  }
+};
+
 const textStyle = object({
   color: scalar('color'),
   fontStyle: enumeration('normal', 'italic', 'oblique'),
   fontWeight: validateFontWeight,
   fontSize: scalar('positive'),
-  fontFamily: scalar('text'),
+  fontFamily,
   lineHeight: scalar('nonnegative'),
   width: scalar('nonnegative'),
   overflow: enumeration('truncate', 'break', 'breakAll'),
@@ -103,7 +110,7 @@ const label = object({
   formatter: scalar('formatter'),
   color: scalar('color'),
   fontSize: scalar('positive'),
-  fontFamily: scalar('text'),
+  fontFamily,
   fontWeight: validateFontWeight,
   align: enumeration('left', 'center', 'right'),
   verticalAlign: enumeration('top', 'middle', 'bottom'),
@@ -206,7 +213,7 @@ const axis = object({
     formatter: scalar('formatter'),
     color: scalar('color'),
     fontSize: scalar('positive'),
-    fontFamily: scalar('text'),
+    fontFamily,
     fontWeight: validateFontWeight,
     align: enumeration('left', 'center', 'right'),
     verticalAlign: enumeration('top', 'middle', 'bottom'),
@@ -351,7 +358,7 @@ export const seriesTypeFields: Record<EChartsChartType, Schema> = {
       formatter: scalar('formatter'),
       color: scalar('color'),
       fontSize: scalar('positive'),
-      fontFamily: scalar('text'),
+      fontFamily,
     }),
     pointer: object({
       show: scalar('boolean'),
@@ -372,7 +379,7 @@ export const seriesTypeFields: Record<EChartsChartType, Schema> = {
       formatter: scalar('formatter'),
       color: scalar('color'),
       fontSize: scalar('positive'),
-      fontFamily: scalar('text'),
+      fontFamily,
       fontWeight: validateFontWeight,
       offsetCenter: validatePair,
     }),
@@ -381,7 +388,7 @@ export const seriesTypeFields: Record<EChartsChartType, Schema> = {
       formatter: scalar('formatter'),
       color: scalar('color'),
       fontSize: scalar('positive'),
-      fontFamily: scalar('text'),
+      fontFamily,
       fontWeight: validateFontWeight,
       offsetCenter: validatePair,
     }),

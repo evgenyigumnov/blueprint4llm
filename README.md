@@ -5,7 +5,7 @@
 Write a plan yourself or with an agent. Review the system and screens before implementation.
 Markdown stays the source of truth; the CLI renders it without calling an LLM.
 
-![Markdown source beside its rendered Mermaid diagram and Balsamiq screen](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
+![Markdown source beside its rendered Mermaid diagram, Balsamiq screen, and request status chart](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
 
 ## Quick start
 

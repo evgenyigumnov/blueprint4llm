@@ -1,7 +1,10 @@
 import { EventEmitter } from 'node:events';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import type { Worker, WorkerOptions } from 'node:worker_threads';
 import { readFile } from 'node:fs/promises';
 
+import { fromHtml } from 'hast-util-from-html';
 import { describe, expect, it, vi } from 'vitest';
 
 import { checkMarkdown, compileMarkdown } from '../src/compiler.js';
@@ -59,6 +62,10 @@ describe('ECharts renderer integration', () => {
     expect(compiled.html).toContain('bp-diagram--echarts');
     expect(compiled.html).toMatch(/<svg[^>]*width="960"[^>]*height="600"/);
     expect(compiled.html).toContain('Заявки по средам');
+    expect(compiled.html).toContain('font-family:Noto Sans, DejaVu Sans, sans-serif;');
+    const parsedHtml = JSON.stringify(fromHtml(compiled.html));
+    expect(parsedHtml).toContain('font-family:Noto Sans, DejaVu Sans, sans-serif;');
+    expect(parsedHtml).not.toContain('"dejavu":');
     expect(compiled.html).not.toContain('@keyframes');
     expect(plainJson.html).not.toContain('bp-diagram--echarts');
     expect(plainJson.html).toContain('language-json');
@@ -127,7 +134,7 @@ describe('ECharts renderer integration', () => {
     expect(echartsRenderer.cacheKey).toContain('timeout=10000');
     expect(echartsRenderer.cacheKey).toContain('worker-old-heap=128');
     expect(echartsRenderer.cacheKey).toContain('mode=svg-ssr');
-    expect(echartsRenderer.cacheKey).toContain('font=Noto Sans, "DejaVu Sans", sans-serif');
+    expect(echartsRenderer.cacheKey).toContain('font=Noto Sans, DejaVu Sans, sans-serif');
   });
 
   it('cancels an ECharts worker immediately when its signal aborts', async () => {
@@ -151,6 +158,25 @@ describe('ECharts renderer integration', () => {
       renderEChartsInWorker({}, 800, 450, controller.signal, workerFactory),
     ).rejects.toThrow('chart was already stale');
     expect(workerFactory).not.toHaveBeenCalled();
+  });
+
+  it('passes file URLs for ECharts modules imported by the worker', async () => {
+    const worker = fakeWorker();
+    let modulePaths: Record<string, string> | undefined;
+    const workerFactory: EChartsWorkerFactory = (_source, options) => {
+      modulePaths = (options.workerData as { modulePaths: Record<string, string> }).modulePaths;
+      return worker;
+    };
+
+    const operation = renderEChartsInWorker({}, 800, 450, undefined, workerFactory);
+    worker.emit('message', { ok: true, svg: '<svg/>', warnings: [] });
+    await expect(operation).resolves.toMatchObject({ svg: '<svg/>' });
+
+    expect(Object.keys(modulePaths ?? {})).toEqual(['core', 'charts', 'components', 'renderers']);
+    for (const moduleUrl of Object.values(modulePaths ?? {})) {
+      expect(new URL(moduleUrl).protocol).toBe('file:');
+      expect(existsSync(fileURLToPath(moduleUrl))).toBe(true);
+    }
   });
 
   it('terminates and reports a crashed worker', async () => {

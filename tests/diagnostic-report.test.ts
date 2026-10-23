@@ -1,4 +1,4 @@
-import { mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -43,7 +43,7 @@ describe('diagnostic reports', () => {
       createDiagnosticReport('/docs/plan.md', diagnostics, { html: '/out/plan.html' }),
     ).toEqual({
       schemaVersion: 1,
-      sourceFile: '/docs/plan.md',
+      sourceFile: path.resolve('/docs/plan.md'),
       status: 'error',
       summary: { errors: 1, warnings: 0 },
       diagnostics,
@@ -68,7 +68,7 @@ describe('diagnostic reports', () => {
       severity: 'error',
       code: 'document.compile',
       scope: 'document',
-      sourceFile: '/docs/plan.md',
+      sourceFile: path.resolve('/docs/plan.md'),
       line: 9,
       column: 3,
       message: 'renderer failed',
@@ -78,17 +78,19 @@ describe('diagnostic reports', () => {
     ).not.toContain('private stack detail');
   });
 
-  it('rejects report paths that alias the source or output through symlinks', async () => {
+  it('rejects report paths that alias the source or output through a linked directory', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'blueprint-report-test-'));
     directories.push(root);
-    const source = path.join(root, 'plan.md');
-    const output = path.join(root, 'plan.html');
-    const sourceAlias = path.join(root, 'source-alias.md');
-    const outputAlias = path.join(root, 'output-alias.html');
+    const actualDirectory = path.join(root, 'actual');
+    const aliasDirectory = path.join(root, 'alias');
+    await mkdir(actualDirectory);
+    const source = path.join(actualDirectory, 'plan.md');
+    const output = path.join(actualDirectory, 'plan.html');
+    const sourceAlias = path.join(aliasDirectory, 'plan.md');
+    const outputAlias = path.join(aliasDirectory, 'plan.html');
     await writeFile(source, '# Plan');
     await writeFile(output, '<html>');
-    await symlink(source, sourceAlias);
-    await symlink(output, outputAlias);
+    await symlink(actualDirectory, aliasDirectory, 'junction');
 
     await expect(assertReportPathAvailable(sourceAlias, source)).rejects.toBeInstanceOf(
       ReportPathConflictError,

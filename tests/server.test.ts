@@ -227,7 +227,7 @@ describe('preview server', () => {
 
   it('shows escaped diagnostics, rejects stale PDF, and recovers when a missing image appears', async () => {
     const root = await createTemporaryDirectory();
-    const input = path.join(root, 'blueprint <script>.md');
+    const input = path.join(root, 'blueprint & script.md');
     await writeFile(input, '# Good version');
     const server = await startPreviewServer({ input, port: 0 });
     servers.push(server);
@@ -238,7 +238,7 @@ describe('preview server', () => {
     await failedReload;
     const brokenHtml = await (await fetch(server.url)).text();
     expect(brokenHtml).toContain('Blueprint preview build failed');
-    expect(brokenHtml).toContain('blueprint &lt;script&gt;.md:3:1');
+    expect(brokenHtml).toContain('blueprint &amp; script.md:3:1');
     expect(brokenHtml.match(/<script>/g)).toHaveLength(1);
     expect(brokenHtml).toContain("new EventSource('/_blueprint4llm/events?version=");
     expect((await fetch(new URL('/document.pdf', server.url))).status).toBe(422);

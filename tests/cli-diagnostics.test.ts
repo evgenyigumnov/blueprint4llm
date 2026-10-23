@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -196,14 +196,16 @@ describe('CLI non-fatal diagram diagnostics', () => {
   it('rejects a report path that aliases the source before invoking the compiler', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'blueprint4llm-cli-report-'));
     directories.push(root);
-    const input = path.join(root, 'input.md');
-    const alias = path.join(root, 'source-alias.md');
-    const output = path.join(root, 'output.html');
-    const outputAlias = path.join(root, 'output-alias.html');
+    const actualDirectory = path.join(root, 'actual');
+    const aliasDirectory = path.join(root, 'alias');
+    await mkdir(actualDirectory);
+    const input = path.join(actualDirectory, 'input.md');
+    const alias = path.join(aliasDirectory, 'input.md');
+    const output = path.join(actualDirectory, 'output.html');
+    const outputAlias = path.join(aliasDirectory, 'output.html');
     await writeFile(input, '# Input');
     await writeFile(output, 'previous output');
-    await symlink(input, alias);
-    await symlink(output, outputAlias);
+    await symlink(actualDirectory, aliasDirectory, 'junction');
     const stderr: string[] = [];
 
     expect(

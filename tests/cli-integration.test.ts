@@ -184,7 +184,11 @@ describe('built CLI integration', () => {
         server.child.kill('SIGTERM');
       }
       const result = await server.result;
-      expect(result.code).toBe(0);
+      if (process.platform === 'win32') {
+        expect(result).toMatchObject({ code: null, signal: 'SIGTERM' });
+      } else {
+        expect(result).toMatchObject({ code: 0, signal: null });
+      }
       expect(result.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     }
   }, 120_000);

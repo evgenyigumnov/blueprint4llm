@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { Worker } from 'node:worker_threads';
 import type { WorkerOptions } from 'node:worker_threads';
 
@@ -48,10 +49,10 @@ export function renderEChartsInWorker(
       width,
       height,
       modulePaths: {
-        core: require.resolve('echarts/core'),
-        charts: require.resolve('echarts/charts'),
-        components: require.resolve('echarts/components'),
-        renderers: require.resolve('echarts/renderers'),
+        core: pathToFileURL(require.resolve('echarts/core')).href,
+        charts: pathToFileURL(require.resolve('echarts/charts')).href,
+        components: pathToFileURL(require.resolve('echarts/components')).href,
+        renderers: pathToFileURL(require.resolve('echarts/renderers')).href,
       },
     },
     resourceLimits: {

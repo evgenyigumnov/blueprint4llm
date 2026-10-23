@@ -87,3 +87,42 @@ flowchart TD
   }
 }
 ```
+
+## Request status mix
+
+Illustrative data for 100 requests.
+
+```echarts width=360 height=280
+{
+  "color": ["#7564d8", "#52a8a0", "#efb45a"],
+  "title": {
+    "text": "100",
+    "subtext": "requests",
+    "left": "center",
+    "top": "31%",
+    "itemGap": 0,
+    "textStyle": { "color": "#14243a", "fontSize": 26, "fontWeight": 700 },
+    "subtextStyle": { "color": "#62748b", "fontSize": 12 }
+  },
+  "legend": {
+    "bottom": 4,
+    "left": "center",
+    "itemWidth": 10,
+    "itemHeight": 10,
+    "textStyle": { "color": "#334155", "fontSize": 12 }
+  },
+  "series": [
+    {
+      "type": "pie",
+      "radius": ["43%", "67%"],
+      "center": ["50%", "43%"],
+      "label": { "show": false },
+      "data": [
+        { "name": "Queued", "value": 50 },
+        { "name": "Validating", "value": 28 },
+        { "name": "New", "value": 22 }
+      ]
+    }
+  ]
+}
+```

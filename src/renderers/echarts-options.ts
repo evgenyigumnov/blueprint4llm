@@ -19,7 +19,7 @@ import type { EChartsSourcePosition } from './echarts-source.js';
 export const ECHARTS_POLICY_REVISION = 'echarts-static-profile-v1';
 export const MAX_ECHARTS_SVG_BYTES = 4 * 1024 * 1024;
 export const MAX_ECHARTS_CHART_SIDE = 1_600;
-export const ECHARTS_FONT_FAMILY = 'Noto Sans, "DejaVu Sans", sans-serif';
+export const ECHARTS_FONT_FAMILY = 'Noto Sans, DejaVu Sans, sans-serif';
 
 export interface EChartsOptionPolicyResult {
   option: JsonObject;

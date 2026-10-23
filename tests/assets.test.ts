@@ -91,10 +91,13 @@ describe('Markdown image assets', () => {
   it('rejects paths and symlinks that resolve outside the Markdown directory', async () => {
     const root = await createTemporaryDirectory();
     const outside = path.join(root, 'secret.png');
+    const outsideDirectory = path.join(root, 'outside');
     const project = path.join(root, 'project');
+    await mkdir(outsideDirectory);
     await mkdir(project);
     await writeFile(outside, 'secret');
-    await symlink(outside, path.join(project, 'linked.png'));
+    await writeFile(path.join(outsideDirectory, 'secret.png'), 'secret');
+    await symlink(outsideDirectory, path.join(project, 'linked'), 'junction');
 
     const sourceFile = path.join(project, 'blueprint.md');
     await expect(compileMarkdown('![escape](../secret.png)', { sourceFile })).rejects.toMatchObject(
@@ -106,7 +109,9 @@ describe('Markdown image assets', () => {
       name: 'DiagnosticError',
       message: expect.stringContaining('outside'),
     });
-    await expect(compileMarkdown('![link](./linked.png)', { sourceFile })).rejects.toMatchObject({
+    await expect(
+      compileMarkdown('![link](./linked/secret.png)', { sourceFile }),
+    ).rejects.toMatchObject({
       name: 'DiagnosticError',
       message: expect.stringContaining('outside'),
     });
