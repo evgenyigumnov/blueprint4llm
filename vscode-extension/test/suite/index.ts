@@ -81,6 +81,20 @@ export async function run(): Promise<void> {
   );
   assert.match(pencil.html, /class="bp-diagram bp-diagram--pencil"/);
   assert.match(pencil.html, /Extension Pencil preview/);
+  const openapi = await extension.exports.compileMarkdown(
+    [
+      '```openapi',
+      'openapi: 3.1.1',
+      'info: { title: Extension API, version: "1" }',
+      'paths:',
+      '  /orders:',
+      '    get: { responses: { default: { description: ready } } }',
+      '```',
+    ].join('\n'),
+    { sourceFile: '/tmp/blueprint4llm-openapi-host-smoke.md' },
+  );
+  assert.match(openapi.html, /class="bp-diagram bp-diagram--openapi"/);
+  assert.match(openapi.html, /GET \/orders/);
 
   const [major, minor] = hostNodeVersion.split('.').map(Number);
   assert.ok(

@@ -234,7 +234,7 @@ describe('Pencil renderer', () => {
     const compiled = await compileMarkdown(markdown, { sourceFile: 'blueprint-pencil.md' });
 
     expect(compiled.html).toContain('bp-diagram--pencil');
-    expect(compiled.html).toContain('Профиль');
+    expect(compiled.html).toContain('Profile');
     expect(compiled.errors).toEqual([]);
   });
 

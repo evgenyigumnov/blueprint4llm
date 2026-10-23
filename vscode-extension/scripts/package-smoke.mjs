@@ -35,6 +35,11 @@ try {
   const puppeteerEntry = rendererRequire.resolve('puppeteer');
 
   assert.equal(await pathExists(path.join(corePackagePath, 'dist', 'index.js')), true);
+  assert.equal(
+    await pathExists(path.join(packagedExtensionPath, 'node_modules', 'yaml', 'package.json')),
+    true,
+    'the OpenAPI renderer YAML parser must be included in the VSIX',
+  );
   assert.equal(await pathExists(cliPath), true);
   assert.equal(await pathExists(puppeteerEntry), true);
   assert.equal(await pathExists(path.join(packagedExtensionPath, 'node_modules', 'vscode')), false);
@@ -74,6 +79,20 @@ export async function run() {
   });
   assert.ok(pencil.html.includes('class="bp-diagram bp-diagram--pencil"'));
   assert.ok(pencil.html.includes('Packaged Pencil preview'));
+  const fence = String.fromCharCode(96, 96, 96);
+  const openapi = await api.compileMarkdown([
+    fence + 'openapi',
+    'openapi: 3.1.1',
+    'info: { title: Packaged API, version: "1" }',
+    'paths:',
+    '  /orders:',
+    '    get: { responses: { default: { description: ready } } }',
+    fence,
+  ].join(String.fromCharCode(10)), {
+    sourceFile: '/tmp/blueprint4llm-packaged-openapi.md',
+  });
+  assert.ok(openapi.html.includes('class="bp-diagram bp-diagram--openapi"'));
+  assert.ok(openapi.html.includes('GET /orders'));
   assert.equal(api.getPreviewCount(), 0);
   console.log('Packaged extension loaded the runtime and compiled Markdown');
 }

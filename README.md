@@ -81,6 +81,25 @@ URL mode accepts HTTPS `/design/` or `/file/` frame URLs. Use a personal access 
 `FIGMA_ACCESS_TOKEN`, then `.env` in the current working directory. The token is sent only
 to `api.figma.com`; exported SVGs are embedded in the result.
 
+### OpenAPI contracts
+
+Put an existing OpenAPI 3.1.1 contract in an `openapi` fence. The renderer creates a static SVG
+summary of operations, parameters, request bodies, responses, and component schemas. YAML 1.2 and
+strict JSON are supported. Ordinary `yaml` and `json` fences remain code blocks. See
+[`examples/blueprint-openapi.md`](examples/blueprint-openapi.md) for a complete example.
+
+The renderer supports the fields it displays, local `#/...` JSON Pointer references, schema
+composition, and recursive schema references. It does not fetch files or URLs. External references,
+other OpenAPI versions, nonstandard JSON Schema dialects, and unsupported identifier keywords such
+as `$id` and `$anchor` produce diagnostics. Other valid OpenAPI fields that the summary does not
+show produce warnings with source locations. These checks do not replace a full OpenAPI validator.
+
+The source limit is 256 KiB per block. A contract can contain up to 200 operations, 500 named
+schemas, 2,000 references, and 5,000 rendered lines. The resulting SVG is at most 1,200 px wide,
+16,384 px high, and 4 MiB. HTML, live preview, VS Code, and SVG/PNG/JPEG export show the full SVG.
+PDF printing scales each diagram to a maximum height of 220 mm, so a large contract can be small on
+the page. One OpenAPI block is not split across PDF pages.
+
 ## Commands
 
 | Task            | Command                                                 |
@@ -109,6 +128,7 @@ code `1`; warnings go to stderr. In live preview, fixing the source clears the d
 | Safety          | Raw HTML is escaped. SVGs are checked for active content and external resources. User scripts and graphical editing are not supported.                              |
 | Document limits | 5 MiB of Markdown, 100 visual blocks, and normally 256 KiB per block.                                                                                               |
 | JSON limits     | draw.io, Pencil, and Figma: 1 MiB and 10,000 cells/nodes. Balsamiq: 256 KiB and 3,000 controls.                                                                     |
+| OpenAPI limits  | 256 KiB source, 200 operations, 500 named schemas, 2,000 references, 5,000 layout lines, and 4 MiB SVG.                                                             |
 | Timeouts        | Mermaid and PlantUML: 30 seconds. draw.io layout: 5 seconds. PDF: 60 seconds.                                                                                       |
 | Chrome on Linux | Requires Chrome system libraries. If sandbox startup fails, rendering retries with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force this mode. |
 

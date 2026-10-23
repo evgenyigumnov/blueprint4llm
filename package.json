@@ -1,6 +1,6 @@
 {
   "name": "blueprint4llm",
-  "version": "0.16.15",
+  "version": "0.17.0",
   "description": "CLI generator of software blueprints: Markdown diagrams and UI prototypes to standalone HTML, PDF, SVG, PNG, or JPEG",
   "type": "module",
   "license": "MIT",
@@ -64,7 +64,8 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "yaml": "2.9.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

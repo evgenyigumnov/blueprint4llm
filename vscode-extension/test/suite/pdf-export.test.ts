@@ -23,6 +23,8 @@ async function testExportsTheDisplayedCompilation(): Promise<void> {
     renderPdf: async (result) => {
       calls.push('render');
       renderedCompilation = result;
+      assert.match(result.html, /class="bp-diagram bp-diagram--openapi"/);
+      assert.match(result.html, /GET \/orders/);
       return pdf;
     },
     writeFile: async (filePath, contents) => {
@@ -70,8 +72,8 @@ function testPdfPathHelpers(): void {
 
 function compiledPreview(): CompiledPreview {
   return {
-    html: '<!doctype html><html><head></head><body></body></html>',
-    title: 'Blueprint',
+    html: '<!doctype html><html><head></head><body><svg class="bp-diagram bp-diagram--openapi">GET /orders</svg></body></html>',
+    title: 'Orders API',
     assets: [],
     warnings: [],
     errors: [],

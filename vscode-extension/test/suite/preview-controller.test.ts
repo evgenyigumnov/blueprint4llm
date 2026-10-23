@@ -1,4 +1,5 @@
 import * as assert from 'node:assert/strict';
+import { compileMarkdown } from 'blueprint4llm';
 
 import {
   isSupportedMarkdownDocument,
@@ -18,6 +19,7 @@ export async function runPreviewControllerTests(): Promise<void> {
   await testDebounceAndPanelReuse();
   await testCancelsAndIgnoresStaleBuilds();
   await testTracksCompilationShownInPreview();
+  await testOpenApiEditRefreshesPreview();
   await testDocumentIsolationAndCloseCleanup();
   await testPanelCloseAbortsBuild();
   await testNonfatalDiagnosticsAreLogged();
@@ -61,6 +63,38 @@ async function testTracksCompilationShownInPreview(): Promise<void> {
 
   controller.dispose();
   assert.equal(controller.getDisplayedCompilation(document.uri), undefined);
+}
+
+async function testOpenApiEditRefreshesPreview(): Promise<void> {
+  const scheduler = new FakeScheduler();
+  const panel = new FakePanel();
+  const controller = new PreviewController({
+    createPanel: () => panel,
+    createCache: createEmptyCache,
+    output: () => {},
+    scheduler,
+    compiler: (markdown, options) =>
+      compileMarkdown(markdown, { sourceFile: options.sourceFile, signal: options.signal }),
+  });
+  const document = new FakeDocument(
+    'file:///docs/orders.md',
+    '/docs/orders.md',
+    openApiMarkdown('/orders'),
+  );
+
+  controller.open(document);
+  scheduler.flush();
+  await settle();
+  assert.match(panel.renderedHtml[0] ?? '', /GET \/orders/);
+
+  document.edit(openApiMarkdown('/orders/v2'));
+  controller.documentChanged(document);
+  scheduler.flush();
+  await settle();
+
+  assert.match(panel.renderedHtml[1] ?? '', /GET \/orders\/v2/);
+  assert.equal(panel.renderedHtml.length, 2);
+  controller.dispose();
 }
 
 async function testDebounceAndPanelReuse(): Promise<void> {
@@ -312,6 +346,7 @@ class FakePanel implements PreviewPanel {
   revealCount = 0;
   cleanupCount = 0;
   renderedTitles: string[] = [];
+  renderedHtml: string[] = [];
   diagnostics: PreviewDiagnostic[] = [];
   private disposeListener: (() => void) | undefined;
 
@@ -322,6 +357,7 @@ class FakePanel implements PreviewPanel {
   async render(result: ReturnType<typeof compiled>, isCurrent: () => boolean): Promise<void> {
     if (isCurrent()) {
       this.renderedTitles.push(result.title);
+      this.renderedHtml.push(result.html);
     }
   }
 
@@ -385,6 +421,18 @@ function compiled(markdown: string) {
     warnings: [],
     errors: [],
   };
+}
+
+function openApiMarkdown(path: string): string {
+  return [
+    '```openapi',
+    'openapi: 3.1.1',
+    'info: { title: Orders, version: "1" }',
+    'paths:',
+    `  ${path}:`,
+    '    get: { responses: { default: { description: ready } } }',
+    '```',
+  ].join('\n');
 }
 
 async function settle(): Promise<void> {
