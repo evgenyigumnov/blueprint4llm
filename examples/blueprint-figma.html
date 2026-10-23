@@ -1,333 +1,402 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Figma Design в Blueprint</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --bp-text: #1f2328;
-        --bp-muted: #656d76;
-        --bp-border: #d0d7de;
-        --bp-surface: #ffffff;
-        --bp-page-bg: #f6f8fa;
-        --bp-accent: #0a5bd3;
-        --bp-code-bg: #f6f8fa;
-      }
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figma Design в Blueprint</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+  --bp-diagnostic-error: #b42318;
+  --bp-diagnostic-warning: #7a4b00;
+  --bp-diagnostic-error-bg: #fff4f2;
+  --bp-diagnostic-warning-bg: #fff8e6;
+}
 
-      * {
-        box-sizing: border-box;
-      }
+* {
+  box-sizing: border-box;
+}
 
-      html {
-        -webkit-text-size-adjust: 100%;
-      }
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
-      body {
-        margin: 0;
-        background: var(--bp-page-bg);
-        color: var(--bp-text);
-        font-family:
-          system-ui,
-          -apple-system,
-          'Segoe UI',
-          Roboto,
-          'Helvetica Neue',
-          Arial,
-          'Noto Sans',
-          sans-serif;
-        font-size: 16px;
-        line-height: 1.65;
-      }
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
 
-      .bp-document {
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        padding: 2.5rem 1.5rem 4rem;
-        background: var(--bp-surface);
-        border: none;
-      }
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        line-height: 1.3;
-        margin: 1.8em 0 0.7em;
-        break-after: avoid;
-        page-break-after: avoid;
-      }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
 
-      h1 {
-        font-size: 2rem;
-        margin-top: 0;
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid var(--bp-border);
-      }
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
 
-      h2 {
-        font-size: 1.5rem;
-      }
+h2 {
+  font-size: 1.5rem;
+}
 
-      h3 {
-        font-size: 1.25rem;
-      }
+h3 {
+  font-size: 1.25rem;
+}
 
-      h4,
-      h5,
-      h6 {
-        font-size: 1.05rem;
-      }
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
 
-      p,
-      li {
-        orphans: 3;
-        widows: 3;
-      }
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
 
-      a {
-        color: var(--bp-accent);
-        text-decoration: none;
-        overflow-wrap: break-word;
-      }
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
 
-      a:hover {
-        text-decoration: underline;
-      }
+a:hover {
+  text-decoration: underline;
+}
 
-      img {
-        max-width: 100%;
-        height: auto;
-      }
+img {
+  max-width: 100%;
+  height: auto;
+}
 
-      blockquote {
-        margin: 1em 0;
-        padding: 0.2em 1em;
-        color: var(--bp-muted);
-        border-left: 4px solid var(--bp-border);
-      }
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
 
-      code {
-        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-        font-size: 0.9em;
-        background: var(--bp-code-bg);
-        padding: 0.15em 0.35em;
-        border-radius: 4px;
-        overflow-wrap: break-word;
-      }
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
 
-      pre {
-        margin: 1em 0;
-        padding: 0.9em 1em;
-        background: var(--bp-code-bg);
-        border: 1px solid var(--bp-border);
-        border-radius: 6px;
-        overflow-x: auto;
-      }
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
 
-      pre.bp-diagram-container {
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        overflow: visible;
-      }
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
 
-      pre code {
-        background: none;
-        padding: 0;
-        font-size: 0.875em;
-        line-height: 1.5;
-      }
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
 
-      pre.shiki {
-        color: var(--shiki-light);
-        background-color: var(--shiki-light-bg, var(--bp-code-bg));
-      }
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
 
-      pre.shiki span {
-        color: var(--shiki-light);
-      }
+pre.shiki span {
+  color: var(--shiki-light);
+}
 
-      :root[data-bp-theme='dark'] pre.shiki,
-      :root[data-bp-theme='dark'] pre.shiki span {
-        color: var(--shiki-dark) !important;
-        background-color: var(--shiki-dark-bg, transparent) !important;
-        font-style: var(--shiki-dark-font-style) !important;
-        font-weight: var(--shiki-dark-font-weight) !important;
-        text-decoration: var(--shiki-dark-text-decoration) !important;
-      }
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
 
-      .bp-table {
-        margin: 1em 0;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-      }
+:root[data-bp-theme='dark'] {
+  --bp-diagnostic-error: #ff7b72;
+  --bp-diagnostic-warning: #e3b341;
+  --bp-diagnostic-error-bg: #2d1618;
+  --bp-diagnostic-warning-bg: #2b2416;
+}
 
-      table {
-        border-collapse: collapse;
-        font-size: 0.95em;
-      }
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
 
-      th,
-      td {
-        border: 1px solid var(--bp-border);
-        padding: 0.4em 0.8em;
-        text-align: left;
-        vertical-align: top;
-      }
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
 
-      thead th {
-        background: var(--bp-code-bg);
-      }
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
 
-      hr {
-        border: none;
-        border-top: 1px solid var(--bp-border);
-        margin: 2em 0;
-      }
+thead th {
+  background: var(--bp-code-bg);
+}
 
-      ul[data-task-list] li,
-      li > input[type='checkbox'] {
-        margin-right: 0.4em;
-      }
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
 
-      .bp-diagram {
-        max-width: 100%;
-        margin: 1.5rem 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-      }
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
 
-      .bp-diagram > svg {
-        display: block;
-        max-width: none;
-        width: auto;
-        height: auto;
-        margin: 0;
-      }
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
 
-      @media screen and (max-width: 640px) {
-        .bp-document {
-          padding: 1.25rem 1rem 3rem;
-          border: none;
-        }
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
 
-        body {
-          font-size: 15px;
-        }
-      }
+.bp-diagnostics-summary,
+.bp-diagnostic {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  color: var(--bp-text);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-inline-start-width: 4px;
+  border-radius: 6px;
+  break-inside: auto;
+  page-break-inside: auto;
+}
 
-      @media print {
-        :root {
-          --bp-page-bg: #ffffff;
-        }
+.bp-diagnostics-summary {
+  font-weight: 650;
+}
 
-        body {
-          background: #ffffff;
-          font-size: 11pt;
-          line-height: 1.5;
-        }
+.bp-diagnostic {
+  white-space: normal;
+}
 
-        .bp-document {
-          max-width: none;
-          margin: 0;
-          padding: 0;
-          border: none;
-        }
+.bp-diagnostics-summary--error,
+.bp-diagnostic--error {
+  border-inline-start-color: var(--bp-diagnostic-error);
+}
 
-        pre {
-          white-space: pre-wrap;
-          overflow-wrap: break-word;
-          overflow: visible;
-        }
+.bp-diagnostics-summary--warning,
+.bp-diagnostic--warning {
+  border-inline-start-color: var(--bp-diagnostic-warning);
+}
 
-        pre.shiki {
-          color: var(--shiki-light) !important;
-          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-        }
+.bp-diagnostic--error {
+  background: var(--bp-diagnostic-error-bg);
+}
 
-        pre.shiki span {
-          color: var(--shiki-light) !important;
-        }
+.bp-diagnostic--warning {
+  background: var(--bp-diagnostic-warning-bg);
+}
 
-        :root[data-bp-theme='dark'] pre.shiki,
-        :root[data-bp-theme='dark'] pre.shiki span {
-          color: var(--shiki-light) !important;
-          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-        }
+.bp-diagnostic__title {
+  margin: 0 0 0.25rem;
+  color: var(--bp-text);
+  font-size: 1rem;
+}
 
-        code {
-          overflow-wrap: break-word;
-        }
+.bp-diagnostic__location {
+  margin: 0 0 0.5rem;
+  color: var(--bp-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
 
-        .bp-table {
-          overflow: visible;
-        }
+.bp-diagnostic__message {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+  page-break-inside: auto;
+}
 
-        .bp-diagram {
-          overflow: visible;
-        }
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
 
-        .bp-diagram > svg {
-          max-width: 100% !important;
-        }
+  body {
+    font-size: 15px;
+  }
+}
 
-        table {
-          width: 100%;
-          table-layout: fixed;
-        }
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
 
-        thead {
-          display: table-header-group;
-        }
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
 
-        tr,
-        img,
-        figure,
-        .bp-diagram,
-        blockquote {
-          break-inside: avoid;
-          page-break-inside: avoid;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="bp-document">
-      <h1>Figma Design в Blueprint</h1>
-      <p>
-        Блок <code>figma</code> принимает локальный ответ Figma REST API в JSON или ссылку на один
-        кадр Figma Design.
-      </p>
-      <h2>JSON без сети и токена</h2>
-      <p>
-        JSON должен содержать корневой узел <code>DOCUMENT</code>. Если в документе несколько кадров
-        верхнего уровня, задайте нужный ID через <code>node=ID</code> в метаданных блока.
-      </p>
-      <pre
-        class="bp-diagram-container"
-      ><figure class="bp-diagram bp-diagram--figma" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="360" height="220" viewBox="0 0 360 220"><title>Профиль</title><g><rect x="0" y="0" width="360" height="220" fill="#ffffff" stroke="none"></rect><g><text font-family="Inter, sans-serif" font-size="24" font-weight="600" letter-spacing="0" text-anchor="start" dominant-baseline="text-before-edge" xml:space="preserve" fill="#1f1f1f"><tspan x="24" y="24">Профиль пользователя</tspan></text></g><g><rect x="24" y="88" width="312" height="48" rx="8" fill="#1a59d9" stroke="none"></rect></g><g><text font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="0" text-anchor="start" dominant-baseline="text-before-edge" xml:space="preserve" fill="#ffffff"><tspan x="118" y="101">Сохранить</tspan></text></g></g></svg></figure></pre>
-      <h2>Кадр по ссылке</h2>
-      <p>
-        Для URL-режима нужен персональный токен Figma с разрешением <code>file_content:read</code>.
-        Задайте его через <code>CompileOptions.figmaAccessToken</code>, переменную окружения
-        <code>FIGMA_ACCESS_TOKEN</code> или <code>.env</code> в текущей папке. Порядок поиска токена
-        приведён в <a href="../README.md#figma-frames">README</a>.
-      </p>
-      <p>
-        Параметр <code>t</code> остаётся частью исходной ссылки и не отправляется в Figma API. Во
-        время компиляции API возвращает временный SVG URL; компилятор скачивает SVG и встраивает его
-        в документ. JSON-режим не обращается к сети.
-      </p>
-    </main>
-  </body>
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  .bp-diagnostic__message {
+    overflow: visible;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Figma Design в Blueprint</h1>
+<p>Блок <code>figma</code> принимает локальный ответ Figma REST API в JSON или ссылку на один кадр Figma Design.</p>
+<h2>JSON без сети и токена</h2>
+<p>JSON должен содержать корневой узел <code>DOCUMENT</code>. Если в документе несколько кадров верхнего уровня, задайте нужный ID через <code>node=ID</code> в метаданных блока.</p>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--figma" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="360" height="220" viewBox="0 0 360 220"><title>Профиль</title><g><rect x="0" y="0" width="360" height="220" fill="#ffffff" stroke="none"></rect><g><text font-family="Inter, sans-serif" font-size="24" font-weight="600" letter-spacing="0" text-anchor="start" dominant-baseline="text-before-edge" xml:space="preserve" fill="#1f1f1f"><tspan x="24" y="24">Профиль пользователя</tspan></text></g><g><rect x="24" y="88" width="312" height="48" rx="8" fill="#1a59d9" stroke="none"></rect></g><g><text font-family="Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="0" text-anchor="start" dominant-baseline="text-before-edge" xml:space="preserve" fill="#ffffff"><tspan x="118" y="101">Сохранить</tspan></text></g></g></svg></figure></pre>
+<h2>Кадр по ссылке</h2>
+<p>Для URL-режима нужен персональный токен Figma с разрешением <code>file_content:read</code>. Задайте его через <code>CompileOptions.figmaAccessToken</code>, переменную окружения <code>FIGMA_ACCESS_TOKEN</code> или <code>.env</code> в текущей папке. Порядок поиска токена приведён в <a href="../README.md#figma-frames">README</a>.</p>
+<pre class="bp-diagram-container"><div class="bp-diagnostic-container"><section class="bp-diagnostic bp-diagnostic--error" role="alert" aria-label="Ошибка при построении схемы"><h3 class="bp-diagnostic__title">Ошибка при построении схемы</h3><p class="bp-diagnostic__location">/home/evgeny-igumnov/blueprint4llm/examples/blueprint-figma.md:76:1 · figma · diagram.render</p><pre class="bp-diagnostic__message">figma render failed: Figma API rate limit exceeded (HTTP 429); retry after the limit resets</pre></section></div></pre>
+<p>Параметр <code>t</code> остаётся частью исходной ссылки и не отправляется в Figma API. Во время компиляции API возвращает временный SVG URL; компилятор скачивает SVG и встраивает его в документ. JSON-режим не обращается к сети.</p>
+</main>
+
+</body>
 </html>

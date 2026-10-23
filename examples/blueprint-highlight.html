@@ -1,340 +1,403 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Подсветка обычных блоков кода</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --bp-text: #1f2328;
-        --bp-muted: #656d76;
-        --bp-border: #d0d7de;
-        --bp-surface: #ffffff;
-        --bp-page-bg: #f6f8fa;
-        --bp-accent: #0a5bd3;
-        --bp-code-bg: #f6f8fa;
-      }
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Подсветка обычных блоков кода</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+  --bp-diagnostic-error: #b42318;
+  --bp-diagnostic-warning: #7a4b00;
+  --bp-diagnostic-error-bg: #fff4f2;
+  --bp-diagnostic-warning-bg: #fff8e6;
+}
 
-      * {
-        box-sizing: border-box;
-      }
+* {
+  box-sizing: border-box;
+}
 
-      html {
-        -webkit-text-size-adjust: 100%;
-      }
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
-      body {
-        margin: 0;
-        background: var(--bp-page-bg);
-        color: var(--bp-text);
-        font-family:
-          system-ui,
-          -apple-system,
-          'Segoe UI',
-          Roboto,
-          'Helvetica Neue',
-          Arial,
-          'Noto Sans',
-          sans-serif;
-        font-size: 16px;
-        line-height: 1.65;
-      }
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
 
-      .bp-document {
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        padding: 2.5rem 1.5rem 4rem;
-        background: var(--bp-surface);
-        border: none;
-      }
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
 
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        line-height: 1.3;
-        margin: 1.8em 0 0.7em;
-        break-after: avoid;
-        page-break-after: avoid;
-      }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
 
-      h1 {
-        font-size: 2rem;
-        margin-top: 0;
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid var(--bp-border);
-      }
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
 
-      h2 {
-        font-size: 1.5rem;
-      }
+h2 {
+  font-size: 1.5rem;
+}
 
-      h3 {
-        font-size: 1.25rem;
-      }
+h3 {
+  font-size: 1.25rem;
+}
 
-      h4,
-      h5,
-      h6 {
-        font-size: 1.05rem;
-      }
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
 
-      p,
-      li {
-        orphans: 3;
-        widows: 3;
-      }
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
 
-      a {
-        color: var(--bp-accent);
-        text-decoration: none;
-        overflow-wrap: break-word;
-      }
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
 
-      a:hover {
-        text-decoration: underline;
-      }
+a:hover {
+  text-decoration: underline;
+}
 
-      img {
-        max-width: 100%;
-        height: auto;
-      }
+img {
+  max-width: 100%;
+  height: auto;
+}
 
-      blockquote {
-        margin: 1em 0;
-        padding: 0.2em 1em;
-        color: var(--bp-muted);
-        border-left: 4px solid var(--bp-border);
-      }
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
 
-      code {
-        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-        font-size: 0.9em;
-        background: var(--bp-code-bg);
-        padding: 0.15em 0.35em;
-        border-radius: 4px;
-        overflow-wrap: break-word;
-      }
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
 
-      pre {
-        margin: 1em 0;
-        padding: 0.9em 1em;
-        background: var(--bp-code-bg);
-        border: 1px solid var(--bp-border);
-        border-radius: 6px;
-        overflow-x: auto;
-      }
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
 
-      pre.bp-diagram-container {
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        overflow: visible;
-      }
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
 
-      pre code {
-        background: none;
-        padding: 0;
-        font-size: 0.875em;
-        line-height: 1.5;
-      }
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
 
-      pre.shiki {
-        color: var(--shiki-light);
-        background-color: var(--shiki-light-bg, var(--bp-code-bg));
-      }
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
 
-      pre.shiki span {
-        color: var(--shiki-light);
-      }
+pre.shiki span {
+  color: var(--shiki-light);
+}
 
-      :root[data-bp-theme='dark'] pre.shiki,
-      :root[data-bp-theme='dark'] pre.shiki span {
-        color: var(--shiki-dark) !important;
-        background-color: var(--shiki-dark-bg, transparent) !important;
-        font-style: var(--shiki-dark-font-style) !important;
-        font-weight: var(--shiki-dark-font-weight) !important;
-        text-decoration: var(--shiki-dark-text-decoration) !important;
-      }
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
 
-      .bp-table {
-        margin: 1em 0;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-      }
+:root[data-bp-theme='dark'] {
+  --bp-diagnostic-error: #ff7b72;
+  --bp-diagnostic-warning: #e3b341;
+  --bp-diagnostic-error-bg: #2d1618;
+  --bp-diagnostic-warning-bg: #2b2416;
+}
 
-      table {
-        border-collapse: collapse;
-        font-size: 0.95em;
-      }
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
 
-      th,
-      td {
-        border: 1px solid var(--bp-border);
-        padding: 0.4em 0.8em;
-        text-align: left;
-        vertical-align: top;
-      }
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
 
-      thead th {
-        background: var(--bp-code-bg);
-      }
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
 
-      hr {
-        border: none;
-        border-top: 1px solid var(--bp-border);
-        margin: 2em 0;
-      }
+thead th {
+  background: var(--bp-code-bg);
+}
 
-      ul[data-task-list] li,
-      li > input[type='checkbox'] {
-        margin-right: 0.4em;
-      }
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
 
-      .bp-diagram {
-        max-width: 100%;
-        margin: 1.5rem 0;
-        padding: 0;
-        background: transparent;
-        border: none;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-      }
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
 
-      .bp-diagram > svg {
-        display: block;
-        max-width: none;
-        width: auto;
-        height: auto;
-        margin: 0;
-      }
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
 
-      @media screen and (max-width: 640px) {
-        .bp-document {
-          padding: 1.25rem 1rem 3rem;
-          border: none;
-        }
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
 
-        body {
-          font-size: 15px;
-        }
-      }
+.bp-diagnostics-summary,
+.bp-diagnostic {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  color: var(--bp-text);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-inline-start-width: 4px;
+  border-radius: 6px;
+  break-inside: auto;
+  page-break-inside: auto;
+}
 
-      @media print {
-        :root {
-          --bp-page-bg: #ffffff;
-        }
+.bp-diagnostics-summary {
+  font-weight: 650;
+}
 
-        body {
-          background: #ffffff;
-          font-size: 11pt;
-          line-height: 1.5;
-        }
+.bp-diagnostic {
+  white-space: normal;
+}
 
-        .bp-document {
-          max-width: none;
-          margin: 0;
-          padding: 0;
-          border: none;
-        }
+.bp-diagnostics-summary--error,
+.bp-diagnostic--error {
+  border-inline-start-color: var(--bp-diagnostic-error);
+}
 
-        pre {
-          white-space: pre-wrap;
-          overflow-wrap: break-word;
-          overflow: visible;
-        }
+.bp-diagnostics-summary--warning,
+.bp-diagnostic--warning {
+  border-inline-start-color: var(--bp-diagnostic-warning);
+}
 
-        pre.shiki {
-          color: var(--shiki-light) !important;
-          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-        }
+.bp-diagnostic--error {
+  background: var(--bp-diagnostic-error-bg);
+}
 
-        pre.shiki span {
-          color: var(--shiki-light) !important;
-        }
+.bp-diagnostic--warning {
+  background: var(--bp-diagnostic-warning-bg);
+}
 
-        :root[data-bp-theme='dark'] pre.shiki,
-        :root[data-bp-theme='dark'] pre.shiki span {
-          color: var(--shiki-light) !important;
-          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-        }
+.bp-diagnostic__title {
+  margin: 0 0 0.25rem;
+  color: var(--bp-text);
+  font-size: 1rem;
+}
 
-        code {
-          overflow-wrap: break-word;
-        }
+.bp-diagnostic__location {
+  margin: 0 0 0.5rem;
+  color: var(--bp-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
 
-        .bp-table {
-          overflow: visible;
-        }
+.bp-diagnostic__message {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+  page-break-inside: auto;
+}
 
-        .bp-diagram {
-          overflow: visible;
-        }
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
 
-        .bp-diagram > svg {
-          max-width: 100% !important;
-        }
+  body {
+    font-size: 15px;
+  }
+}
 
-        table {
-          width: 100%;
-          table-layout: fixed;
-        }
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
 
-        thead {
-          display: table-header-group;
-        }
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
 
-        tr,
-        img,
-        figure,
-        .bp-diagram,
-        blockquote {
-          break-inside: avoid;
-          page-break-inside: avoid;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="bp-document">
-      <h1>Подсветка обычных блоков кода</h1>
-      <p>
-        Пример показывает, как читать технические фрагменты в плане. Язык указывается после
-        открывающих обратных кавычек.
-      </p>
-      <h2>JSON</h2>
-      <pre
-        class="shiki shiki-themes github-light github-dark"
-        style="
-          --shiki-light: #24292e;
-          --shiki-dark: #e1e4e8;
-          --shiki-light-bg: #fff;
-          --shiki-dark-bg: #24292e;
-        "
-        tabindex="0"
-      ><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  .bp-diagnostic__message {
+    overflow: visible;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Подсветка обычных блоков кода</h1>
+<p>Пример показывает, как читать технические фрагменты в плане. Язык указывается после открывающих обратных кавычек.</p>
+<h2>JSON</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"blueprint4llm"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "output"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"html"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "syntaxHighlighting"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "languages"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"json"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"typescript"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"bash"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"yaml"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-      <h2>TypeScript</h2>
-      <pre
-        class="shiki shiki-themes github-light github-dark"
-        style="
-          --shiki-light: #24292e;
-          --shiki-dark: #e1e4e8;
-          --shiki-light-bg: #fff;
-          --shiki-dark-bg: #24292e;
-        "
-        tabindex="0"
-      ><code class="language-typescript"><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> RenderOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<h2>TypeScript</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code class="language-typescript"><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> RenderOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  format</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> 'html'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> 'pdf'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  highlightCode</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>
@@ -342,47 +405,24 @@
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">export</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> function</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> resolveFormat</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> RenderOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> options.highlightCode </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> `${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">options</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">format</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">}:highlighted`</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> :</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> options.format;</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-      <h2>Bash</h2>
-      <pre
-        class="shiki shiki-themes github-light github-dark"
-        style="
-          --shiki-light: #24292e;
-          --shiki-dark: #e1e4e8;
-          --shiki-light-bg: #fff;
-          --shiki-dark-bg: #24292e;
-        "
-        tabindex="0"
-      ><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">blueprint4llm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> examples/blueprint-highlight.md</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --out=./dist/blueprint-highlight.html</span></span>
+<h2>Bash</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">blueprint4llm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> examples/blueprint-highlight.md</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --out=./dist/blueprint-highlight.html</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">blueprint4llm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> examples/blueprint-highlight.md</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --format=pdf</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> --out=./dist/blueprint-highlight.pdf</span></span></code></pre>
-      <h2>YAML</h2>
-      <pre
-        class="shiki shiki-themes github-light github-dark"
-        style="
-          --shiki-light: #24292e;
-          --shiki-dark: #e1e4e8;
-          --shiki-light-bg: #fff;
-          --shiki-dark-bg: #24292e;
-        "
-        tabindex="0"
-      ><code class="language-yaml"><span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">renderer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">:</span></span>
+<h2>YAML</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code class="language-yaml"><span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">renderer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">:</span></span>
 <span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">  engine</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">shiki</span></span>
 <span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">  theme</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">:</span></span>
 <span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">    light</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">github-light</span></span>
 <span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">    dark</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">github-dark</span></span></code></pre>
-      <h2>Без языковой метки</h2>
-      <p>Блок без языка сохраняет обычный вид и не требует угадывать синтаксис:</p>
-      <pre><code>Этот фрагмент останется моноширинным текстом без раскраски токенов.
+<h2>Без языковой метки</h2>
+<p>Блок без языка сохраняет обычный вид и не требует угадывать синтаксис:</p>
+<pre><code>Этот фрагмент останется моноширинным текстом без раскраски токенов.
 </code></pre>
-      <h2>Mermaid, PlantUML и Wiremark по-прежнему визуализируются</h2>
-      <pre
-        class="bp-diagram-container"
-      ><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-001"><svg id="bp-diagram-001-bp-diagram-001" width="360" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 360px; background-color: transparent;" viewBox="4 4 360 300" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-001-bp-diagram-001{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-001-bp-diagram-001 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .error-icon{fill:#552222;}#bp-diagram-001-bp-diagram-001 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-001-bp-diagram-001 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-001-bp-diagram-001 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-001-bp-diagram-001 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-001-bp-diagram-001 .marker{fill:#333333;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .marker.cross{stroke:#333333;}#bp-diagram-001-bp-diagram-001 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-001-bp-diagram-001 p{margin:0;}#bp-diagram-001-bp-diagram-001 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span{color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span p{background-color:transparent;}#bp-diagram-001-bp-diagram-001 .label text,#bp-diagram-001-bp-diagram-001 span{fill:#333;color:#333;}#bp-diagram-001-bp-diagram-001 .node rect,#bp-diagram-001-bp-diagram-001 .node circle,#bp-diagram-001-bp-diagram-001 .node ellipse,#bp-diagram-001-bp-diagram-001 .node polygon,#bp-diagram-001-bp-diagram-001 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label text,#bp-diagram-001-bp-diagram-001 .node .label text,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-anchor:middle;}#bp-diagram-001-bp-diagram-001 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label,#bp-diagram-001-bp-diagram-001 .node .label,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-align:center;}#bp-diagram-001-bp-diagram-001 .node.clickable{cursor:pointer;}#bp-diagram-001-bp-diagram-001 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .arrowheadPath{fill:#333333;}#bp-diagram-001-bp-diagram-001 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-001-bp-diagram-001 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-001-bp-diagram-001 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .cluster text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster span{color:#333;}#bp-diagram-001-bp-diagram-001 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-001-bp-diagram-001 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-001-bp-diagram-001 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-001-bp-diagram-001 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-001-bp-diagram-001 rect.text{fill:none;stroke-width:0;}#bp-diagram-001-bp-diagram-001 .icon-shape,#bp-diagram-001-bp-diagram-001 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .icon-shape p,#bp-diagram-001-bp-diagram-001 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-001-bp-diagram-001 .icon-shape .label rect,#bp-diagram-001-bp-diagram-001 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-001-bp-diagram-001 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-001-bp-diagram-001 .node .neo-node{stroke:#9370DB;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].cluster rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M162,53L162,65.92893218813452Q162,73 154.92893218813452,73L95.07106781186548,73Q88,73 88,80.07106781186548L88,89" id="bp-diagram-001-bp-diagram-001-L_Markdown_Подсветка_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67163848876953 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Markdown_Подсветка_0" data-points="W3sieCI6MTYyLCJ5Ijo1M30seyJ4IjoxNjIsInkiOjczfSx7IngiOjg4LCJ5Ijo3M30seyJ4Ijo4OCwieSI6OTN9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M206,53L206,65.92893218813452Q206,73 213.07106781186548,73L272.9289321881345,73Q280,73 280,80.07106781186548L280,89" id="bp-diagram-001-bp-diagram-001-L_Markdown_Диаграммы_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67166900634766 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Markdown_Диаграммы_0" data-points="W3sieCI6MjA2LCJ5Ijo1M30seyJ4IjoyMDYsInkiOjczfSx7IngiOjI4MCwieSI6NzN9LHsieCI6MjgwLCJ5Ijo5M31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,134L88,170" id="bp-diagram-001-bp-diagram-001-L_Подсветка_HTML_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Подсветка_HTML_0" data-points="W3sieCI6ODgsInkiOjEzNH0seyJ4Ijo4OCwieSI6MTc0fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M280,134L280,170" id="bp-diagram-001-bp-diagram-001-L_Диаграммы_SVG_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Диаграммы_SVG_0" data-points="W3sieCI6MjgwLCJ5IjoxMzR9LHsieCI6MjgwLCJ5IjoxNzR9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,215L88,227.92893218813452Q88,235 95.07106781186548,235L154.92893218813452,235Q162,235 162,242.07106781186548L162,251" id="bp-diagram-001-bp-diagram-001-L_HTML_Предпросмотр_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67166137695312 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_HTML_Предпросмотр_0" data-points="W3sieCI6ODgsInkiOjIxNX0seyJ4Ijo4OCwieSI6MjM1fSx7IngiOjE2MiwieSI6MjM1fSx7IngiOjE2MiwieSI6MjU1fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M280,215L280,227.92893218813452Q280,235 272.9289321881345,235L213.07106781186548,235Q206,235 206,242.07106781186548L206,251" id="bp-diagram-001-bp-diagram-001-L_SVG_Предпросмотр_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67170715332031 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_SVG_Предпросмотр_0" data-points="W3sieCI6MjgwLCJ5IjoyMTV9LHsieCI6MjgwLCJ5IjoyMzV9LHsieCI6MjA2LCJ5IjoyMzV9LHsieCI6MjA2LCJ5IjoyNTV9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Markdown-0" data-look="neo" transform="translate(184, 32.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Markdown</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Подсветка-1" data-look="neo" transform="translate(88, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Подсветка</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Диаграммы-3" data-look="neo" transform="translate(280, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Диаграммы</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-HTML-5" data-look="neo" transform="translate(88, 194.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">HTML</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-SVG-7" data-look="neo" transform="translate(280, 194.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">SVG</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Предпросмотр-9" data-look="neo" transform="translate(184, 275.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Предпросмотр</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
-      <pre
-        class="bp-diagram-container"
-      ><figure class="bp-diagram bp-diagram--plantuml" data-diagram-id="bp-diagram-002"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 396 176" width="396" height="176"><defs></defs><g><g class="message" data-entity-1="part1" data-entity-2="part2" id="bp-diagram-002-msg1" data-source-line="1"></g><g class="message" data-entity-1="part1" data-entity-2="part3" id="bp-diagram-002-msg2" data-source-line="2"></g><g class="message" data-entity-1="part2" data-entity-2="part4" id="bp-diagram-002-msg3" data-source-line="3"></g><g class="message" data-entity-1="part3" data-entity-2="part5" id="bp-diagram-002-msg4" data-source-line="4"></g><g class="participant-lifeline" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-lifeline" data-source-line="1"><g><title>Markdown</title><rect x="40.79" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="44.29" y1="36" x2="44.29" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-lifeline" data-source-line="1"><g><title>.........</title><rect x="131.05" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="134.55" y1="36" x2="134.55" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-lifeline" data-source-line="2"><g><title>.........</title><rect x="226.56" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="230.06" y1="36" x2="230.06" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-lifeline" data-source-line="3"><g><title>HTML</title><rect x="307.16" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="310.66" y1="36" x2="310.66" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-lifeline" data-source-line="4"><g><title>SVG</title><rect x="364.99" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="368.49" y1="36" x2="368.49" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant participant-head" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-head" data-source-line="1"><rect x="5" y="5" width="78.58" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="12" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Markdown</text></g><g class="participant participant-head" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-head" data-source-line="1"><rect x="93.58" y="5" width="81.94" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="100.58" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Подсветка</text></g><g class="participant participant-head" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-head" data-source-line="2"><rect x="185.52" y="5" width="89.08" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="192.52" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Диаграммы</text></g><g class="participant participant-head" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-head" data-source-line="3"><rect x="284.6" y="5" width="52.11" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="291.6" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">HTML</text></g><g class="participant participant-head" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-head" data-source-line="4"><rect x="346.71" y="5" width="43.57" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="353.71" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">SVG</text></g><g class="participant participant-tail" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-tail" data-source-line="1"><rect x="5" y="140" width="78.58" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="12" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Markdown</text></g><g class="participant participant-tail" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-tail" data-source-line="1"><rect x="93.58" y="140" width="81.94" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="100.58" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Подсветка</text></g><g class="participant participant-tail" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-tail" data-source-line="2"><rect x="185.52" y="140" width="89.08" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="192.52" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Диаграммы</text></g><g class="participant participant-tail" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-tail" data-source-line="3"><rect x="284.6" y="140" width="52.11" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="291.6" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">HTML</text></g><g class="participant participant-tail" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-tail" data-source-line="4"><rect x="346.71" y="140" width="43.57" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="353.71" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">SVG</text></g><g class="message" data-entity-1="part1" data-entity-2="part2" id="bp-diagram-002-msg1-2" data-source-line="1"><polygon points="122.55,61 132.55,65 122.55,69 126.55,65" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="44.29" y1="65" x2="128.55" y2="65" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line><text x="51.29" y="60" font-size="13" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Shiki</text></g><g class="message" data-entity-1="part1" data-entity-2="part3" id="bp-diagram-002-msg2-2" data-source-line="2"><polygon points="218.06,90 228.06,94 218.06,98 222.06,94" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="44.29" y1="94" x2="224.06" y2="94" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line><text x="51.29" y="89" font-size="13" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">рендерер</text></g><g class="message" data-entity-1="part2" data-entity-2="part4" id="bp-diagram-002-msg3-2" data-source-line="3"><polygon points="298.66,104 308.66,108 298.66,112 302.66,108" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="134.55" y1="108" x2="304.66" y2="108" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line></g><g class="message" data-entity-1="part3" data-entity-2="part5" id="bp-diagram-002-msg4-2" data-source-line="4"><polygon points="356.49,118 366.49,122 356.49,126 360.49,122" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="230.06" y1="122" x2="362.49" y2="122" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line></g><!--?plantuml-src yqqioax9ByzJqDMrKxWm_yA-2rikDbxOT67hnQOBkovii588piZCpkJoHL4svSAE2nikRBxO02JtNDXpiTjA0SZUUc7lXIr0ZGqWp8Lf5bYlHuYl3nUc0M2vu31t0000?--></g></svg></figure></pre>
-      <pre
-        class="bp-diagram-container"
-      ><figure class="bp-diagram bp-diagram--wiremark" data-diagram-id="bp-diagram-003"><svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812"><rect x="0" y="0" width="375" height="812" fill="#ffffff"></rect><g transform="translate(0 0)"><clipPath id="bp-diagram-003-wm-clip-0"><rect x="0" y="0" width="375" height="812"></rect></clipPath><g clip-path="url(#bp-diagram-003-wm-clip-0)"><rect x="0" y="0" width="375" height="812" fill="#ffffff"></rect><path d="M16.10944690965116 16.711775771155953 L358.72824946902693 16.730119398608803 L358.59349024556576 243.76764370538294 L15.129302540048958 243.36291070319712" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><text x="32" y="56" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="24" font-weight="700" text-anchor="start" fill="#22303f">Подсветка кода</text><path d="M31.41231870315969 82.03612022139131 L344.15920678041874 82.07049759365619 L342.7893433775753 122.19417893625796 L30.811432107910512 123.0392809484154" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.929340245154634 82.0812847496361 C31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361 M31.929340245154634 82.0812847496361 C31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361 M31.407132097130113 91.37192989832533 C34.917102473851344 88.2378031447591, 37.51715664297424 85.07483354067202, 40.006642455552395 82.57526552826529 M31.992717238684587 91.43229787437988 C34.325631881101 88.15613460565184, 37.2950259490179 85.21790356559386, 39.77318238006967 82.18396190159386 M31.8503541153799 100.70213127419196 C37.2152411758972 94.86430601686668, 42.64997348635467 87.79446872957911, 47.75466051240667 81.37377262895134 M31.971650660870523 100.60767865203164 C37.81372761428803 93.06874099746778, 44.32280300464169 86.24021848455219, 48.25318783325359 81.78607723039713 M31.257827321967497 110.52144490414172 C38.204144394404466 102.42948918336022, 44.00478490811389 96.7412010706559, 55.22904601585497 82.15539224959697 M31.610345674461144 110.13483812481968 C37.38396057018152 103.8830862007494, 42.503065221959226 97.72677524129072, 55.95270040188362 81.67626023843673 M30.96224495604531 119.74521791519501 C40.65461854298185 107.61956973707045, 50.13872629833554 97.36405665813908, 63.32417965773099 82.27040191540864 M31.303894890322248 118.72919539729038 C38.60531210361254 110.99702829621341, 46.23044941653099 102.28526939827918, 63.65707937981539 82.0728866516277 M37.62748452297494 122.16372776713214 C50.56205136881351 107.23927329698054, 63.29989979879435 91.2605050058537, 71.65156046147224 81.98816197794882 M37.0784194661592 122.24437021438024 C45.86080746036471 111.27548032488723, 55.19831561070685 100.19369685558726, 71.45217681783018 82.34029973168877 M44.19705893023182 122.00892313240671 C57.334441407428585 109.17809569773854, 69.50089849957719 94.65760057092456, 79.35003120051624 81.98818903878002 M44.96741033679117 122.04166915869915 C54.611222477571836 110.84675704335982, 64.33356780362973 99.84994793689361, 79.61642289170922 82.58151461533873 M52.14182483529143 122.92290893347227 C65.24667658293964 107.3508639719599, 77.80833123957443 92.2970609640715, 88.11683742729096 81.43044636924196 M52.296936562037395 122.32107068785692 C59.343328474119104 114.34296012658002, 66.95917698682227 106.01532539949145, 88.28938493122428 81.67100873407354 M60.45921876159128 122.16410802189137 C71.83938041546816 108.82704861394889, 84.6553568840799 94.65167996365383, 96.35839135725294 82.1991822313427 M60.122381442679135 122.6898868135723 C71.04513431503953 109.95543748250778, 81.93936789806644 97.80615224147195, 95.86003130417559 81.86106013505747 M67.82402098256887 122.85109949922646 C79.81382267381154 109.97899390835406, 91.4549667722917 94.97208160726036, 103.90162604283012 81.59967239642194 M68.41670640449763 122.76910142256403 C81.78456101894108 107.4748380094605, 95.08396881374848 91.53416385101482, 103.51558559033491 82.24098999978652 M77.21941455065219 122.43290913681732 C87.48952112138703 109.45750701999474, 99.14765635547852 95.1210535292961, 110.94475925746005 81.40205846604219 M76.53901002726464 121.82616069632815 C85.21867378291903 112.37834848325816, 94.3549105746692 101.58573644876654, 111.22979046548348 82.54350096497944 M83.68774918129775 121.73284769667195 C92.380295501433 113.18271005177044, 102.45597962852068 102.36431562980191, 119.4883525245802 82.71163829176598 M84.02279192878039 122.58131143202888 C96.43254273232873 109.09632125023558, 108.0400065476278 94.85527670463992, 119.03146673040254 81.97746754235499 M91.84189542693353 122.44525345013011 C105.33756676829047 106.667779469058, 119.54828997138625 90.36032853014261, 127.56637014661862 81.639156394933 M91.92480693881667 122.26684356116223 C106.26264517310636 106.58542777429717, 119.96977841205259 90.44814526045107, 127.87307233986391 81.66072653840912 M100.41600856099706 123.37933049875429 C114.23390565745544 106.63828198447062, 127.95076184395255 92.05035857886529, 135.39694308903174 82.3446422875513 M99.6133289831547 122.83342847044696 C108.59904635536228 112.31702885035821, 117.67156405369448 102.25912357411576, 135.21896628666775 81.62641537530615 M108.49658760692581 123.32943919410697 C116.35163318799538 113.51835172554559, 122.80328578766031 104.58331576053041, 142.8937231542476 82.53415299096062 M107.63671011257574 122.5829094216018 C121.48541001300586 107.3945870867221, 135.28160403698917 91.81893489331904, 143.19426277558586 81.88221460954205 M116.1535343671478 121.54538655752788 C124.31508520615989 113.12703435655837, 132.37536220118994 104.1918144090898, 151.0166468657037 81.70361135672346 M116.19193953185153 122.60109197112271 C124.92491612221079 112.23934942005194, 133.84221827199588 102.59631302411981, 150.97309510739947 82.61668625283554 M124.19091730711955 122.77626460102509 C136.63581537018902 108.38824613358827, 149.48685335749465 93.66465426794267, 159.85905352582807 82.45438690617954 M123.91290748378235 122.16408229117404 C130.95129633082047 114.27270553046642, 138.4022711084002 106.39138041718597, 159.50323373688036 81.87735461168263 M131.658325729269 122.76719284593833 C139.09285172536948 113.21808767413498, 147.16904564363674 103.76977802822479, 166.79844910007714 81.13713415133691 M132.01925942313989 122.19752968825173 C143.22185856748456 109.70317258523762, 153.77774865452128 97.2062428481255, 167.09435015682874 82.17704460824763 M140.40163365703367 122.90315664383006 C149.92180903648963 110.92594144788033, 160.30700122933175 98.15982976913682, 175.20786039087892 82.14853511353529 M139.90465990070544 123.08296492407452 C147.49652453778378 114.04113639833636, 155.7864798061481 104.51144765536228, 175.16687107201636 81.9531242990265 M148.35011789284164 121.92458801604005 C162.0967409874 106.12923273342057, 174.84095306491298 91.02870219446255, 183.00659892167099 82.1751376443372 M148.2614106212508 122.33588105513843 C161.25029700473124 106.20464955837939, 175.40313698663246 90.99263750169132, 183.04024228322453 82.17384319573797 M155.66722190214927 122.57120397457635 C164.0950735523699 111.56792773860494, 173.70499780070736 101.88723180366482, 191.29131996589072 81.86364584530513 M156.2687143275761 122.01207175360774 C167.54248634049392 109.05461417093684, 179.5080130936531 95.89603056283143, 190.4014877162344 82.37112268510084 M163.86190998738465 121.87874904077864 C173.28488768333412 111.16219695282318, 182.551454123315 100.38661709959229, 199.36708157596624 82.29121048777878 M164.1415289744532 122.5668738259784 C173.6628310189635 111.17577571527656, 183.4504751628065 100.20417561395297, 199.37376845081783 81.87334644861102 M172.3394311719853 122.62283356620944 C184.21485646973633 107.40638360085956, 197.31531686374882 92.15874885606016, 206.89810846735398 81.20926733376623 M171.9188316126633 122.26150553396916 C179.2402165503332 114.07133006638345, 186.32516315084007 105.01961087458572, 207.30464660477497 82.01169878343285 M179.03237822938868 122.58922415243123 C188.89630598000036 111.23654616633083, 198.3502406464478 101.14958478518123, 215.41914619248195 81.74027965460718 M179.53217741798767 122.79585701429878 C190.78544878070528 109.93737674873734, 202.48639734482418 96.5164223782801, 214.51493950787767 81.97940712106228 M188.23174671202278 122.2441340707838 C197.5720911945159 110.55840075966131, 206.25178076780315 100.26372101723318, 222.48622502478764 82.22157655186416 M188.07425872019803 122.54128069846327 C196.3978484412831 111.68886227963426, 205.139925965276 101.37780852065416, 222.6869835859071 81.83808034821809 M195.1376988353441 122.57806158327514 C204.89052216246114 110.81325905835152, 214.41255345358545 100.56518039868148, 231.7637780166991 81.52093379687688 M195.78716888709465 122.74692963362689 C207.30800865771337 108.49567494362263, 218.9418218029931 95.1416052817629, 231.18925241863502 81.39578964639624 M203.3709176517807 122.60253246124502 C216.74094793507712 107.67559529706713, 228.39364042398412 93.83092548535139, 239.17540488367283 81.68041215165339 M203.4112564984493 122.59900000128563 C212.9681656951179 112.43196490532779, 221.25147048926416 101.88021982210417, 238.66462062386177 81.61340681276104 M211.12337093476998 121.99393830625591 C217.84474376803854 114.51590633741189, 226.0011753864971 106.70305812579267, 247.21522617813673 82.21309988753342 M210.97338923004318 123.02706943815825 C221.09444631959542 111.63944669776767, 230.64706165335866 100.26346570428126, 246.77921803135897 82.06384677880847 M218.98937020774952 122.36382696987032 C229.99576015485587 110.45978765827765, 240.6202068638629 99.51444630021228, 254.29864717352837 82.74695110607946 M219.05551288265755 123.13688745596347 C230.13297354924242 110.31020559541572, 241.36085156419443 97.70893396149509, 254.6106935669079 82.33840593125724 M227.39662977314728 122.92919297342797 C238.6107737707691 110.03483647904804, 249.40300142926063 97.47359814532518, 262.5934168932852 82.69507615885402 M227.2632104110642 122.6431658611973 C239.76888234031804 108.26293482512615, 252.18456696845547 94.2572275632607, 262.3167742812899 82.47955253182614 M234.75703059641978 122.3563158289369 C246.71639137354344 109.72781554318439, 257.4419135824859 97.0112443486551, 270.6506871398353 81.72603206719681 M235.41396580806335 122.07591707602403 C247.55928455869685 108.75672986546353, 259.4034902491261 95.26038810496001, 270.4038243792766 81.41371713701113 M242.97797447999503 121.85750255773684 C252.0252308870216 114.0352601051942, 258.7460617623207 103.67454912483035, 277.95577637863516 81.60766084311591 M242.88601827842677 122.23969665693959 C255.4679377465179 108.80615468117145, 267.5967579345504 94.32976898685195, 278.51510910366835 81.95763091897652 M250.81314794731048 122.2349260113903 C263.30820783724783 109.18937549985719, 275.33453977612476 95.35468931215739, 285.6395239121128 81.30383200795102 M250.6066261229357 122.81994161566278 C262.1673326166943 109.57930309298767, 273.9096797716986 96.23143605587421, 286.3796489092369 82.27756818421828 M259.9496403007942 121.99620571123701 C271.11185247114406 107.29696169916467, 284.0434243295706 93.6967487515327, 294.6290537637056 82.01828091326463 M259.37668479636187 122.46105125868958 C268.2859431356298 111.74983217543647, 277.74631265934715 100.54399879733154, 294.20048334676335 82.49568469445515 M266.75870750590263 122.39824616928497 C275.2124591327676 113.53942485605862, 282.61201290414635 103.94124824537596, 301.47883370685116 82.86489916061925 M267.05899079150555 122.17272550818423 C277.7373607327249 110.36389524752414, 288.4373290670076 98.33440056374215, 301.92323009202914 82.32280808640586 M275.8071263650638 122.54397940687399 C285.36693048439327 110.99241567960722, 295.0763978185148 99.32322892706486, 311.00173429397745 82.13802502135462 M275.1270958131385 122.38920742064278 C285.58184144130126 109.74404189638915, 296.8637229739931 97.5608760299119, 310.5046439748059 81.49122829156643 M283.6079584017153 122.82620327556651 C294.28377565082263 108.66549271686571, 306.4474521687132 96.32092391929449, 317.61979274054096 81.55628175747879 M282.653570662042 122.37562150778395 C296.71183233258057 107.04602081788012, 310.30918458684886 91.05148043522834, 317.9008808628939 81.96103585710115 M290.4516088892944 122.19787187692506 C302.36847283274653 109.48024539684376, 315.2411922995194 93.99119007253415, 326.0755670989697 82.15932014033147 M290.3785642639972 122.66076415632648 C301.0447244555368 110.47908377336869, 311.7961403005158 99.22707618530205, 326.0163518360649 82.179364464506 M298.6368858802293 122.64238598228934 C311.771512524999 107.58655854332847, 325.5793274415571 91.72758119575334, 334.38290014270115 82.15165677147517 M298.77836269877594 122.26989404776636 C309.34958245183697 110.23210889622216, 319.8722814247386 98.04235504814125, 334.2919870701002 82.4867292504997 M306.6217640899764 122.21743135366742 C317.3238418428149 111.88170663527485, 326.7514786674815 101.26136784186343, 342.3140374241635 82.21825492224961 M307.25365308417844 122.53107047926788 C315.0768153162794 113.6293482123806, 322.0834096702945 104.46459204259206, 342.42985389477155 81.59510764657824 M315.3347390709638 122.15172126239901 C324.82643172129195 111.17313120346559, 333.7029849612758 99.68963564145848, 343.1337418399173 90.07016823711334 M314.67837774997645 122.93439588232701 C322.4093257909907 113.99532402433275, 329.6857943927965 104.88788852510999, 343.16477135898356 90.29608308235643 M322.32559109662884 123.08883481004662 C328.59356318699884 115.21859826367985, 335.0939544118487 107.27229110347479, 342.9045367322959 98.59057668517835 M322.58799812195116 122.53835414366252 C328.98892636395544 115.19493256254339, 335.2319722245617 108.05292038146166, 343.007053332413 99.1693809371025 M330.29097572211555 122.38897636646566 C335.45318499563746 115.97068703011814, 341.30087126737396 111.01230240847114, 343.6055237773087 107.19628695788506 M330.72000480456654 122.05181535944503 C334.9546432782718 117.59455088141144, 339.4974980542556 112.67522329562495, 343.219161262608 107.49133983843673 M339.0413176391607 122.06263672155139 C340.43341235402755 120.11475264834621, 342.48944883950253 117.9359625917269, 343.63149453423483 116.9108529778917 M338.7227813045455 122.19522851119561 C340.60791179158423 120.25765501204538, 342.35175608347447 118.05010890323035, 343.49819592976513 117.13391661876557" fill="none" stroke="#c4c4c4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.38656875996738 82.66879062528571 C141.1135330991331 84.76980578759893, 248.34555659268648 82.8054216797785, 344.36496524847007 81.02755529855786 M31.404180818005212 81.87600432966153 C145.68858168999262 81.42024960447563, 259.87613746495344 81.31463105421687, 343.61785320816324 82.44115060774512 M341.40561878997835 80.02461104374379 C341.63492335222656 95.63236653264612, 343.86166637681424 115.21788061987608, 344.63847847897557 122.99465863090009 M343.2528283028863 82.87500862637535 C342.513364628423 94.7679695286788, 341.70216277288273 107.71005924949422, 344.0161984442733 121.51510351756588 M344.4867534068912 123.47109380493279 C268.3042912915651 119.57822780079282, 190.9692957943669 119.6203476796469, 31.456081037845973 121.50550394291592 M343.5063135150863 122.38037761021909 C237.14559101195945 121.31361981057746, 130.34630136595152 121.14166481017726, 32.11541423446993 121.91244201803458 M31.09857367593795 120.84991120081395 C30.80232435718179 108.92061961200088, 32.52486015215516 99.16238496135921, 34.198108551092446 80.89786978345364 M31.321788081433624 122.23247888246551 C31.824477329198274 111.84779200488701, 32.07382940584794 98.8813074321486, 31.930296581890435 81.1463044331409" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M30.637093855254353 83.95748698282986 C30.592099164236338 97.26433530729264, 31.99528763722256 111.05262455735355, 31.89544467460364 119.8098877923563 M31.632750410679726 84.09507392114028 C32.17881123609096 96.80755426539108, 32.72147335297615 109.49471179088577, 31.84078742051497 119.249575678166" fill="none" stroke="#22303f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><text x="44" y="106.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="16" font-weight="700" text-anchor="start" fill="#22303f">i</text><text x="66" y="106.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="14" font-weight="400" text-anchor="start" fill="#22303f">JSON, TypeScript и другие блоки …</text><path d="M30.888306846570185 136.8655386293846 C102.42520472177735 137.64366732503382, 172.4980880582716 137.12247714384745, 343.1190108546067 138.50476624084015 M32.06354345958658 138.13136970401288 C148.23340842740046 138.45634147096519, 266.014774519699 138.47873893408737, 342.27944436978606 137.82331106184876 M341.0655029984191 139.09523668866603 C345.10561131088065 143.96168909240512, 343.41674936262893 152.0117167448625, 341.7533055813983 173.61371967773886 M342.03103386750445 137.03581830719486 C342.02748373734204 149.7279761013575, 342.39475544976443 163.23954774821178, 342.8461333065294 173.90083947936074 M343.6014831163239 175.41429815089415 C231.08997967212034 171.45140443989501, 120.49980921075661 172.25250613109606, 32.8542153742051 175.5612968941994 M343.5541726798499 173.98497735353422 C231.0449718064149 173.5158979087362, 118.66119637020384 174.6335450697199, 32.175945021750536 173.32684892011076 M31.972027144022285 174.52226909976451 C30.404337902996687 166.59251884017138, 31.860255541536954 155.46347029414028, 31.235965362377463 138.08400732260196 M31.55446695080027 174.87418207982554 C31.05409800738096 164.8661659394391, 32.24405133754015 157.2565980755724, 32.119837805535646 138.89071101108567" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="42" y="160.2" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="12" font-weight="400" text-anchor="start" fill="#9aa7b2">Язык: typescript</text><path d="M33.04225122891366 189.3090708915144 L178.9610042925924 189.0382077280432 L176.92524037323892 229.0780566159636 L31.67090917788446 228.0569256607443" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><path d="M32.26303460896834 189.69741329583707 C32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707 M32.26303460896834 189.69741329583707 C32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707 M32.506119247303594 198.67614881780398 C34.23314020123054 196.00383084408858, 36.25449734244333 193.37340062246363, 39.8077992147957 189.98868385722878 M32.17455016911148 199.10517540622902 C35.513518556909766 195.2363760475672, 38.47462588065674 191.64624562973512, 40.16163100644993 189.96309879852478 M32.86856069504634 208.80743124788128 C36.80012424473556 201.99963909576587, 41.888687513596935 197.9856594677684, 47.84778206973544 189.68005732171838 M31.91711985967473 208.2068670247259 C36.14075486772747 203.58676253163546, 41.03761448243282 198.58566290088106, 48.102005714096336 190.10959426671866 M31.850908970298484 217.4211843843618 C41.795193518740696 206.53760244773994, 49.86298482718858 196.5990044493087, 55.82563761255142 189.46394725944168 M32.20490535406979 217.18062540879936 C39.739229672104855 208.42908654598287, 47.92345754249255 199.35405272916907, 56.05305932505426 190.53743148389523 M31.797810315619 225.9761827906177 C42.097318696792264 214.5716178864653, 51.20512772081388 203.17001408349392, 63.35767024887324 190.53031781850285 M32.1980669013213 226.76183122634447 C42.75589670166654 214.3023558112565, 52.9396522537305 202.6349714836542, 63.381278539649855 190.12612189626225 M39.16826810685043 228.82340195348382 C46.17418014446005 219.8514770380595, 54.455993896346726 210.19795015479173, 71.82569584362892 189.93268695774165 M38.66052731086556 228.46743896810236 C50.591225960934835 214.09457437906394, 63.04897470183079 199.68036223824876, 72.0886330314049 189.37367809156564 M45.74581694800622 228.00249605380478 C55.271448903572214 218.06455419885114, 63.42731074931937 207.52942064551493, 80.15194692477496 189.51760762666612 M46.486599995309774 228.74097244382384 C55.47270663783284 217.6627816107855, 65.04207494593392 206.31281142670485, 79.56086851186963 189.57153827321974 M54.81499839603339 228.1990584608658 C63.346494877598 217.40952774613038, 73.9572864554877 206.63307097496983, 88.11042685723936 190.02141028411597 M54.4149646951947 227.77228527670047 C61.705081619951855 219.7198522695329, 68.18470228065225 211.9001372143907, 87.8163609045658 190.36380877897054 M62.48788872888843 228.60729837417506 C72.55767120586414 216.70406802023442, 81.98011771829803 204.55420145406381, 95.47767372695964 190.31404121915372 M62.69269524707059 227.62273754514655 C74.37004704043787 214.16582243831357, 86.13098759748732 200.99433215813184, 95.39438022902469 190.45360240178675 M70.1033350614993 228.93620250257217 C77.40032658701084 220.52477189523216, 84.7000665957843 212.22437668167248, 104.31987839886375 189.31464339061907 M70.21199569945914 228.49385746190808 C83.07167712934422 213.14522090145445, 96.56057861066 198.5403936074209, 103.97970865876802 189.78111922941437 M77.77771922980355 227.85337338511968 C91.4531798955824 213.96463455694857, 103.44276677285877 197.97052439083188, 111.74364840090821 190.03539474802008 M77.99846419689165 228.2336796949538 C90.47878628127033 214.39860770703888, 102.40960019020004 200.84496308615903, 111.89090440534602 189.4299849652677 M85.89207584872918 227.3006102306573 C95.9633690588613 217.2314889273701, 105.45768397089732 206.57117610544282, 119.60736209802107 190.4782507501965 M86.63571103788988 227.31482620702968 C97.81411292543471 214.33778607063698, 108.93435534340531 201.96497906724787, 119.3291558922805 189.9864934470927 M95.04285619623263 227.7377472386931 C107.6356328151613 214.28984249623318, 119.43200492321344 199.58994040092156, 127.27193257613976 190.8787826862108 M94.15362255900402 227.54084457655 C105.95331039694756 215.07479050928205, 117.6566537661265 201.90439124363462, 127.46654563910265 189.84594496785812 M102.15328238724194 227.8393961180668 C114.95779352087996 214.62940106592796, 126.94628804271616 200.3276426724395, 134.83186667120182 189.9764680951255 M102.47721530875586 228.40545051626074 C113.33099058449449 215.32284865847626, 125.11058436932782 202.3284164926848, 134.81460929034375 190.54543669553274 M110.02411125769461 227.73878440784085 C122.18447033952644 215.07404067739014, 134.5132704344158 200.5125931264593, 143.94632399813526 190.0849811857803 M109.71489993167663 228.19886619413066 C122.43570718936866 214.17948182232195, 134.8956767558199 200.01283416585503, 143.59289464452556 189.6966530928625 M118.56469339352816 227.6980458970778 C131.54439611894549 213.33108621384196, 144.73652418038972 198.60195855235474, 151.3898808348965 189.13603115768328 M118.12704019729763 228.14061065312853 C130.64746906245233 214.27876813499688, 142.67159787601082 200.09808305810452, 151.2172255381983 190.09220423826173 M126.42403215967056 227.5785110446174 C136.63638154363332 216.7926651481869, 145.9327125873426 205.04456514729372, 159.56388429641365 189.97610471967414 M126.49451202914057 228.11229023100026 C136.8590240609765 215.91357221103917, 146.78039219401813 203.82847523256498, 159.14855601988376 189.66486834447636 M134.94154758407834 227.68454529996762 C140.28074096718308 220.23641423970517, 148.3223715146876 211.8048847677357, 166.84721621862414 190.8103044108154 M134.0069673887557 228.16393688116023 C141.4130112865982 219.8087182098744, 148.51070969708763 211.68896408805998, 166.78123423411313 190.5939300794752 M141.85843053167946 227.66029162196824 C154.83567005053305 213.44196150579165, 166.92103521474323 199.26114462242114, 174.82735218746552 190.27263902016955 M142.31168844966476 228.47325069135437 C150.57088592205693 218.64431668177653, 158.9472270261448 208.12987611217446, 174.61156145041772 190.63797098622697 M150.06840658841145 228.9335087996818 C159.2298492135987 216.12467704743577, 169.6097359688878 203.65616733383115, 178.93900736493217 195.37928106813575 M149.80185148139904 228.45193820455145 C155.5997146459718 221.5253975672801, 162.0423254049476 214.48086061430328, 178.4139378893857 195.35062696403708 M158.70485411920228 227.0311522919479 C164.87773787844841 219.6457483770202, 171.00050599086637 212.20645280253137, 178.11184483696164 203.8970518437764 M158.24114490748028 227.3237932584974 C165.4978250579273 219.791483852263, 171.99821911440608 212.01451313163994, 178.8260710705483 204.3115733058742 M165.5201859657819 228.39370120663585 C169.71922307877753 223.6378321372709, 174.37662047271513 219.31815888597225, 178.92465413167764 214.13467551913985 M166.2426277513596 228.02113282705113 C169.50409328701042 224.16638076125219, 173.08062130733296 220.0668090560563, 178.65485432067575 213.2279986480152 M173.65605017806368 228.21407492703798 C174.64252742480207 226.67331365232099, 175.64907535383477 225.90359641403825, 178.44629126495605 222.60089444151123 M173.83472393524798 228.13500797023104 C175.15846959265244 226.7781965322319, 176.2543104069236 225.22053509372492, 178.42442172639926 222.81639876697187" fill="none" stroke="#c4c4c4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.813296194560827 188.8206076456234 C65.75738400332631 188.4332620702926, 95.25654555018993 192.44798752295412, 177.25742674041538 192.04618659149855 M32.32482770150527 190.357979361061 C76.63318782569841 189.80477869627066, 124.22159622488545 190.16126003083775, 178.30919701224192 190.44897793019192 M175.87347474265843 188.09930286537855 C178.62184739306383 204.90865986756978, 177.90067557886056 214.4530523845926, 178.50560749340804 227.37931429874152 M178.20188292628154 189.0907345362939 C179.2212089142259 199.32786803049967, 178.50658525139653 208.5044738185592, 178.88465073173865 228.97547175670041 M179.37739737797529 227.9488322449848 C127.40979928001761 226.39980074881578, 81.81344923656432 225.2852281820681, 31.224076523073016 226.19784525763242 M177.29215369289741 227.75090985083952 C129.46436662087217 228.975835352337, 81.50766175938772 229.41837377766333, 32.89007719522342 226.91629062974826 M33.447653211839494 226.868188704364 C33.41676154576428 217.5004341945052, 30.595059870110827 206.6052518205717, 32.223118253238496 188.94120207559317 M31.050702867563814 228.27812017286197 C32.62734611515887 213.90180790787562, 31.47180391137488 200.11114103244617, 32.31637911265716 189.53614707374945" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="105" y="213.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="14" font-weight="700" text-anchor="middle" fill="#22303f">Открыть пример</text></g><path d="M1.227354794956328 1.2663870169076714 C147.0513617773609 -0.4546257564476173, 291.5487850847719 -1.3071597666883534, 373.5618753398938 1.7764929724842915 M0.6896179663247435 1.3451996616924986 C118.4154268967581 2.6390083290574586, 236.893480807303 2.6509813978325356, 373.89174241271 1.44807240479019 M374.01459136016666 1.3395466052740812 C376.3488848586269 291.05423179578037, 376.27085957242923 581.3133419588208, 374.5959818101674 810.677958592102 M374.24945094760506 1.2066918445006014 C373.3443697322197 319.73524173721677, 373.5229718566723 638.0819679376111, 373.567778072916 811.1353577268496 M374.70929673329147 810.3754235920934 C274.2366627452461 814.3368731627329, 176.446444649883 813.1463865046949, -0.2558661554399142 811.8873816399032 M373.67668951664126 811.6152510711073 C253.87162489747024 809.709202605553, 134.9778430062916 810.7662146969521, 0.9033659029810708 811.4275850392651 M0.7006584311276673 811.0831289636344 C2.6933393033854665 515.2476116183773, 2.291573019873351 221.74922920659185, 1.715044639185071 1.5597781025618316 M0.6227198642119764 810.910565376319 C3.763809094037861 589.143016288504, 3.9079548128508033 367.3229525903984, 0.936818397603929 1.2408707392588259" fill="none" stroke="#22303f" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g></svg></figure></pre>
-    </main>
-  </body>
+<h2>Mermaid, PlantUML и Wiremark по-прежнему визуализируются</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-001"><svg id="bp-diagram-001-bp-diagram-001" width="360" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 360px; background-color: transparent;" viewBox="4 4 360 300" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-001-bp-diagram-001{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-001-bp-diagram-001 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .error-icon{fill:#552222;}#bp-diagram-001-bp-diagram-001 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-001-bp-diagram-001 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-001-bp-diagram-001 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-001-bp-diagram-001 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-001-bp-diagram-001 .marker{fill:#333333;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .marker.cross{stroke:#333333;}#bp-diagram-001-bp-diagram-001 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-001-bp-diagram-001 p{margin:0;}#bp-diagram-001-bp-diagram-001 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span{color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span p{background-color:transparent;}#bp-diagram-001-bp-diagram-001 .label text,#bp-diagram-001-bp-diagram-001 span{fill:#333;color:#333;}#bp-diagram-001-bp-diagram-001 .node rect,#bp-diagram-001-bp-diagram-001 .node circle,#bp-diagram-001-bp-diagram-001 .node ellipse,#bp-diagram-001-bp-diagram-001 .node polygon,#bp-diagram-001-bp-diagram-001 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label text,#bp-diagram-001-bp-diagram-001 .node .label text,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-anchor:middle;}#bp-diagram-001-bp-diagram-001 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label,#bp-diagram-001-bp-diagram-001 .node .label,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-align:center;}#bp-diagram-001-bp-diagram-001 .node.clickable{cursor:pointer;}#bp-diagram-001-bp-diagram-001 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .arrowheadPath{fill:#333333;}#bp-diagram-001-bp-diagram-001 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-001-bp-diagram-001 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-001-bp-diagram-001 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .cluster text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster span{color:#333;}#bp-diagram-001-bp-diagram-001 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-001-bp-diagram-001 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-001-bp-diagram-001 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-001-bp-diagram-001 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-001-bp-diagram-001 rect.text{fill:none;stroke-width:0;}#bp-diagram-001-bp-diagram-001 .icon-shape,#bp-diagram-001-bp-diagram-001 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .icon-shape p,#bp-diagram-001-bp-diagram-001 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-001-bp-diagram-001 .icon-shape .label rect,#bp-diagram-001-bp-diagram-001 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-001-bp-diagram-001 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-001-bp-diagram-001 .node .neo-node{stroke:#9370DB;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].cluster rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M162,53L162,65.92893218813452Q162,73 154.92893218813452,73L95.07106781186548,73Q88,73 88,80.07106781186548L88,89" id="bp-diagram-001-bp-diagram-001-L_Markdown_Подсветка_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67163848876953 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Markdown_Подсветка_0" data-points="W3sieCI6MTYyLCJ5Ijo1M30seyJ4IjoxNjIsInkiOjczfSx7IngiOjg4LCJ5Ijo3M30seyJ4Ijo4OCwieSI6OTN9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M206,53L206,65.92893218813452Q206,73 213.07106781186548,73L272.9289321881345,73Q280,73 280,80.07106781186548L280,89" id="bp-diagram-001-bp-diagram-001-L_Markdown_Диаграммы_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67166900634766 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Markdown_Диаграммы_0" data-points="W3sieCI6MjA2LCJ5Ijo1M30seyJ4IjoyMDYsInkiOjczfSx7IngiOjI4MCwieSI6NzN9LHsieCI6MjgwLCJ5Ijo5M31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,134L88,170" id="bp-diagram-001-bp-diagram-001-L_Подсветка_HTML_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Подсветка_HTML_0" data-points="W3sieCI6ODgsInkiOjEzNH0seyJ4Ijo4OCwieSI6MTc0fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M280,134L280,170" id="bp-diagram-001-bp-diagram-001-L_Диаграммы_SVG_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Диаграммы_SVG_0" data-points="W3sieCI6MjgwLCJ5IjoxMzR9LHsieCI6MjgwLCJ5IjoxNzR9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,215L88,227.92893218813452Q88,235 95.07106781186548,235L154.92893218813452,235Q162,235 162,242.07106781186548L162,251" id="bp-diagram-001-bp-diagram-001-L_HTML_Предпросмотр_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67166137695312 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_HTML_Предпросмотр_0" data-points="W3sieCI6ODgsInkiOjIxNX0seyJ4Ijo4OCwieSI6MjM1fSx7IngiOjE2MiwieSI6MjM1fSx7IngiOjE2MiwieSI6MjU1fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M280,215L280,227.92893218813452Q280,235 272.9289321881345,235L213.07106781186548,235Q206,235 206,242.07106781186548L206,251" id="bp-diagram-001-bp-diagram-001-L_SVG_Предпросмотр_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.67170715332031 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_SVG_Предпросмотр_0" data-points="W3sieCI6MjgwLCJ5IjoyMTV9LHsieCI6MjgwLCJ5IjoyMzV9LHsieCI6MjA2LCJ5IjoyMzV9LHsieCI6MjA2LCJ5IjoyNTV9XQ==" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Markdown-0" data-look="neo" transform="translate(184, 32.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Markdown</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Подсветка-1" data-look="neo" transform="translate(88, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Подсветка</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Диаграммы-3" data-look="neo" transform="translate(280, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Диаграммы</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-HTML-5" data-look="neo" transform="translate(88, 194.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">HTML</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-SVG-7" data-look="neo" transform="translate(280, 194.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">SVG</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Предпросмотр-9" data-look="neo" transform="translate(184, 275.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Предпросмотр</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--plantuml" data-diagram-id="bp-diagram-002"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 396 176" width="396" height="176"><defs></defs><g><g class="message" data-entity-1="part1" data-entity-2="part2" id="bp-diagram-002-msg1" data-source-line="1"></g><g class="message" data-entity-1="part1" data-entity-2="part3" id="bp-diagram-002-msg2" data-source-line="2"></g><g class="message" data-entity-1="part2" data-entity-2="part4" id="bp-diagram-002-msg3" data-source-line="3"></g><g class="message" data-entity-1="part3" data-entity-2="part5" id="bp-diagram-002-msg4" data-source-line="4"></g><g class="participant-lifeline" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-lifeline" data-source-line="1"><g><title>Markdown</title><rect x="40.79" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="44.29" y1="36" x2="44.29" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-lifeline" data-source-line="1"><g><title>.........</title><rect x="131.05" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="134.55" y1="36" x2="134.55" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-lifeline" data-source-line="2"><g><title>.........</title><rect x="226.56" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="230.06" y1="36" x2="230.06" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-lifeline" data-source-line="3"><g><title>HTML</title><rect x="307.16" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="310.66" y1="36" x2="310.66" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant-lifeline" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-lifeline" data-source-line="4"><g><title>SVG</title><rect x="364.99" y="36" width="8" height="104" fill="#00000000" stroke="#00000000" stroke-width="0"></rect><line x1="368.49" y1="36" x2="368.49" y2="140" stroke="#181818" stroke-width="0.5" stroke-dasharray="5 5"></line></g></g><g class="participant participant-head" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-head" data-source-line="1"><rect x="5" y="5" width="78.58" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="12" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Markdown</text></g><g class="participant participant-head" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-head" data-source-line="1"><rect x="93.58" y="5" width="81.94" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="100.58" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Подсветка</text></g><g class="participant participant-head" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-head" data-source-line="2"><rect x="185.52" y="5" width="89.08" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="192.52" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Диаграммы</text></g><g class="participant participant-head" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-head" data-source-line="3"><rect x="284.6" y="5" width="52.11" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="291.6" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">HTML</text></g><g class="participant participant-head" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-head" data-source-line="4"><rect x="346.71" y="5" width="43.57" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="353.71" y="25" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">SVG</text></g><g class="participant participant-tail" data-qualified-name="Markdown" data-entity-uid="part1" id="bp-diagram-002-part1-tail" data-source-line="1"><rect x="5" y="140" width="78.58" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="12" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Markdown</text></g><g class="participant participant-tail" data-qualified-name="........." data-entity-uid="part2" id="bp-diagram-002-part2-tail" data-source-line="1"><rect x="93.58" y="140" width="81.94" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="100.58" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Подсветка</text></g><g class="participant participant-tail" data-qualified-name="........." data-entity-uid="part3" id="bp-diagram-002-part3-tail" data-source-line="2"><rect x="185.52" y="140" width="89.08" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="192.52" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Диаграммы</text></g><g class="participant participant-tail" data-qualified-name="HTML" data-entity-uid="part4" id="bp-diagram-002-part4-tail" data-source-line="3"><rect x="284.6" y="140" width="52.11" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="291.6" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">HTML</text></g><g class="participant participant-tail" data-qualified-name="SVG" data-entity-uid="part5" id="bp-diagram-002-part5-tail" data-source-line="4"><rect x="346.71" y="140" width="43.57" height="30" rx="2.5" ry="2.5" fill="#E2E2F0" stroke="#181818" stroke-width="0.5"></rect><text x="353.71" y="160" font-size="14" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">SVG</text></g><g class="message" data-entity-1="part1" data-entity-2="part2" id="bp-diagram-002-msg1-2" data-source-line="1"><polygon points="122.55,61 132.55,65 122.55,69 126.55,65" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="44.29" y1="65" x2="128.55" y2="65" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line><text x="51.29" y="60" font-size="13" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">Shiki</text></g><g class="message" data-entity-1="part1" data-entity-2="part3" id="bp-diagram-002-msg2-2" data-source-line="2"><polygon points="218.06,90 228.06,94 218.06,98 222.06,94" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="44.29" y1="94" x2="224.06" y2="94" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line><text x="51.29" y="89" font-size="13" fill="#000000" xml:space="preserve" style="white-space: pre" font-family="sans-serif">рендерер</text></g><g class="message" data-entity-1="part2" data-entity-2="part4" id="bp-diagram-002-msg3-2" data-source-line="3"><polygon points="298.66,104 308.66,108 298.66,112 302.66,108" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="134.55" y1="108" x2="304.66" y2="108" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line></g><g class="message" data-entity-1="part3" data-entity-2="part5" id="bp-diagram-002-msg4-2" data-source-line="4"><polygon points="356.49,118 366.49,122 356.49,126 360.49,122" fill="#181818" stroke="#181818" stroke-width="1"></polygon><line x1="230.06" y1="122" x2="362.49" y2="122" stroke="#181818" stroke-width="1" stroke-dasharray="2 2"></line></g><!--?plantuml-src yqqioax9ByzJqDMrKxWm_yA-2rikDbxOT67hnQOBkovii588piZCpkJoHL4svSAE2nikRBxO02JtNDXpiTjA0SZUUc7lXIr0ZGqWp8Lf5bYlHuYl3nUc0M2vu31t0000?--></g></svg></figure></pre>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--wiremark" data-diagram-id="bp-diagram-003"><svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812"><rect x="0" y="0" width="375" height="812" fill="#ffffff"></rect><g transform="translate(0 0)"><clipPath id="bp-diagram-003-wm-clip-0"><rect x="0" y="0" width="375" height="812"></rect></clipPath><g clip-path="url(#bp-diagram-003-wm-clip-0)"><rect x="0" y="0" width="375" height="812" fill="#ffffff"></rect><path d="M16.10944690965116 16.711775771155953 L358.72824946902693 16.730119398608803 L358.59349024556576 243.76764370538294 L15.129302540048958 243.36291070319712" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><text x="32" y="56" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="24" font-weight="700" text-anchor="start" fill="#22303f">Подсветка кода</text><path d="M31.41231870315969 82.03612022139131 L344.15920678041874 82.07049759365619 L342.7893433775753 122.19417893625796 L30.811432107910512 123.0392809484154" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.929340245154634 82.0812847496361 C31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361 M31.929340245154634 82.0812847496361 C31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361, 31.929340245154634 82.0812847496361 M31.407132097130113 91.37192989832533 C34.917102473851344 88.2378031447591, 37.51715664297424 85.07483354067202, 40.006642455552395 82.57526552826529 M31.992717238684587 91.43229787437988 C34.325631881101 88.15613460565184, 37.2950259490179 85.21790356559386, 39.77318238006967 82.18396190159386 M31.8503541153799 100.70213127419196 C37.2152411758972 94.86430601686668, 42.64997348635467 87.79446872957911, 47.75466051240667 81.37377262895134 M31.971650660870523 100.60767865203164 C37.81372761428803 93.06874099746778, 44.32280300464169 86.24021848455219, 48.25318783325359 81.78607723039713 M31.257827321967497 110.52144490414172 C38.204144394404466 102.42948918336022, 44.00478490811389 96.7412010706559, 55.22904601585497 82.15539224959697 M31.610345674461144 110.13483812481968 C37.38396057018152 103.8830862007494, 42.503065221959226 97.72677524129072, 55.95270040188362 81.67626023843673 M30.96224495604531 119.74521791519501 C40.65461854298185 107.61956973707045, 50.13872629833554 97.36405665813908, 63.32417965773099 82.27040191540864 M31.303894890322248 118.72919539729038 C38.60531210361254 110.99702829621341, 46.23044941653099 102.28526939827918, 63.65707937981539 82.0728866516277 M37.62748452297494 122.16372776713214 C50.56205136881351 107.23927329698054, 63.29989979879435 91.2605050058537, 71.65156046147224 81.98816197794882 M37.0784194661592 122.24437021438024 C45.86080746036471 111.27548032488723, 55.19831561070685 100.19369685558726, 71.45217681783018 82.34029973168877 M44.19705893023182 122.00892313240671 C57.334441407428585 109.17809569773854, 69.50089849957719 94.65760057092456, 79.35003120051624 81.98818903878002 M44.96741033679117 122.04166915869915 C54.611222477571836 110.84675704335982, 64.33356780362973 99.84994793689361, 79.61642289170922 82.58151461533873 M52.14182483529143 122.92290893347227 C65.24667658293964 107.3508639719599, 77.80833123957443 92.2970609640715, 88.11683742729096 81.43044636924196 M52.296936562037395 122.32107068785692 C59.343328474119104 114.34296012658002, 66.95917698682227 106.01532539949145, 88.28938493122428 81.67100873407354 M60.45921876159128 122.16410802189137 C71.83938041546816 108.82704861394889, 84.6553568840799 94.65167996365383, 96.35839135725294 82.1991822313427 M60.122381442679135 122.6898868135723 C71.04513431503953 109.95543748250778, 81.93936789806644 97.80615224147195, 95.86003130417559 81.86106013505747 M67.82402098256887 122.85109949922646 C79.81382267381154 109.97899390835406, 91.4549667722917 94.97208160726036, 103.90162604283012 81.59967239642194 M68.41670640449763 122.76910142256403 C81.78456101894108 107.4748380094605, 95.08396881374848 91.53416385101482, 103.51558559033491 82.24098999978652 M77.21941455065219 122.43290913681732 C87.48952112138703 109.45750701999474, 99.14765635547852 95.1210535292961, 110.94475925746005 81.40205846604219 M76.53901002726464 121.82616069632815 C85.21867378291903 112.37834848325816, 94.3549105746692 101.58573644876654, 111.22979046548348 82.54350096497944 M83.68774918129775 121.73284769667195 C92.380295501433 113.18271005177044, 102.45597962852068 102.36431562980191, 119.4883525245802 82.71163829176598 M84.02279192878039 122.58131143202888 C96.43254273232873 109.09632125023558, 108.0400065476278 94.85527670463992, 119.03146673040254 81.97746754235499 M91.84189542693353 122.44525345013011 C105.33756676829047 106.667779469058, 119.54828997138625 90.36032853014261, 127.56637014661862 81.639156394933 M91.92480693881667 122.26684356116223 C106.26264517310636 106.58542777429717, 119.96977841205259 90.44814526045107, 127.87307233986391 81.66072653840912 M100.41600856099706 123.37933049875429 C114.23390565745544 106.63828198447062, 127.95076184395255 92.05035857886529, 135.39694308903174 82.3446422875513 M99.6133289831547 122.83342847044696 C108.59904635536228 112.31702885035821, 117.67156405369448 102.25912357411576, 135.21896628666775 81.62641537530615 M108.49658760692581 123.32943919410697 C116.35163318799538 113.51835172554559, 122.80328578766031 104.58331576053041, 142.8937231542476 82.53415299096062 M107.63671011257574 122.5829094216018 C121.48541001300586 107.3945870867221, 135.28160403698917 91.81893489331904, 143.19426277558586 81.88221460954205 M116.1535343671478 121.54538655752788 C124.31508520615989 113.12703435655837, 132.37536220118994 104.1918144090898, 151.0166468657037 81.70361135672346 M116.19193953185153 122.60109197112271 C124.92491612221079 112.23934942005194, 133.84221827199588 102.59631302411981, 150.97309510739947 82.61668625283554 M124.19091730711955 122.77626460102509 C136.63581537018902 108.38824613358827, 149.48685335749465 93.66465426794267, 159.85905352582807 82.45438690617954 M123.91290748378235 122.16408229117404 C130.95129633082047 114.27270553046642, 138.4022711084002 106.39138041718597, 159.50323373688036 81.87735461168263 M131.658325729269 122.76719284593833 C139.09285172536948 113.21808767413498, 147.16904564363674 103.76977802822479, 166.79844910007714 81.13713415133691 M132.01925942313989 122.19752968825173 C143.22185856748456 109.70317258523762, 153.77774865452128 97.2062428481255, 167.09435015682874 82.17704460824763 M140.40163365703367 122.90315664383006 C149.92180903648963 110.92594144788033, 160.30700122933175 98.15982976913682, 175.20786039087892 82.14853511353529 M139.90465990070544 123.08296492407452 C147.49652453778378 114.04113639833636, 155.7864798061481 104.51144765536228, 175.16687107201636 81.9531242990265 M148.35011789284164 121.92458801604005 C162.0967409874 106.12923273342057, 174.84095306491298 91.02870219446255, 183.00659892167099 82.1751376443372 M148.2614106212508 122.33588105513843 C161.25029700473124 106.20464955837939, 175.40313698663246 90.99263750169132, 183.04024228322453 82.17384319573797 M155.66722190214927 122.57120397457635 C164.0950735523699 111.56792773860494, 173.70499780070736 101.88723180366482, 191.29131996589072 81.86364584530513 M156.2687143275761 122.01207175360774 C167.54248634049392 109.05461417093684, 179.5080130936531 95.89603056283143, 190.4014877162344 82.37112268510084 M163.86190998738465 121.87874904077864 C173.28488768333412 111.16219695282318, 182.551454123315 100.38661709959229, 199.36708157596624 82.29121048777878 M164.1415289744532 122.5668738259784 C173.6628310189635 111.17577571527656, 183.4504751628065 100.20417561395297, 199.37376845081783 81.87334644861102 M172.3394311719853 122.62283356620944 C184.21485646973633 107.40638360085956, 197.31531686374882 92.15874885606016, 206.89810846735398 81.20926733376623 M171.9188316126633 122.26150553396916 C179.2402165503332 114.07133006638345, 186.32516315084007 105.01961087458572, 207.30464660477497 82.01169878343285 M179.03237822938868 122.58922415243123 C188.89630598000036 111.23654616633083, 198.3502406464478 101.14958478518123, 215.41914619248195 81.74027965460718 M179.53217741798767 122.79585701429878 C190.78544878070528 109.93737674873734, 202.48639734482418 96.5164223782801, 214.51493950787767 81.97940712106228 M188.23174671202278 122.2441340707838 C197.5720911945159 110.55840075966131, 206.25178076780315 100.26372101723318, 222.48622502478764 82.22157655186416 M188.07425872019803 122.54128069846327 C196.3978484412831 111.68886227963426, 205.139925965276 101.37780852065416, 222.6869835859071 81.83808034821809 M195.1376988353441 122.57806158327514 C204.89052216246114 110.81325905835152, 214.41255345358545 100.56518039868148, 231.7637780166991 81.52093379687688 M195.78716888709465 122.74692963362689 C207.30800865771337 108.49567494362263, 218.9418218029931 95.1416052817629, 231.18925241863502 81.39578964639624 M203.3709176517807 122.60253246124502 C216.74094793507712 107.67559529706713, 228.39364042398412 93.83092548535139, 239.17540488367283 81.68041215165339 M203.4112564984493 122.59900000128563 C212.9681656951179 112.43196490532779, 221.25147048926416 101.88021982210417, 238.66462062386177 81.61340681276104 M211.12337093476998 121.99393830625591 C217.84474376803854 114.51590633741189, 226.0011753864971 106.70305812579267, 247.21522617813673 82.21309988753342 M210.97338923004318 123.02706943815825 C221.09444631959542 111.63944669776767, 230.64706165335866 100.26346570428126, 246.77921803135897 82.06384677880847 M218.98937020774952 122.36382696987032 C229.99576015485587 110.45978765827765, 240.6202068638629 99.51444630021228, 254.29864717352837 82.74695110607946 M219.05551288265755 123.13688745596347 C230.13297354924242 110.31020559541572, 241.36085156419443 97.70893396149509, 254.6106935669079 82.33840593125724 M227.39662977314728 122.92919297342797 C238.6107737707691 110.03483647904804, 249.40300142926063 97.47359814532518, 262.5934168932852 82.69507615885402 M227.2632104110642 122.6431658611973 C239.76888234031804 108.26293482512615, 252.18456696845547 94.2572275632607, 262.3167742812899 82.47955253182614 M234.75703059641978 122.3563158289369 C246.71639137354344 109.72781554318439, 257.4419135824859 97.0112443486551, 270.6506871398353 81.72603206719681 M235.41396580806335 122.07591707602403 C247.55928455869685 108.75672986546353, 259.4034902491261 95.26038810496001, 270.4038243792766 81.41371713701113 M242.97797447999503 121.85750255773684 C252.0252308870216 114.0352601051942, 258.7460617623207 103.67454912483035, 277.95577637863516 81.60766084311591 M242.88601827842677 122.23969665693959 C255.4679377465179 108.80615468117145, 267.5967579345504 94.32976898685195, 278.51510910366835 81.95763091897652 M250.81314794731048 122.2349260113903 C263.30820783724783 109.18937549985719, 275.33453977612476 95.35468931215739, 285.6395239121128 81.30383200795102 M250.6066261229357 122.81994161566278 C262.1673326166943 109.57930309298767, 273.9096797716986 96.23143605587421, 286.3796489092369 82.27756818421828 M259.9496403007942 121.99620571123701 C271.11185247114406 107.29696169916467, 284.0434243295706 93.6967487515327, 294.6290537637056 82.01828091326463 M259.37668479636187 122.46105125868958 C268.2859431356298 111.74983217543647, 277.74631265934715 100.54399879733154, 294.20048334676335 82.49568469445515 M266.75870750590263 122.39824616928497 C275.2124591327676 113.53942485605862, 282.61201290414635 103.94124824537596, 301.47883370685116 82.86489916061925 M267.05899079150555 122.17272550818423 C277.7373607327249 110.36389524752414, 288.4373290670076 98.33440056374215, 301.92323009202914 82.32280808640586 M275.8071263650638 122.54397940687399 C285.36693048439327 110.99241567960722, 295.0763978185148 99.32322892706486, 311.00173429397745 82.13802502135462 M275.1270958131385 122.38920742064278 C285.58184144130126 109.74404189638915, 296.8637229739931 97.5608760299119, 310.5046439748059 81.49122829156643 M283.6079584017153 122.82620327556651 C294.28377565082263 108.66549271686571, 306.4474521687132 96.32092391929449, 317.61979274054096 81.55628175747879 M282.653570662042 122.37562150778395 C296.71183233258057 107.04602081788012, 310.30918458684886 91.05148043522834, 317.9008808628939 81.96103585710115 M290.4516088892944 122.19787187692506 C302.36847283274653 109.48024539684376, 315.2411922995194 93.99119007253415, 326.0755670989697 82.15932014033147 M290.3785642639972 122.66076415632648 C301.0447244555368 110.47908377336869, 311.7961403005158 99.22707618530205, 326.0163518360649 82.179364464506 M298.6368858802293 122.64238598228934 C311.771512524999 107.58655854332847, 325.5793274415571 91.72758119575334, 334.38290014270115 82.15165677147517 M298.77836269877594 122.26989404776636 C309.34958245183697 110.23210889622216, 319.8722814247386 98.04235504814125, 334.2919870701002 82.4867292504997 M306.6217640899764 122.21743135366742 C317.3238418428149 111.88170663527485, 326.7514786674815 101.26136784186343, 342.3140374241635 82.21825492224961 M307.25365308417844 122.53107047926788 C315.0768153162794 113.6293482123806, 322.0834096702945 104.46459204259206, 342.42985389477155 81.59510764657824 M315.3347390709638 122.15172126239901 C324.82643172129195 111.17313120346559, 333.7029849612758 99.68963564145848, 343.1337418399173 90.07016823711334 M314.67837774997645 122.93439588232701 C322.4093257909907 113.99532402433275, 329.6857943927965 104.88788852510999, 343.16477135898356 90.29608308235643 M322.32559109662884 123.08883481004662 C328.59356318699884 115.21859826367985, 335.0939544118487 107.27229110347479, 342.9045367322959 98.59057668517835 M322.58799812195116 122.53835414366252 C328.98892636395544 115.19493256254339, 335.2319722245617 108.05292038146166, 343.007053332413 99.1693809371025 M330.29097572211555 122.38897636646566 C335.45318499563746 115.97068703011814, 341.30087126737396 111.01230240847114, 343.6055237773087 107.19628695788506 M330.72000480456654 122.05181535944503 C334.9546432782718 117.59455088141144, 339.4974980542556 112.67522329562495, 343.219161262608 107.49133983843673 M339.0413176391607 122.06263672155139 C340.43341235402755 120.11475264834621, 342.48944883950253 117.9359625917269, 343.63149453423483 116.9108529778917 M338.7227813045455 122.19522851119561 C340.60791179158423 120.25765501204538, 342.35175608347447 118.05010890323035, 343.49819592976513 117.13391661876557" fill="none" stroke="#c4c4c4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.38656875996738 82.66879062528571 C141.1135330991331 84.76980578759893, 248.34555659268648 82.8054216797785, 344.36496524847007 81.02755529855786 M31.404180818005212 81.87600432966153 C145.68858168999262 81.42024960447563, 259.87613746495344 81.31463105421687, 343.61785320816324 82.44115060774512 M341.40561878997835 80.02461104374379 C341.63492335222656 95.63236653264612, 343.86166637681424 115.21788061987608, 344.63847847897557 122.99465863090009 M343.2528283028863 82.87500862637535 C342.513364628423 94.7679695286788, 341.70216277288273 107.71005924949422, 344.0161984442733 121.51510351756588 M344.4867534068912 123.47109380493279 C268.3042912915651 119.57822780079282, 190.9692957943669 119.6203476796469, 31.456081037845973 121.50550394291592 M343.5063135150863 122.38037761021909 C237.14559101195945 121.31361981057746, 130.34630136595152 121.14166481017726, 32.11541423446993 121.91244201803458 M31.09857367593795 120.84991120081395 C30.80232435718179 108.92061961200088, 32.52486015215516 99.16238496135921, 34.198108551092446 80.89786978345364 M31.321788081433624 122.23247888246551 C31.824477329198274 111.84779200488701, 32.07382940584794 98.8813074321486, 31.930296581890435 81.1463044331409" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M30.637093855254353 83.95748698282986 C30.592099164236338 97.26433530729264, 31.99528763722256 111.05262455735355, 31.89544467460364 119.8098877923563 M31.632750410679726 84.09507392114028 C32.17881123609096 96.80755426539108, 32.72147335297615 109.49471179088577, 31.84078742051497 119.249575678166" fill="none" stroke="#22303f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><text x="44" y="106.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="16" font-weight="700" text-anchor="start" fill="#22303f">i</text><text x="66" y="106.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="14" font-weight="400" text-anchor="start" fill="#22303f">JSON, TypeScript и другие блоки …</text><path d="M30.888306846570185 136.8655386293846 C102.42520472177735 137.64366732503382, 172.4980880582716 137.12247714384745, 343.1190108546067 138.50476624084015 M32.06354345958658 138.13136970401288 C148.23340842740046 138.45634147096519, 266.014774519699 138.47873893408737, 342.27944436978606 137.82331106184876 M341.0655029984191 139.09523668866603 C345.10561131088065 143.96168909240512, 343.41674936262893 152.0117167448625, 341.7533055813983 173.61371967773886 M342.03103386750445 137.03581830719486 C342.02748373734204 149.7279761013575, 342.39475544976443 163.23954774821178, 342.8461333065294 173.90083947936074 M343.6014831163239 175.41429815089415 C231.08997967212034 171.45140443989501, 120.49980921075661 172.25250613109606, 32.8542153742051 175.5612968941994 M343.5541726798499 173.98497735353422 C231.0449718064149 173.5158979087362, 118.66119637020384 174.6335450697199, 32.175945021750536 173.32684892011076 M31.972027144022285 174.52226909976451 C30.404337902996687 166.59251884017138, 31.860255541536954 155.46347029414028, 31.235965362377463 138.08400732260196 M31.55446695080027 174.87418207982554 C31.05409800738096 164.8661659394391, 32.24405133754015 157.2565980755724, 32.119837805535646 138.89071101108567" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="42" y="160.2" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="12" font-weight="400" text-anchor="start" fill="#9aa7b2">Язык: typescript</text><path d="M33.04225122891366 189.3090708915144 L178.9610042925924 189.0382077280432 L176.92524037323892 229.0780566159636 L31.67090917788446 228.0569256607443" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><path d="M32.26303460896834 189.69741329583707 C32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707 M32.26303460896834 189.69741329583707 C32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707, 32.26303460896834 189.69741329583707 M32.506119247303594 198.67614881780398 C34.23314020123054 196.00383084408858, 36.25449734244333 193.37340062246363, 39.8077992147957 189.98868385722878 M32.17455016911148 199.10517540622902 C35.513518556909766 195.2363760475672, 38.47462588065674 191.64624562973512, 40.16163100644993 189.96309879852478 M32.86856069504634 208.80743124788128 C36.80012424473556 201.99963909576587, 41.888687513596935 197.9856594677684, 47.84778206973544 189.68005732171838 M31.91711985967473 208.2068670247259 C36.14075486772747 203.58676253163546, 41.03761448243282 198.58566290088106, 48.102005714096336 190.10959426671866 M31.850908970298484 217.4211843843618 C41.795193518740696 206.53760244773994, 49.86298482718858 196.5990044493087, 55.82563761255142 189.46394725944168 M32.20490535406979 217.18062540879936 C39.739229672104855 208.42908654598287, 47.92345754249255 199.35405272916907, 56.05305932505426 190.53743148389523 M31.797810315619 225.9761827906177 C42.097318696792264 214.5716178864653, 51.20512772081388 203.17001408349392, 63.35767024887324 190.53031781850285 M32.1980669013213 226.76183122634447 C42.75589670166654 214.3023558112565, 52.9396522537305 202.6349714836542, 63.381278539649855 190.12612189626225 M39.16826810685043 228.82340195348382 C46.17418014446005 219.8514770380595, 54.455993896346726 210.19795015479173, 71.82569584362892 189.93268695774165 M38.66052731086556 228.46743896810236 C50.591225960934835 214.09457437906394, 63.04897470183079 199.68036223824876, 72.0886330314049 189.37367809156564 M45.74581694800622 228.00249605380478 C55.271448903572214 218.06455419885114, 63.42731074931937 207.52942064551493, 80.15194692477496 189.51760762666612 M46.486599995309774 228.74097244382384 C55.47270663783284 217.6627816107855, 65.04207494593392 206.31281142670485, 79.56086851186963 189.57153827321974 M54.81499839603339 228.1990584608658 C63.346494877598 217.40952774613038, 73.9572864554877 206.63307097496983, 88.11042685723936 190.02141028411597 M54.4149646951947 227.77228527670047 C61.705081619951855 219.7198522695329, 68.18470228065225 211.9001372143907, 87.8163609045658 190.36380877897054 M62.48788872888843 228.60729837417506 C72.55767120586414 216.70406802023442, 81.98011771829803 204.55420145406381, 95.47767372695964 190.31404121915372 M62.69269524707059 227.62273754514655 C74.37004704043787 214.16582243831357, 86.13098759748732 200.99433215813184, 95.39438022902469 190.45360240178675 M70.1033350614993 228.93620250257217 C77.40032658701084 220.52477189523216, 84.7000665957843 212.22437668167248, 104.31987839886375 189.31464339061907 M70.21199569945914 228.49385746190808 C83.07167712934422 213.14522090145445, 96.56057861066 198.5403936074209, 103.97970865876802 189.78111922941437 M77.77771922980355 227.85337338511968 C91.4531798955824 213.96463455694857, 103.44276677285877 197.97052439083188, 111.74364840090821 190.03539474802008 M77.99846419689165 228.2336796949538 C90.47878628127033 214.39860770703888, 102.40960019020004 200.84496308615903, 111.89090440534602 189.4299849652677 M85.89207584872918 227.3006102306573 C95.9633690588613 217.2314889273701, 105.45768397089732 206.57117610544282, 119.60736209802107 190.4782507501965 M86.63571103788988 227.31482620702968 C97.81411292543471 214.33778607063698, 108.93435534340531 201.96497906724787, 119.3291558922805 189.9864934470927 M95.04285619623263 227.7377472386931 C107.6356328151613 214.28984249623318, 119.43200492321344 199.58994040092156, 127.27193257613976 190.8787826862108 M94.15362255900402 227.54084457655 C105.95331039694756 215.07479050928205, 117.6566537661265 201.90439124363462, 127.46654563910265 189.84594496785812 M102.15328238724194 227.8393961180668 C114.95779352087996 214.62940106592796, 126.94628804271616 200.3276426724395, 134.83186667120182 189.9764680951255 M102.47721530875586 228.40545051626074 C113.33099058449449 215.32284865847626, 125.11058436932782 202.3284164926848, 134.81460929034375 190.54543669553274 M110.02411125769461 227.73878440784085 C122.18447033952644 215.07404067739014, 134.5132704344158 200.5125931264593, 143.94632399813526 190.0849811857803 M109.71489993167663 228.19886619413066 C122.43570718936866 214.17948182232195, 134.8956767558199 200.01283416585503, 143.59289464452556 189.6966530928625 M118.56469339352816 227.6980458970778 C131.54439611894549 213.33108621384196, 144.73652418038972 198.60195855235474, 151.3898808348965 189.13603115768328 M118.12704019729763 228.14061065312853 C130.64746906245233 214.27876813499688, 142.67159787601082 200.09808305810452, 151.2172255381983 190.09220423826173 M126.42403215967056 227.5785110446174 C136.63638154363332 216.7926651481869, 145.9327125873426 205.04456514729372, 159.56388429641365 189.97610471967414 M126.49451202914057 228.11229023100026 C136.8590240609765 215.91357221103917, 146.78039219401813 203.82847523256498, 159.14855601988376 189.66486834447636 M134.94154758407834 227.68454529996762 C140.28074096718308 220.23641423970517, 148.3223715146876 211.8048847677357, 166.84721621862414 190.8103044108154 M134.0069673887557 228.16393688116023 C141.4130112865982 219.8087182098744, 148.51070969708763 211.68896408805998, 166.78123423411313 190.5939300794752 M141.85843053167946 227.66029162196824 C154.83567005053305 213.44196150579165, 166.92103521474323 199.26114462242114, 174.82735218746552 190.27263902016955 M142.31168844966476 228.47325069135437 C150.57088592205693 218.64431668177653, 158.9472270261448 208.12987611217446, 174.61156145041772 190.63797098622697 M150.06840658841145 228.9335087996818 C159.2298492135987 216.12467704743577, 169.6097359688878 203.65616733383115, 178.93900736493217 195.37928106813575 M149.80185148139904 228.45193820455145 C155.5997146459718 221.5253975672801, 162.0423254049476 214.48086061430328, 178.4139378893857 195.35062696403708 M158.70485411920228 227.0311522919479 C164.87773787844841 219.6457483770202, 171.00050599086637 212.20645280253137, 178.11184483696164 203.8970518437764 M158.24114490748028 227.3237932584974 C165.4978250579273 219.791483852263, 171.99821911440608 212.01451313163994, 178.8260710705483 204.3115733058742 M165.5201859657819 228.39370120663585 C169.71922307877753 223.6378321372709, 174.37662047271513 219.31815888597225, 178.92465413167764 214.13467551913985 M166.2426277513596 228.02113282705113 C169.50409328701042 224.16638076125219, 173.08062130733296 220.0668090560563, 178.65485432067575 213.2279986480152 M173.65605017806368 228.21407492703798 C174.64252742480207 226.67331365232099, 175.64907535383477 225.90359641403825, 178.44629126495605 222.60089444151123 M173.83472393524798 228.13500797023104 C175.15846959265244 226.7781965322319, 176.2543104069236 225.22053509372492, 178.42442172639926 222.81639876697187" fill="none" stroke="#c4c4c4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M31.813296194560827 188.8206076456234 C65.75738400332631 188.4332620702926, 95.25654555018993 192.44798752295412, 177.25742674041538 192.04618659149855 M32.32482770150527 190.357979361061 C76.63318782569841 189.80477869627066, 124.22159622488545 190.16126003083775, 178.30919701224192 190.44897793019192 M175.87347474265843 188.09930286537855 C178.62184739306383 204.90865986756978, 177.90067557886056 214.4530523845926, 178.50560749340804 227.37931429874152 M178.20188292628154 189.0907345362939 C179.2212089142259 199.32786803049967, 178.50658525139653 208.5044738185592, 178.88465073173865 228.97547175670041 M179.37739737797529 227.9488322449848 C127.40979928001761 226.39980074881578, 81.81344923656432 225.2852281820681, 31.224076523073016 226.19784525763242 M177.29215369289741 227.75090985083952 C129.46436662087217 228.975835352337, 81.50766175938772 229.41837377766333, 32.89007719522342 226.91629062974826 M33.447653211839494 226.868188704364 C33.41676154576428 217.5004341945052, 30.595059870110827 206.6052518205717, 32.223118253238496 188.94120207559317 M31.050702867563814 228.27812017286197 C32.62734611515887 213.90180790787562, 31.47180391137488 200.11114103244617, 32.31637911265716 189.53614707374945" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="105" y="213.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="14" font-weight="700" text-anchor="middle" fill="#22303f">Открыть пример</text></g><path d="M1.227354794956328 1.2663870169076714 C147.0513617773609 -0.4546257564476173, 291.5487850847719 -1.3071597666883534, 373.5618753398938 1.7764929724842915 M0.6896179663247435 1.3451996616924986 C118.4154268967581 2.6390083290574586, 236.893480807303 2.6509813978325356, 373.89174241271 1.44807240479019 M374.01459136016666 1.3395466052740812 C376.3488848586269 291.05423179578037, 376.27085957242923 581.3133419588208, 374.5959818101674 810.677958592102 M374.24945094760506 1.2066918445006014 C373.3443697322197 319.73524173721677, 373.5229718566723 638.0819679376111, 373.567778072916 811.1353577268496 M374.70929673329147 810.3754235920934 C274.2366627452461 814.3368731627329, 176.446444649883 813.1463865046949, -0.2558661554399142 811.8873816399032 M373.67668951664126 811.6152510711073 C253.87162489747024 809.709202605553, 134.9778430062916 810.7662146969521, 0.9033659029810708 811.4275850392651 M0.7006584311276673 811.0831289636344 C2.6933393033854665 515.2476116183773, 2.291573019873351 221.74922920659185, 1.715044639185071 1.5597781025618316 M0.6227198642119764 810.910565376319 C3.763809094037861 589.143016288504, 3.9079548128508033 367.3229525903984, 0.936818397603929 1.2408707392588259" fill="none" stroke="#22303f" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g></svg></figure></pre>
+</main>
+
+</body>
 </html>

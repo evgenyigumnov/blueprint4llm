@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apache ECharts</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+  --bp-diagnostic-error: #b42318;
+  --bp-diagnostic-warning: #7a4b00;
+  --bp-diagnostic-error-bg: #fff4f2;
+  --bp-diagnostic-warning-bg: #fff8e6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
+
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
+
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
+
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
+
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+:root[data-bp-theme='dark'] {
+  --bp-diagnostic-error: #ff7b72;
+  --bp-diagnostic-warning: #e3b341;
+  --bp-diagnostic-error-bg: #2d1618;
+  --bp-diagnostic-warning-bg: #2b2416;
+}
+
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--bp-code-bg);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
+
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
+
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.bp-diagnostics-summary,
+.bp-diagnostic {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  color: var(--bp-text);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-inline-start-width: 4px;
+  border-radius: 6px;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.bp-diagnostics-summary {
+  font-weight: 650;
+}
+
+.bp-diagnostic {
+  white-space: normal;
+}
+
+.bp-diagnostics-summary--error,
+.bp-diagnostic--error {
+  border-inline-start-color: var(--bp-diagnostic-error);
+}
+
+.bp-diagnostics-summary--warning,
+.bp-diagnostic--warning {
+  border-inline-start-color: var(--bp-diagnostic-warning);
+}
+
+.bp-diagnostic--error {
+  background: var(--bp-diagnostic-error-bg);
+}
+
+.bp-diagnostic--warning {
+  background: var(--bp-diagnostic-warning-bg);
+}
+
+.bp-diagnostic__title {
+  margin: 0 0 0.25rem;
+  color: var(--bp-text);
+  font-size: 1rem;
+}
+
+.bp-diagnostic__location {
+  margin: 0 0 0.5rem;
+  color: var(--bp-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.bp-diagnostic__message {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
+
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
+
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  .bp-diagnostic__message {
+    overflow: visible;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Apache ECharts</h1>
+<p>ECharts blocks use strict JSON and render as static SVG. The examples below cover the supported
+series, a mixed bar and line chart, and a local tabular dataset.</p>
+<h2>Запросы и целевой показатель</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-001"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M72 394.5L698 394.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M72 333.5L698 333.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M72 273.5L698 273.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M72 213.5L698 213.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M72 152.5L698 152.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M72 92.5L698 92.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" y="-6" transform="translate(72 77)" fill="#54555a">Запросы, тыс.</text>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(713 394)" fill="#54555a">Квартал</text>
+<path d="M72 394.5L698 394.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 394)" fill="#54555a">0</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 333.6)" fill="#54555a">50</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 273.2)" fill="#54555a">100</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 212.8)" fill="#54555a">150</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 152.4)" fill="#54555a">200</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 92)" fill="#54555a">250</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(150.25 402)" fill="#54555a">Q1</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(306.75 402)" fill="#54555a">Q2</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(463.25 402)" fill="#54555a">Q3</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(619.75 402)" fill="#54555a">Q4</text>
+<path d="M100.3 249L200.2 249A4 4 0 0 1 204.2 253L204.2 390A4 4 0 0 1 200.2 394L100.3 394A4 4 0 0 1 96.3 390L96.3 253A4 4 0 0 1 100.3 249Z" fill="url(#bp-diagram-001-zr0-g0)" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M256.8 152.4L356.7 152.4A4 4 0 0 1 360.7 156.4L360.7 390A4 4 0 0 1 356.7 394L256.8 394A4 4 0 0 1 252.8 390L252.8 156.4A4 4 0 0 1 256.8 152.4Z" fill="url(#bp-diagram-001-zr0-g0)" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M413.3 212.8L513.2 212.8A4 4 0 0 1 517.2 216.8L517.2 390A4 4 0 0 1 513.2 394L413.3 394A4 4 0 0 1 409.3 390L409.3 216.8A4 4 0 0 1 413.3 212.8Z" fill="url(#bp-diagram-001-zr0-g0)" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M569.8 176.6L669.7 176.6A4 4 0 0 1 673.7 180.6L673.7 390A4 4 0 0 1 669.7 394L569.8 394A4 4 0 0 1 565.8 390L565.8 180.6A4 4 0 0 1 569.8 176.6Z" fill="url(#bp-diagram-001-zr0-g0)" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(150.25 244.04)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">120</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(306.75 147.4)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">200</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(463.25 207.8)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">150</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(619.75 171.56)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">180</text>
+<g clip-path="url(#bp-diagram-001-zr0-c0)">
+<path d="M150.3 224.9C150.3 224.9 227.5 194.8 306.8 188.6C384 182.6 386.8 188.6 463.3 182.6C543.3 176.3 619.8 134.3 619.8 134.3" fill="none" pointer-events="visible" stroke="#5070dd" stroke-width="2" stroke-linejoin="bevel" class="zr0-cls-0"></path>
+</g>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4.5,0,0,4.5,150.25,224.88)" fill="#fff" stroke="#5070dd" stroke-width="0.4444444444444444" ecmeta_series_index="1" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4.5,0,0,4.5,306.75,188.64)" fill="#fff" stroke="#5070dd" stroke-width="0.4444444444444444" ecmeta_series_index="1" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4.5,0,0,4.5,463.25,182.6)" fill="#fff" stroke="#5070dd" stroke-width="0.4444444444444444" ecmeta_series_index="1" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4.5,0,0,4.5,619.75,134.28)" fill="#fff" stroke="#5070dd" stroke-width="0.4444444444444444" ecmeta_series_index="1" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M-5 -5l175 0l0 24l-175 0Z" transform="translate(317.5 47)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#b7b9be" stroke-width="0" class="zr0-cls-0"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(317.5 47)" fill="url(#bp-diagram-001-zr0-g0)" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(317.5 47)" fill="#54555a">Факт</text>
+<path d="M0 0l78 0l0 14l-78 0Z" transform="translate(317.5 47)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M0 7L25 7" transform="translate(404.5 47)" fill="#000" stroke="#5070dd" stroke-width="2" stroke-linecap="butt" stroke-miterlimit="10" class="zr0-cls-0"></path>
+<path d="M18.1 7A5.6 5.6 0 1 1 18.1 6.4A5.6 5.6 0 0 1 18.1 7" transform="translate(404.5 47)" fill="#fff" stroke="#5070dd" stroke-width="2" stroke-linecap="butt" stroke-miterlimit="10" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(404.5 47)" fill="#54555a">Цель</text>
+<path d="M-1 0.4l79 0l0 13.2l-79 0Z" transform="translate(404.5 47)" fill="none" pointer-events="visible" ecmeta_series_index="1" ecmeta_data_index="1" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M-172 -5l344.1 0l0 28l-344.1 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Запросы по кварталам</text>
+<defs>
+<linearGradient gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="1" id="bp-diagram-001-zr0-g0">
+<stop offset="0%" stop-color="#5470c6"></stop>
+<stop offset="100%" stop-color="#91cc75"></stop>
+</linearGradient>
+<clipPath id="bp-diagram-001-zr0-c0">
+<path d="M71 91l628 0l0 304l-628 0Z" fill="#000" class="zr0-cls-0"></path>
+</clipPath>
+</defs>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+.zr0-cls-1:hover {
+cursor:pointer;
+fill:rgba(0,0,0,0);
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Доля заявок по каналам</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-002"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<polyline points="612.2 209.5 626.7 205.7 656.7 205.7" fill="none" pointer-events="visible" stroke="#5070dd" class="zr0-cls-0"></polyline>
+<polyline points="394.5 383.8 387.7 397.2 357.7 397.2" fill="none" pointer-events="visible" stroke="#b6d634" class="zr0-cls-0"></polyline>
+<polyline points="325.6 182.4 312 176 282 176" fill="none" pointer-events="visible" stroke="#505372" class="zr0-cls-0"></polyline>
+<polyline points="421.3 100.6 417.1 86.2 387.1 86.2" fill="none" pointer-events="visible" stroke="#ff994d" class="zr0-cls-0"></polyline>
+<path d="M464 94.5A153 153 0 0 1 537.7 381.6L501.9 316.5A78.8 78.8 0 0 0 464 168.8Z" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M537.7 381.6A153 153 0 0 1 312.2 266.7L385.9 257.4A78.8 78.8 0 0 0 501.9 316.5Z" fill="#b6d634" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M312.2 266.7A153 153 0 0 1 382 118.3L421.8 181A78.8 78.8 0 0 0 385.9 257.4Z" fill="#505372" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M382 118.3A153 153 0 0 1 464 94.5L464 168.8A78.8 78.8 0 0 0 421.8 181Z" fill="#ff994d" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" transform="translate(661.722 205.7201)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">Веб: 42%</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" transform="translate(352.7296 397.1891)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">Мобильное приложение: 31%</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" transform="translate(276.9891 175.9691)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">Телефон: 18%</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" transform="translate(382.1295 86.1707)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">Другое: 9%</text>
+<path d="M-5 -5l271.4 0l0 90l-271.4 0Z" transform="translate(5 185)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#b7b9be" stroke-width="0" class="zr0-cls-0"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(5 185)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(5 185)" fill="#54555a">Веб</text>
+<path d="M0 0l66 0l0 14l-66 0Z" transform="translate(5 185)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(5 207)" fill="#b6d634" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" x="30" y="7" transform="translate(5 207)" fill="#54555a">Мобильное приложение</text>
+<path d="M0 0l261.4 0l0 14l-261.4 0Z" transform="translate(5 207)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(5 229)" fill="#505372" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(5 229)" fill="#54555a">Телефон</text>
+<path d="M0 0l114 0l0 14l-114 0Z" transform="translate(5 229)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(5 251)" fill="#ff994d" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(5 251)" fill="#54555a">Другое</text>
+<path d="M0 0l102 0l0 14l-102 0Z" transform="translate(5 251)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M-142.5 -5l285 0l0 28l-285 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Каналы обращений</text>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+.zr0-cls-1:hover {
+cursor:pointer;
+fill:rgba(0,0,0,0);
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Ошибки в зависимости от нагрузки</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-003"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M70 402.5L595.3 402.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70 333.5L595.3 333.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70 264.5L595.3 264.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70 195.5L595.3 195.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70 127.5L595.3 127.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70 58.5L595.3 58.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M70.5 58L70.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M175.5 58L175.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M280.5 58L280.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M385.5 58L385.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M490.5 58L490.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M595.5 58L595.5 402" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" y="-6" transform="translate(70 43)" fill="#54555a">Ошибки, %</text>
+<path d="M70.5 402L70.5 58" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" transform="translate(610.28 402)" fill="#54555a">Запросы в секунду</text>
+<path d="M70 402.5L595.3 402.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<path d="M70 402.5L65 402.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70 333.5L65 333.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70 264.5L65 264.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70 195.5L65 195.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70 127.5L65 127.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70 58.5L65 58.5" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M70.5 402L70.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M175.5 402L175.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M280.5 402L280.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M385.5 402L385.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M490.5 402L490.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<path d="M595.5 402L595.5 407" fill="none" pointer-events="visible" stroke="#54555a" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 402)" fill="#54555a">0</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 333.2)" fill="#54555a">1</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 264.4)" fill="#54555a">2</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 195.6)" fill="#54555a">3</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 126.8)" fill="#54555a">4</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(62 58)" fill="#54555a">5</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(70 410)" fill="#54555a">0</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(175.056 410)" fill="#54555a">100</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(280.112 410)" fill="#54555a">200</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(385.168 410)" fill="#54555a">300</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(490.224 410)" fill="#54555a">400</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(595.28 410)" fill="#54555a">500</text>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,196.0672,388.24)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,259.1008,381.36)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,343.1456,353.84)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,427.1904,291.92)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,511.2352,236.88)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="4" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(6.5,0,0,6.5,595.28,113.04)" fill="#5070dd" fill-opacity="0.8" ecmeta_series_index="0" ecmeta_data_index="5" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M-145 -5l290.1 0l0 28l-290.1 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Ошибки и задержка</text>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Профиль сервиса</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-004"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M400 202.5L378.6 218L386.8 243.2L413.2 243.2L421.4 218L400 202.5L400 225ZM400 157.5L335.8 204.1L360.3 279.6L439.7 279.6L464.2 204.1L400 157.5L400 180L442.8 211.1L426.5 261.4L373.5 261.4L357.2 211.1L400 180ZM400 112.5L293 190.2L333.9 316L466.1 316L507 190.2L400 112.5L400 135L485.6 197.2L452.9 297.8L347.1 297.8L314.4 197.2L400 135Z" fill="rgb(234,237,245)" fill-opacity="0.5" class="zr0-cls-0"></path>
+<path d="M400 180L357.2 211.1L373.5 261.4L426.5 261.4L442.8 211.1L400 180L400 202.5L421.4 218L413.2 243.2L386.8 243.2L378.6 218L400 202.5ZM400 135L314.4 197.2L347.1 297.8L452.9 297.8L485.6 197.2L400 135L400 157.5L464.2 204.1L439.7 279.6L360.3 279.6L335.8 204.1L400 157.5Z" fill="rgb(255,255,255)" fill-opacity="0" class="zr0-cls-0"></path>
+<path d="M400 225M400 202.5L378.6 218L386.8 243.2L413.2 243.2L421.4 218L400 202.5M400 180L357.2 211.1L373.5 261.4L426.5 261.4L442.8 211.1L400 180M400 157.5L335.8 204.1L360.3 279.6L439.7 279.6L464.2 204.1L400 157.5M400 135L314.4 197.2L347.1 297.8L452.9 297.8L485.6 197.2L400 135M400 112.5L293 190.2L333.9 316L466.1 316L507 190.2L400 112.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M400.5 225L400.5 112.5" fill="none" pointer-events="visible" stroke="#cfd2d7" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(400 97.5)" fill="#54555a">Надёжность</text>
+<path d="M400 225L293 190.2" fill="none" pointer-events="visible" stroke="#cfd2d7" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(278.7403 185.6003)" fill="#54555a">Скорость</text>
+<path d="M400 225L333.9 316" fill="none" pointer-events="visible" stroke="#cfd2d7" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(325.0574 328.1497)" fill="#54555a">Наблюдаемость</text>
+<path d="M400 225L466.1 316" fill="none" pointer-events="visible" stroke="#cfd2d7" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(474.9426 328.1497)" fill="#54555a">Безопасность</text>
+<path d="M400 225L507 190.2" fill="none" pointer-events="visible" stroke="#cfd2d7" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(521.2597 185.6003)" fill="#54555a">Поддержка</text>
+<polyline points="400 126 318.7 198.6 345.8 299.6 461.5 309.6 476 200.3 400 126" fill="none" pointer-events="visible" stroke="#5070dd" stroke-width="2" stroke-linejoin="round" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></polyline>
+<polygon points="400 126 318.7 198.6 345.8 299.6 461.5 309.6 476 200.3 400 126" fill="#5070dd" fill-opacity="0.2" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></polygon>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4,0,0,4,400,126)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4,0,0,4,318.6847,198.579)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4,0,0,4,345.7768,299.6318)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4,0,0,4,461.497,309.6434)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(4,0,0,4,475.9656,200.3173)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(400 117)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">88</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(318.6847 189.579)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">76</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(345.7768 290.6318)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">82</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(461.497 300.6434)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">93</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="-6" transform="translate(475.9656 191.3173)" fill="#333" stroke="rgb(255,255,255)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">71</text>
+<path d="M-151.5 -5l303 0l0 28l-303 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Оценка готовности</text>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Тепловая карта по дням и часам</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-005"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M72.5 402L72.5 58" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<path d="M72 402.5L770 402.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 344.6667)" fill="#54555a">Утро</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 230)" fill="#54555a">День</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(64 115.3333)" fill="#54555a">Вечер</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(141.8 410)" fill="#54555a">Пн</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(281.4 410)" fill="#54555a">Вт</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(421 410)" fill="#54555a">Ср</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(560.6 410)" fill="#54555a">Чт</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(700.2 410)" fill="#54555a">Пт</text>
+<path d="M71.8 287.1l140.1 0l0 115.2l-140.1 0Z" fill="rgb(194,224,237)" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M211.4 287.1l140.1 0l0 115.2l-140.1 0Z" fill="rgb(177,212,231)" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M351 287.1l140.1 0l0 115.2l-140.1 0Z" fill="rgb(162,202,225)" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M490.6 287.1l140.1 0l0 115.2l-140.1 0Z" fill="rgb(179,213,231)" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M630.2 287.1l140.1 0l0 115.2l-140.1 0Z" fill="rgb(188,220,235)" ecmeta_series_index="0" ecmeta_data_index="4" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M71.8 172.4l140.1 0l0 115.2l-140.1 0Z" fill="rgb(141,187,217)" ecmeta_series_index="0" ecmeta_data_index="5" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M211.4 172.4l140.1 0l0 115.2l-140.1 0Z" fill="rgb(101,148,197)" ecmeta_series_index="0" ecmeta_data_index="6" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M351 172.4l140.1 0l0 115.2l-140.1 0Z" fill="rgb(84,132,188)" ecmeta_series_index="0" ecmeta_data_index="7" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M490.6 172.4l140.1 0l0 115.2l-140.1 0Z" fill="rgb(116,163,204)" ecmeta_series_index="0" ecmeta_data_index="8" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M630.2 172.4l140.1 0l0 115.2l-140.1 0Z" fill="rgb(132,178,212)" ecmeta_series_index="0" ecmeta_data_index="9" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M71.8 57.7l140.1 0l0 115.2l-140.1 0Z" fill="rgb(84,110,166)" ecmeta_series_index="0" ecmeta_data_index="10" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M211.4 57.7l140.1 0l0 115.2l-140.1 0Z" fill="rgb(138,84,113)" ecmeta_series_index="0" ecmeta_data_index="11" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M351 57.7l140.1 0l0 115.2l-140.1 0Z" fill="rgb(193,58,60)" ecmeta_series_index="0" ecmeta_data_index="12" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M490.6 57.7l140.1 0l0 115.2l-140.1 0Z" fill="rgb(116,95,134)" ecmeta_series_index="0" ecmeta_data_index="13" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M630.2 57.7l140.1 0l0 115.2l-140.1 0Z" fill="rgb(73,121,182)" ecmeta_series_index="0" ecmeta_data_index="14" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(141.8 344.6667)" fill="#333">65</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(281.4 344.6667)" fill="#333">80</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(421 344.6667)" fill="#333">92</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(560.6 344.6667)" fill="#333">78</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(700.2 344.6667)" fill="#333">70</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(141.8 230)" fill="#333">110</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(281.4 230)" fill="#333">145</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(421 230)" fill="#eee" stroke="rgb(84,132,188)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">160</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(560.6 230)" fill="#333">132</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(700.2 230)" fill="#333">118</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(141.8 115.3333)" fill="#eee" stroke="rgb(84,110,166)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">180</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(281.4 115.3333)" fill="#eee" stroke="rgb(138,84,113)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">205</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(421 115.3333)" fill="#eee" stroke="rgb(193,58,60)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">230</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(560.6 115.3333)" fill="#eee" stroke="rgb(116,95,134)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">195</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(700.2 115.3333)" fill="#eee" stroke="rgb(73,121,182)" stroke-width="2" paint-order="stroke" stroke-miterlimit="2">170</text>
+<path d="M-15 -35l170 0l0 50l-170 0Z" transform="translate(330 431)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#cfd2d7" stroke-width="0" class="zr0-cls-0"></path>
+<g clip-path="url(#bp-diagram-005-zr0-c0)">
+<polygon points="0 0 20 0 20 140 0 140" transform="matrix(0,-1,1,0,330,431)" fill="url(#bp-diagram-005-zr0-g0)" class="zr0-cls-2"></polygon>
+<polygon points="0 0 20 0 20 140 0 140" transform="matrix(0,-1,1,0,330,431)" fill="url(#bp-diagram-005-zr0-g1)" class="zr0-cls-3"></polygon>
+</g>
+<path d="M-195.1 -5l390.2 0l0 28l-390.2 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Среднее время ответа, мс</text>
+<defs>
+<clipPath id="bp-diagram-005-zr0-c0">
+<path d="M3 0L17 0A3 3 0 0 1 20 3L20 137A3 3 0 0 1 17 140L3 140A3 3 0 0 1 0 137L0 3A3 3 0 0 1 3 0Z" transform="matrix(0,-1,1,0,330,431)" fill="#000" class="zr0-cls-1"></path>
+</clipPath>
+<linearGradient gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="1" id="bp-diagram-005-zr0-g0">
+<stop offset="0%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="1%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="2%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="3%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="4%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="5%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="6%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="7.000000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="8%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="9%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="10%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="11%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="12%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="13%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="14.000000000000002%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="15%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="16%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="17%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="18%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="19%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="20%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="21%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="22%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="23%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="24%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="25%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="26%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="27%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="28.000000000000004%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="28.999999999999996%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="30%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="31%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="32%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="33%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="34%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="35%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="36%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="37%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="38%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="39%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="40%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="41%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="42%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="43%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="44%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="45%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="46%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="47%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="48%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="49%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="50%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="51%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="52%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="53%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="54%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="55.00000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="56.00000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="56.99999999999999%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="57.99999999999999%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="59%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="60%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="61%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="62%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="63%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="64%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="65%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="66%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="67%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="68%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="69%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="70%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="71%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="72%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="73%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="74%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="75%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="76%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="77%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="78%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="79%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="80%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="81%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="82%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="83%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="84%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="85%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="86%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="87%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="88%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="89%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="90%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="91%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="92%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="93%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="94%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="95%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="96%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="97%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="98%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="99%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="100%" stop-color="rgb(207,210,215)"></stop>
+</linearGradient>
+<linearGradient gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="1" id="bp-diagram-005-zr0-g1">
+<stop offset="0%" stop-color="rgb(224,243,248)"></stop>
+<stop offset="1%" stop-color="rgb(222,241,247)"></stop>
+<stop offset="2%" stop-color="rgb(219,240,246)"></stop>
+<stop offset="3%" stop-color="rgb(217,238,245)"></stop>
+<stop offset="4%" stop-color="rgb(215,237,245)"></stop>
+<stop offset="5%" stop-color="rgb(212,235,244)"></stop>
+<stop offset="6%" stop-color="rgb(210,234,243)"></stop>
+<stop offset="7.000000000000001%" stop-color="rgb(207,232,242)"></stop>
+<stop offset="8%" stop-color="rgb(205,231,241)"></stop>
+<stop offset="9%" stop-color="rgb(203,229,240)"></stop>
+<stop offset="10%" stop-color="rgb(200,227,239)"></stop>
+<stop offset="11%" stop-color="rgb(198,226,238)"></stop>
+<stop offset="12%" stop-color="rgb(196,224,238)"></stop>
+<stop offset="13%" stop-color="rgb(193,223,237)"></stop>
+<stop offset="14.000000000000002%" stop-color="rgb(191,221,236)"></stop>
+<stop offset="15%" stop-color="rgb(188,220,235)"></stop>
+<stop offset="16%" stop-color="rgb(186,218,234)"></stop>
+<stop offset="17%" stop-color="rgb(184,216,233)"></stop>
+<stop offset="18%" stop-color="rgb(181,215,232)"></stop>
+<stop offset="19%" stop-color="rgb(179,213,231)"></stop>
+<stop offset="20%" stop-color="rgb(177,212,231)"></stop>
+<stop offset="21%" stop-color="rgb(174,210,230)"></stop>
+<stop offset="22%" stop-color="rgb(172,209,229)"></stop>
+<stop offset="23%" stop-color="rgb(169,207,228)"></stop>
+<stop offset="24%" stop-color="rgb(167,206,227)"></stop>
+<stop offset="25%" stop-color="rgb(165,204,226)"></stop>
+<stop offset="26%" stop-color="rgb(162,202,225)"></stop>
+<stop offset="27%" stop-color="rgb(160,201,225)"></stop>
+<stop offset="28.000000000000004%" stop-color="rgb(158,199,224)"></stop>
+<stop offset="28.999999999999996%" stop-color="rgb(155,198,223)"></stop>
+<stop offset="30%" stop-color="rgb(153,196,222)"></stop>
+<stop offset="31%" stop-color="rgb(151,195,221)"></stop>
+<stop offset="32%" stop-color="rgb(148,193,220)"></stop>
+<stop offset="33%" stop-color="rgb(146,192,219)"></stop>
+<stop offset="34%" stop-color="rgb(143,190,218)"></stop>
+<stop offset="35%" stop-color="rgb(141,187,217)"></stop>
+<stop offset="36%" stop-color="rgb(139,185,216)"></stop>
+<stop offset="37%" stop-color="rgb(137,183,215)"></stop>
+<stop offset="38%" stop-color="rgb(134,181,214)"></stop>
+<stop offset="39%" stop-color="rgb(132,178,212)"></stop>
+<stop offset="40%" stop-color="rgb(130,176,211)"></stop>
+<stop offset="41%" stop-color="rgb(128,174,210)"></stop>
+<stop offset="42%" stop-color="rgb(125,172,209)"></stop>
+<stop offset="43%" stop-color="rgb(123,170,208)"></stop>
+<stop offset="44%" stop-color="rgb(121,167,207)"></stop>
+<stop offset="45%" stop-color="rgb(118,165,205)"></stop>
+<stop offset="46%" stop-color="rgb(116,163,204)"></stop>
+<stop offset="47%" stop-color="rgb(114,161,203)"></stop>
+<stop offset="48%" stop-color="rgb(112,158,202)"></stop>
+<stop offset="49%" stop-color="rgb(109,156,201)"></stop>
+<stop offset="50%" stop-color="rgb(107,154,200)"></stop>
+<stop offset="51%" stop-color="rgb(105,152,198)"></stop>
+<stop offset="52%" stop-color="rgb(102,150,197)"></stop>
+<stop offset="53%" stop-color="rgb(100,147,196)"></stop>
+<stop offset="54%" stop-color="rgb(98,145,195)"></stop>
+<stop offset="55.00000000000001%" stop-color="rgb(96,143,194)"></stop>
+<stop offset="56.00000000000001%" stop-color="rgb(93,141,192)"></stop>
+<stop offset="56.99999999999999%" stop-color="rgb(91,138,191)"></stop>
+<stop offset="57.99999999999999%" stop-color="rgb(89,136,190)"></stop>
+<stop offset="59%" stop-color="rgb(86,134,189)"></stop>
+<stop offset="60%" stop-color="rgb(84,132,188)"></stop>
+<stop offset="61%" stop-color="rgb(82,130,187)"></stop>
+<stop offset="62%" stop-color="rgb(80,127,185)"></stop>
+<stop offset="63%" stop-color="rgb(77,125,184)"></stop>
+<stop offset="64%" stop-color="rgb(75,123,183)"></stop>
+<stop offset="65%" stop-color="rgb(73,121,182)"></stop>
+<stop offset="66%" stop-color="rgb(71,118,181)"></stop>
+<stop offset="67%" stop-color="rgb(70,116,179)"></stop>
+<stop offset="68%" stop-color="rgb(75,114,174)"></stop>
+<stop offset="69%" stop-color="rgb(79,112,170)"></stop>
+<stop offset="70%" stop-color="rgb(84,110,166)"></stop>
+<stop offset="71%" stop-color="rgb(88,108,162)"></stop>
+<stop offset="72%" stop-color="rgb(92,106,157)"></stop>
+<stop offset="73%" stop-color="rgb(97,104,153)"></stop>
+<stop offset="74%" stop-color="rgb(101,102,149)"></stop>
+<stop offset="75%" stop-color="rgb(106,100,145)"></stop>
+<stop offset="76%" stop-color="rgb(110,98,141)"></stop>
+<stop offset="77%" stop-color="rgb(114,96,136)"></stop>
+<stop offset="78%" stop-color="rgb(119,94,132)"></stop>
+<stop offset="79%" stop-color="rgb(123,91,128)"></stop>
+<stop offset="80%" stop-color="rgb(127,89,124)"></stop>
+<stop offset="81%" stop-color="rgb(132,87,119)"></stop>
+<stop offset="82%" stop-color="rgb(136,85,115)"></stop>
+<stop offset="83%" stop-color="rgb(141,83,111)"></stop>
+<stop offset="84%" stop-color="rgb(145,81,107)"></stop>
+<stop offset="85%" stop-color="rgb(149,79,102)"></stop>
+<stop offset="86%" stop-color="rgb(154,77,98)"></stop>
+<stop offset="87%" stop-color="rgb(158,75,94)"></stop>
+<stop offset="88%" stop-color="rgb(162,73,90)"></stop>
+<stop offset="89%" stop-color="rgb(167,71,86)"></stop>
+<stop offset="90%" stop-color="rgb(171,69,81)"></stop>
+<stop offset="91%" stop-color="rgb(176,67,77)"></stop>
+<stop offset="92%" stop-color="rgb(180,65,73)"></stop>
+<stop offset="93%" stop-color="rgb(184,62,69)"></stop>
+<stop offset="94%" stop-color="rgb(189,60,64)"></stop>
+<stop offset="95%" stop-color="rgb(193,58,60)"></stop>
+<stop offset="96%" stop-color="rgb(197,56,56)"></stop>
+<stop offset="97%" stop-color="rgb(202,54,52)"></stop>
+<stop offset="98%" stop-color="rgb(206,52,47)"></stop>
+<stop offset="99%" stop-color="rgb(211,50,43)"></stop>
+<stop offset="100%" stop-color="rgb(215,48,39)"></stop>
+</linearGradient>
+</defs>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+.zr0-cls-1:hover {
+cursor:pointer;
+fill:rgba(0,0,0,1);
+}
+.zr0-cls-2:hover {
+cursor:pointer;
+fill:[object Object];
+}
+.zr0-cls-3:hover {
+cursor:pointer;
+fill:[object Object];
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Текущая готовность</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-006"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M566.7 198.6A168.8 168.8 0 0 1 519.3 344.3L508 333A152.8 152.8 0 0 0 550.9 201.1Z" fill="#91cc75" class="zr0-cls-0"></path>
+<path d="M439.4 60.9A168.8 168.8 0 0 1 566.7 198.6L550.9 201.1A152.8 152.8 0 0 0 435.7 76.5Z" fill="#fac858" class="zr0-cls-0"></path>
+<path d="M280.7 344.3A168.8 168.8 0 0 1 439.4 60.9L435.7 76.5A152.8 152.8 0 0 0 292 333Z" fill="#ee6666" class="zr0-cls-0"></path>
+<path d="M299.1 325.9L307.5 317.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="310.3742154846051" y="314.6257845153949" fill="#54555a">0</text>
+<path d="M264.2 269.1L275.6 265.4" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="279.45358655958927" y="264.1679040370246" fill="#54555a">10</text>
+<path d="M259 202.7L270.9 204.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="274.8105028295663" y="205.17193155615075" fill="#54555a">20</text>
+<path d="M284.5 141.1L294.2 148.1" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="297.4570959629754" y="150.49821927192903" fill="#54555a">30</text>
+<path d="M335.2 97.8L340.6 108.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="342.4567041580124" y="118.06492305912438" fill="#54555a">40</text>
+<path d="M400 82.3L400 94.3" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="400" y="104.25" fill="#54555a">50</text>
+<path d="M464.8 97.8L459.4 108.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="457.5432958419875" y="118.06492305912435" fill="#54555a">60</text>
+<path d="M515.5 141.1L505.8 148.1" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="502.5429040370246" y="150.498219271929" fill="#54555a">70</text>
+<path d="M541 202.7L529.1 204.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="525.1894971704337" y="205.1719315561507" fill="#54555a">80</text>
+<path d="M535.8 269.1L524.4 265.4" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="520.5464134404108" y="264.1679040370245" fill="#54555a">90</text>
+<path d="M500.9 325.9L492.5 317.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-width="3" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="489.6257845153949" y="314.6257845153949" fill="#54555a">100</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:16px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="400" y="258.75" fill="#54555a">Готово</text>
+<path d="M340 319.8l120 0l0 40l-120 0Z" fill="rgb(0,0,0)" fill-opacity="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:28px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" x="400" y="339.75" fill="#3c3c41">76%</text>
+<path d="M0 12L-6 0L0 -101.2L6 0L0 12" transform="matrix(0.339,0.941,-0.941,0.339,400,225)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M-151.5 -5l303 0l0 28l-303 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Готовность релиза</text>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+
+
+
+</style>
+</svg></figure></pre>
+<h2>Локальный dataset</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-007"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M82.7 402.5L776 402.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M82.7 339.5L776 339.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M82.7 276.5L776 276.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M82.7 213.5L776 213.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M82.7 151.5L776 151.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<path d="M82.7 88.5L776 88.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" xml:space="preserve" y="-6" transform="translate(82.68 73)" fill="#54555a">Тысяч запросов</text>
+<path d="M82.7 402.5L776 402.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 402)" fill="#54555a">0</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 339.2)" fill="#54555a">50</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 276.4)" fill="#54555a">100</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 213.6)" fill="#54555a">150</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 150.8)" fill="#54555a">200</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" transform="translate(74.68 88)" fill="#54555a">250</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(169.345 410)" fill="#54555a">Q1</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(342.675 410)" fill="#54555a">Q2</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(516.005 410)" fill="#54555a">Q3</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" y="6" transform="translate(689.335 410)" fill="#54555a">Q4</text>
+<path d="M109.5 402l119.6 0l0 -150.7l-119.6 0Z" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M282.9 402l119.6 0l0 -201l-119.6 0Z" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M456.2 402l119.6 0l0 -238.6l-119.6 0Z" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M629.5 402l119.6 0l0 -276.3l-119.6 0Z" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<g clip-path="url(#bp-diagram-007-zr0-c0)">
+<path d="M169.3 232.4C169.3 232.4 255.2 201.3 342.7 175.9C428.5 151 429.3 153.9 516 132C602.7 110 689.3 88 689.3 88" fill="none" pointer-events="visible" stroke="#b6d634" stroke-width="2" stroke-linejoin="bevel" class="zr0-cls-0"></path>
+</g>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(3,0,0,3,169.345,232.44)" fill="#fff" stroke="#b6d634" stroke-width="0.6666666666666666" ecmeta_series_index="1" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(3,0,0,3,342.675,175.92)" fill="#fff" stroke="#b6d634" stroke-width="0.6666666666666666" ecmeta_series_index="1" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(3,0,0,3,516.005,131.96)" fill="#fff" stroke="#b6d634" stroke-width="0.6666666666666666" ecmeta_series_index="1" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M1 0A1 1 0 1 1 1 -0.1A1 1 0 0 1 1 0" transform="matrix(3,0,0,3,689.335,88)" fill="#fff" stroke="#b6d634" stroke-width="0.6666666666666666" ecmeta_series_index="1" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M-5 -5l211 0l0 24l-211 0Z" transform="translate(299.5 47)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#b7b9be" stroke-width="0" class="zr0-cls-0"></path>
+<path d="M3.5 0L21.5 0A3.5 3.5 0 0 1 25 3.5L25 10.5A3.5 3.5 0 0 1 21.5 14L3.5 14A3.5 3.5 0 0 1 0 10.5L0 3.5A3.5 3.5 0 0 1 3.5 0Z" transform="translate(299.5 47)" fill="#5070dd" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(299.5 47)" fill="#54555a">Факт</text>
+<path d="M0 0l78 0l0 14l-78 0Z" transform="translate(299.5 47)" fill="none" pointer-events="visible" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M0 7L25 7" transform="translate(386.5 47)" fill="#000" stroke="#b6d634" stroke-width="2" stroke-linecap="butt" stroke-miterlimit="10" class="zr0-cls-0"></path>
+<path d="M18.1 7A5.6 5.6 0 1 1 18.1 6.4A5.6 5.6 0 0 1 18.1 7" transform="translate(386.5 47)" fill="#fff" stroke="#b6d634" stroke-width="2" stroke-linecap="butt" stroke-miterlimit="10" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;&#x22;="" x="30" y="7" transform="translate(386.5 47)" fill="#54555a">Прогноз</text>
+<path d="M-1 0.4l115 0l0 13.2l-115 0Z" transform="translate(386.5 47)" fill="none" pointer-events="visible" ecmeta_series_index="1" ecmeta_data_index="1" ecmeta_ssr_type="legend" class="zr0-cls-1"></path>
+<path d="M-199 -5l398.1 0l0 28l-398.1 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Noto Sans, " dejavu="" sans&#x22;,="" sans-serif;font-weight:bold;&#x22;="" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">Ожидаемый рост запросов</text>
+<defs>
+<clipPath id="bp-diagram-007-zr0-c0">
+<path d="M81 87l697 0l0 316l-697 0Z" fill="#000" class="zr0-cls-0"></path>
+</clipPath>
+</defs>
+<style>
+.zr0-cls-0:hover {
+pointer-events:none;
+}
+.zr0-cls-1:hover {
+cursor:pointer;
+fill:rgba(0,0,0,0);
+}
+
+
+
+</style>
+</svg></figure></pre>
+</main>
+
+</body>
+</html>

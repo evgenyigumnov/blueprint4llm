@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphviz diagrams</title>
+<style>
+:root {
+  color-scheme: light;
+  --bp-text: #1f2328;
+  --bp-muted: #656d76;
+  --bp-border: #d0d7de;
+  --bp-surface: #ffffff;
+  --bp-page-bg: #f6f8fa;
+  --bp-accent: #0a5bd3;
+  --bp-code-bg: #f6f8fa;
+  --bp-diagnostic-error: #b42318;
+  --bp-diagnostic-warning: #7a4b00;
+  --bp-diagnostic-error-bg: #fff4f2;
+  --bp-diagnostic-warning-bg: #fff8e6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bp-page-bg);
+  color: var(--bp-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.bp-document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  background: var(--bp-surface);
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.7em;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--bp-border);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1.05rem;
+}
+
+p,
+li {
+  orphans: 3;
+  widows: 3;
+}
+
+a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.2em 1em;
+  color: var(--bp-muted);
+  border-left: 4px solid var(--bp-border);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bp-code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
+
+pre {
+  margin: 1em 0;
+  padding: 0.9em 1em;
+  background: var(--bp-code-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre.bp-diagram-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+pre.shiki {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg, var(--bp-code-bg));
+}
+
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+:root[data-bp-theme='dark'] pre.shiki,
+:root[data-bp-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg, transparent) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+:root[data-bp-theme='dark'] {
+  --bp-diagnostic-error: #ff7b72;
+  --bp-diagnostic-warning: #e3b341;
+  --bp-diagnostic-error-bg: #2d1618;
+  --bp-diagnostic-warning-bg: #2b2416;
+}
+
+.bp-table {
+  margin: 1em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  border: 1px solid var(--bp-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--bp-code-bg);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--bp-border);
+  margin: 2em 0;
+}
+
+ul[data-task-list] li,
+li > input[type='checkbox'] {
+  margin-right: 0.4em;
+}
+
+.bp-diagram {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.bp-diagram > svg {
+  display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.bp-diagnostics-summary,
+.bp-diagnostic {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  color: var(--bp-text);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-inline-start-width: 4px;
+  border-radius: 6px;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.bp-diagnostics-summary {
+  font-weight: 650;
+}
+
+.bp-diagnostic {
+  white-space: normal;
+}
+
+.bp-diagnostics-summary--error,
+.bp-diagnostic--error {
+  border-inline-start-color: var(--bp-diagnostic-error);
+}
+
+.bp-diagnostics-summary--warning,
+.bp-diagnostic--warning {
+  border-inline-start-color: var(--bp-diagnostic-warning);
+}
+
+.bp-diagnostic--error {
+  background: var(--bp-diagnostic-error-bg);
+}
+
+.bp-diagnostic--warning {
+  background: var(--bp-diagnostic-warning-bg);
+}
+
+.bp-diagnostic__title {
+  margin: 0 0 0.25rem;
+  color: var(--bp-text);
+  font-size: 1rem;
+}
+
+.bp-diagnostic__location {
+  margin: 0 0 0.5rem;
+  color: var(--bp-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.bp-diagnostic__message {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+@media screen and (max-width: 640px) {
+  .bp-document {
+    padding: 1.25rem 1rem 3rem;
+    border: none;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
+
+@media print {
+  :root {
+    --bp-page-bg: #ffffff;
+  }
+
+  body {
+    background: #ffffff;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .bp-document {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: visible;
+  }
+
+  pre.shiki {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  pre.shiki span {
+    color: var(--shiki-light) !important;
+  }
+
+  :root[data-bp-theme='dark'] pre.shiki,
+  :root[data-bp-theme='dark'] pre.shiki span {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+  }
+
+  code {
+    overflow-wrap: break-word;
+  }
+
+  .bp-table {
+    overflow: visible;
+  }
+
+  .bp-diagram {
+    overflow: visible;
+  }
+
+  .bp-diagram > svg {
+    max-width: 100% !important;
+  }
+
+  .bp-diagnostic__message {
+    overflow: visible;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure,
+  .bp-diagram,
+  blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+
+</style>
+</head>
+<body>
+<main class="bp-document">
+<h1>Graphviz diagrams</h1>
+<p>Use one <code>graph</code> or <code>digraph</code> block for a static Graphviz diagram. The renderer supports clusters,
+record ports, HTML-like labels, and local layout engines.</p>
+<h2>Order flow</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--graphviz" data-diagram-id="bp-diagram-001"><svg width="541pt" height="143pt" viewBox="0.00 0.00 541.00 143.00">
+<g id="bp-diagram-001-graph0" class="graph" transform="scale(1 1) rotate(0) translate(18 125)">
+<title>OrderFlow</title>
+<g id="bp-diagram-001-clust1" class="cluster">
+<title>cluster_request</title>
+<polygon fill="none" stroke="#8c959f" points="0,-8 0,-99 103.5,-99 103.5,-8 0,-8"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="51.75" y="-82.4" font-family="Times,serif" font-size="14.00">Запрос заказа</text>
+</g>
+<!-- client -->
+<g id="bp-diagram-001-node1" class="node">
+<title>client</title>
+<path fill="#f6f8fa" stroke="black" d="M34.25,-16.2C34.25,-16.2 68.25,-16.2 68.25,-16.2 74.25,-16.2 80.25,-22.2 80.25,-28.2 80.25,-28.2 80.25,-53.8 80.25,-53.8 80.25,-59.8 74.25,-65.8 68.25,-65.8 68.25,-65.8 34.25,-65.8 34.25,-65.8 28.25,-65.8 22.25,-59.8 22.25,-53.8 22.25,-53.8 22.25,-28.2 22.25,-28.2 22.25,-22.2 28.25,-16.2 34.25,-16.2"></path>
+<text xml:space="preserve" text-anchor="middle" x="51.25" y="-49.2" font-family="Times,serif" font-size="14.00">Клиент</text>
+<polyline fill="none" stroke="black" points="22.25,-41 80.25,-41"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="51.25" y="-24.4" font-family="Times,serif" font-size="14.00">Ответ</text>
+</g>
+<!-- api -->
+<g id="bp-diagram-001-node2" class="node">
+<title>api</title>
+<path fill="#f6f8fa" stroke="black" d="M304.06,-71C304.06,-71 231,-71 231,-71 225,-71 219,-65 219,-59 219,-59 219,-47 219,-47 219,-41 225,-35 231,-35 231,-35 304.06,-35 304.06,-35 310.06,-35 316.06,-41 316.06,-47 316.06,-47 316.06,-59 316.06,-59 316.06,-65 310.06,-71 304.06,-71"></path>
+<polygon fill="none" stroke="black" points="227,-41.6 227,-64.4 308.06,-64.4 308.06,-41.6 227,-41.6"></polygon>
+<text xml:space="preserve" text-anchor="start" x="230" y="-47.4" font-family="Times,serif" font-size="14.00">API заказов</text>
+</g>
+<!-- client&#45;&gt;api -->
+<g id="bp-diagram-001-edge1" class="edge">
+<title>client:request->api</title>
+<path fill="none" stroke="black" d="M81.25,-53.4C123.34,-53.4 170.8,-53.3 207.15,-53.19"></path>
+<polygon fill="black" stroke="black" points="207.04,-56.69 217.03,-53.16 207.02,-49.69 207.04,-56.69"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="157.25" y="-57.58" font-family="Times,serif" font-size="14.00">Создать заказ</text>
+</g>
+<!-- database -->
+<g id="bp-diagram-001-node3" class="node">
+<title>database</title>
+<path fill="#f6f8fa" stroke="black" d="M504.56,-67.73C504.56,-69.53 484.5,-71 459.81,-71 435.12,-71 415.06,-69.53 415.06,-67.73 415.06,-67.73 415.06,-38.27 415.06,-38.27 415.06,-36.47 435.12,-35 459.81,-35 484.5,-35 504.56,-36.47 504.56,-38.27 504.56,-38.27 504.56,-67.73 504.56,-67.73"></path>
+<path fill="none" stroke="black" d="M504.56,-67.73C504.56,-65.92 484.5,-64.45 459.81,-64.45 435.12,-64.45 415.06,-65.92 415.06,-67.73"></path>
+<text xml:space="preserve" text-anchor="middle" x="459.81" y="-48.8" font-family="Times,serif" font-size="14.00">База данных</text>
+</g>
+<!-- api&#45;&gt;database -->
+<g id="bp-diagram-001-edge2" class="edge">
+<title>api->database</title>
+<path fill="none" stroke="black" d="M316.54,-53C342.94,-53 375.81,-53 403.3,-53"></path>
+<polygon fill="black" stroke="black" points="403.21,-56.5 413.21,-53 403.21,-49.5 403.21,-56.5"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="365.56" y="-57.2" font-family="Times,serif" font-size="14.00">Сохранить</text>
+</g>
+</g>
+</svg></figure></pre>
+<h2>Service links</h2>
+<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--graphviz" data-diagram-id="bp-diagram-002"><svg width="178pt" height="138pt" viewBox="0.00 0.00 178.00 138.00">
+<g id="bp-diagram-002-graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 134.25)">
+<title>Services</title>
+<!-- gateway -->
+<g id="bp-diagram-002-node1" class="node">
+<title>gateway</title>
+<ellipse fill="#dbeafe" stroke="black" cx="43.21" cy="-53.59" rx="43.21" ry="18"></ellipse>
+<text xml:space="preserve" text-anchor="middle" x="43.21" y="-49.39" font-family="Times,serif" font-size="14.00">gateway</text>
+</g>
+<!-- orders -->
+<g id="bp-diagram-002-node2" class="node">
+<title>orders</title>
+<ellipse fill="#dbeafe" stroke="black" cx="134.57" cy="-76.24" rx="35.17" ry="18"></ellipse>
+<text xml:space="preserve" text-anchor="middle" x="134.57" y="-72.04" font-family="Times,serif" font-size="14.00">orders</text>
+</g>
+<!-- gateway&#45;&#45;orders -->
+<g id="bp-diagram-002-edge1" class="edge">
+<title>gateway--orders</title>
+<path fill="none" stroke="black" d="M80.89,-62.94C88.07,-64.71 95.52,-66.56 102.5,-68.29"></path>
+</g>
+<!-- catalog -->
+<g id="bp-diagram-002-node3" class="node">
+<title>catalog</title>
+<ellipse fill="#dbeafe" stroke="black" cx="89.37" cy="-18" rx="38.92" ry="18"></ellipse>
+<text xml:space="preserve" text-anchor="middle" x="89.37" y="-13.8" font-family="Times,serif" font-size="14.00">catalog</text>
+</g>
+<!-- gateway&#45;&#45;catalog -->
+<g id="bp-diagram-002-edge2" class="edge">
+<title>gateway--catalog</title>
+<path fill="none" stroke="black" d="M64.13,-37.46C65.75,-36.21 67.39,-34.95 69.01,-33.7"></path>
+</g>
+<!-- database -->
+<g id="bp-diagram-002-node4" class="node">
+<title>database</title>
+<ellipse fill="#dbeafe" stroke="black" cx="88.69" cy="-112.25" rx="44.28" ry="18"></ellipse>
+<text xml:space="preserve" text-anchor="middle" x="88.69" y="-108.05" font-family="Times,serif" font-size="14.00">database</text>
+</g>
+<!-- orders&#45;&#45;database -->
+<g id="bp-diagram-002-edge3" class="edge">
+<title>orders--database</title>
+<path fill="none" stroke="black" d="M115.11,-91.51C113.25,-92.97 111.37,-94.45 109.5,-95.92"></path>
+</g>
+<!-- catalog&#45;&#45;database -->
+<g id="bp-diagram-002-edge4" class="edge">
+<title>catalog--database</title>
+<path fill="none" stroke="black" d="M89.24,-36.17C89.12,-52.75 88.94,-77.15 88.82,-93.81"></path>
+</g>
+</g>
+</svg></figure></pre>
+</main>
+
+</body>
+</html>
