@@ -160,10 +160,10 @@ npm exec --yes --package=puppeteer@25.14.0 -- puppeteer browsers install chrome
 
 ## سير عمل الوكلاء والمحررات
 
-| سير العمل    | الإعداد                                                                                                                                                                               |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| وكيل البرمجة | استخدم مهارة `blueprint4llm`؛ راجع [البدء السريع](#البدء-السريع) لتثبيتها واستدعائها في Codex وClaude Code.                                                                           |
-| VS Code      | ثبّت VSIX مبنيًا باستخدام `code --install-extension <file.vsix>`. افتح ملف Markdown وشغّل **Blueprint: Open Preview to the Side**. استخدم **Blueprint: Export Preview as PDF** لحفظه. |
+| سير العمل                                                                            | الإعداد                                                                                                                                                                               |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| وكيل البرمجة                                                                         | استخدم مهارة `blueprint4llm`؛ راجع [البدء السريع](#البدء-السريع) لتثبيتها واستدعائها في Codex وClaude Code.                                                                           |
+| [VS Code](https://github.com/evgenyigumnov/blueprint4llm/tree/main/vscode-extension) | ثبّت VSIX مبنيًا باستخدام `code --install-extension <file.vsix>`. افتح ملف Markdown وشغّل **Blueprint: Open Preview to the Side**. استخدم **Blueprint: Export Preview as PDF** لحفظه. |
 
 تجمع معاينة VS Code التغييرات غير المحفوظة بعد تأخير 200 ms، ويمكن ضبط التأخير عبر `blueprint4llm.preview.debounceMs`. تتطلب VS Code لسطح المكتب ≥1.101.0 وChrome الخاص بـPuppeteer.
 
