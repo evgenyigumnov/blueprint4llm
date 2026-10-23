@@ -107,16 +107,13 @@ Use charts when comparisons, trends, distributions, or relationships in the data
 
 ### UI prototypes
 
-| Format             | Fence                                 | Best fit and trade-off                                                                                                                                                                                                   |
-| ------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Figma              | `figma`                               | Use to show a more detailed design from Figma frame data. JSON rendering supports a subset of Figma objects; URL mode needs a configured access token.                                                                   |
-| Balsamiq Mockups 3 | `balsamiq`                            | Use for rough screen layouts built from common UI controls. It preserves positions and text, but supports a limited control set and does not reproduce the Balsamiq skin exactly. `.bmpr` and `.bmml` are not supported. |
-| Pencil             | `pencil` or `pen`                     | Use when custom frame geometry and vector shapes need more control than a text-first prototype. The renderer supports embedded schema 2.21 and common shapes, but not images, gradients, effects, or components.         |
-| Wiremark           | `wireframe` (canonical) or `wiremark` | Use for low-fidelity screens and screen states that are easy to describe as text. It is fast to review, but does not give pixel-level visual control.                                                                    |
+| Format             | Fence             | Best fit and trade-off                                                                                                                                                                                                   |
+| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Figma              | `figma`           | Use to show a more detailed design from Figma frame data. JSON rendering supports a subset of Figma objects; URL mode needs a configured access token.                                                                   |
+| Balsamiq Mockups 3 | `balsamiq`        | Use for rough screen layouts built from common UI controls. It preserves positions and text, but supports a limited control set and does not reproduce the Balsamiq skin exactly. `.bmpr` and `.bmml` are not supported. |
+| Pencil             | `pencil` or `pen` | Use when custom frame geometry and vector shapes need more control than a text-first prototype. The renderer supports embedded schema 2.21 and common shapes, but not images, gradients, effects, or components.         |
 
-Choose by fidelity and the kind of information the screen must show: Figma for detailed design data, Balsamiq for rough control layouts, Pencil for custom vector geometry, and Wiremark for structure and content. If the requested fidelity exceeds the renderer's supported subset, explain the limitation.
-
-**Wiremark rule:** If you choose `wireframe` or `wiremark`, read the full [Wiremark guide](https://docs.wiremark.dev/wiremark-llm.md) before writing or editing a block. Follow its syntax and component rules. Do not draft a Wiremark block before reading the guide.
+Choose by fidelity and the kind of information the screen must show: Figma for detailed design data, Balsamiq for rough control layouts, and Pencil for custom vector geometry. If the requested fidelity exceeds the renderer's supported subset, explain the limitation.
 
 Fetch linked documentation directly from the internet; a local blueprint4llm checkout is not required. Do not read external documentation by default for common formats such as Mermaid or PlantUML; consult it only when syntax or renderer support is unclear. Do not invent Figma credentials or convert source files unless asked.
 

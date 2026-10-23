@@ -7,15 +7,10 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 import { compileMarkdown } from '../src/compiler.js';
 import { renderPdf } from '../src/pdf.js';
-
-const wireframe = `Wireframe #login mobile
-  Stack column gap=2 padding=2
-    Typography h4 "Wiremark screen"
-    TextField "Email address"
-    Button "Continue" contained`;
+import { loginMockupJson } from './fixtures/balsamiq.js';
 
 describe('PDF renderer', () => {
-  it('prints selectable Cyrillic and all four inline SVG diagram types on readable A4 pages', async () => {
+  it('prints selectable Cyrillic and mixed inline SVG diagram types on readable A4 pages', async () => {
     const drawioJson = JSON.stringify({
       version: '26.0',
       pages: [
@@ -82,8 +77,8 @@ flowchart LR
   A[Mermaid Start] --> B[Mermaid Finish]
 \`\`\`
 
-\`\`\`wireframe
-${wireframe}
+\`\`\`balsamiq
+${loginMockupJson}
 \`\`\`
 
 \`\`\`plantuml
@@ -143,7 +138,7 @@ ${longContent}`;
     expect(fullText).toMatch(/Drawio\s+Finish/);
     expect(fullText).toContain('Excalidraw PDF label');
     expect(fullText).toContain('Routed');
-    expect(fullText).toContain('Wiremark screen');
+    expect(fullText).toContain('Balsamiq screen');
     expect(fullText).toContain('Email address');
     expect(fullText).toMatch(/PlantUML\s+Start/);
     expect(fullText).toMatch(/PlantUML\s+Finish/);
@@ -196,9 +191,8 @@ ${longContent}`;
       '',
       'Text before the error.',
       '',
-      '```wiremark',
-      'Wireframe mobile',
-      `  ${longComponentName}`,
+      '```balsamiq',
+      `{"mockup":{"controls":{"control":[{"ID":"submit","typeID":"${longComponentName}"}]}}}`,
       '```',
       '',
       'Text after the error.',

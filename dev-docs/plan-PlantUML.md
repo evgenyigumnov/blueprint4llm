@@ -17,18 +17,135 @@ API --> Client: Ответ
 
 Здесь показано, где окажется диаграмма в существующем предпросмотре. Новые элементы управления для PlantUML не нужны.
 
-```wireframe
-Wireframe #plantuml-preview w=1280 h=820
-  Stack column gap=2
-    Stack row gap=2
-      Typography h4 "Blueprint preview"
-      Button "Download PDF"
-      Button "Dark mode"
-    Typography h1 "Payment flow"
-    Typography "Sequence diagram"
-    Card
-      Typography h5 "PlantUML"
-      Typography "Inline SVG diagram"
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 821,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 820,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 0,
+          "y": 0,
+          "w": 237,
+          "h": 38,
+          "zOrder": 1,
+          "properties": {
+            "text": "Blueprint preview",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Button",
+          "x": 253,
+          "y": 0,
+          "w": 130,
+          "h": 38,
+          "zOrder": 2,
+          "properties": {
+            "text": "Download PDF",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Button",
+          "x": 399,
+          "y": 0,
+          "w": 106,
+          "h": 38,
+          "zOrder": 3,
+          "properties": {
+            "text": "Dark mode",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 0,
+          "y": 54,
+          "w": 1280,
+          "h": 68,
+          "zOrder": 4,
+          "properties": {
+            "text": "Payment flow",
+            "size": 40,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 0,
+          "y": 138,
+          "w": 1280,
+          "h": 23,
+          "zOrder": 5,
+          "properties": {
+            "text": "Sequence diagram",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 177,
+          "w": 1280,
+          "h": 100,
+          "zOrder": 6,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 16,
+          "y": 193,
+          "w": 1248,
+          "h": 28,
+          "zOrder": 7,
+          "properties": {
+            "text": "PlantUML",
+            "size": 20,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 16,
+          "y": 229,
+          "w": 1248,
+          "h": 23,
+          "zOrder": 8,
+          "properties": {
+            "text": "Inline SVG diagram",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Поток рендеринга
@@ -98,7 +215,7 @@ flowchart TD
 ### 3. Подключить к компилятору и защите SVG
 
 - Добавить `plantumlRenderer` в список рендереров в `src/compiler.ts`. `remarkDiagramPlugin` уже выбирает renderer по языку fenced-блока.
-- Пропускать результат через текущие `parseAndValidateSvg` и `scopeSvgIds`, как Mermaid и Wiremark. Не ослаблять общий список разрешённых SVG-элементов.
+- Пропускать результат через текущие `parseAndValidateSvg` и `scopeSvgIds`, как Mermaid и Balsamiq. Не ослаблять общий список разрешённых SVG-элементов.
 - Убедиться, что PlantUML SVG помещается в `<figure class="bp-diagram bp-diagram--plantuml">` и остаётся внутри общего контейнера диаграмм. Не добавлять отдельную ветку для PDF, сервера или VS Code: они используют тот же скомпилированный HTML.
 
 **Статус: выполнен 2026-10-21.** `plantumlRenderer` зарегистрирован в общем компиляторе. Интеграционная проверка компилирует PlantUML-блок в inline SVG внутри `<figure class="bp-diagram bp-diagram--plantuml">` и общего `bp-diagram-container`. SVG проходит существующую валидацию и изоляцию ID через `remarkDiagramPlugin`; отдельные ветки для HTML, PDF, сервера и VS Code не добавлялись.
@@ -106,15 +223,15 @@ flowchart TD
 ### 4. Тесты, пример и документация
 
 - Unit-тесты renderer: успешный вывод SVG, ошибки и строка источника, таймаут, отмена, превышение размера, повторное использование кэша и изоляция параллельных запусков.
-- Тесты компилятора: распознавание `plantuml`, inline SVG и CSS-класс, сохранение исходного блока с ошибкой, совместная работа PlantUML с Mermaid/Wiremark, уникальность SVG ID и отказ небезопасного SVG.
+- Тесты компилятора: распознавание `plantuml`, inline SVG и CSS-класс, сохранение исходного блока с ошибкой, совместная работа PlantUML с Mermaid/Balsamiq, уникальность SVG ID и отказ небезопасного SVG.
 - Добавить короткий `examples/plantuml.md` или PlantUML-блок в существующий пример. Проверить его HTML- и PDF-вывод вместе с уже поддержанными рендерерами.
 - Обновить README: синтаксис блока, пример, выбранный движок и его системные требования, ограничения includes, лимиты, offline-поведение и диагностику.
 - После прохождения сборки и тестов увеличить версию `package.json` как изменение функциональности. Изменения не коммитить без отдельной просьбы.
 
 **Статус: выполнен 2026-10-21.**
 
-- Добавлены проверки кэша PlantUML и компилятора: ошибка синтаксиса остаётся видимой в SVG с привязкой к строке Markdown; PlantUML работает вместе с Mermaid и Wiremark, а SVG ID остаются уникальными. Существующие тесты общего SVG-конвейера проверяют отказ небезопасной разметки.
-- PDF-тест проверяет извлекаемые подписи PlantUML вместе с Mermaid и Wiremark. Пример `examples/blueprint.md` дополнен PlantUML-диаграммой; его HTML и PDF пересобраны.
+- Добавлены проверки кэша PlantUML и компилятора: ошибка синтаксиса остаётся видимой в SVG с привязкой к строке Markdown; PlantUML работает вместе с Mermaid и Balsamiq, а SVG ID остаются уникальными. Существующие тесты общего SVG-конвейера проверяют отказ небезопасной разметки.
+- PDF-тест проверяет извлекаемые подписи PlantUML вместе с Mermaid и Balsamiq. Пример `examples/blueprint.md` дополнен PlantUML-диаграммой; его HTML и PDF пересобраны.
 - README описывает синтаксис, локальный `@plantuml/core@1.2026.9` в Chromium без Java, offline-рендеринг, ограничения `!include`/сети и диагностику.
 - Версия пакета повышена с `0.4.0` до `0.5.0`.
 - `npm run build`, `npm test` (25 файлов, 143 теста), `npm run typecheck` и `npm run lint` прошли. Проверка Prettier для изменённых исходников, тестов и документации прошла; общий `npm run format:check` сообщает о форматировании в семи файлах: `dev-docs/plan-init.md`, примерах `blueprint-calculator` и `blueprint-feature`, сгенерированном `examples/blueprint.html` и `vscode-extension/README.md`.

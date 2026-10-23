@@ -51,7 +51,7 @@ renderer:
 Этот фрагмент останется моноширинным текстом без раскраски токенов.
 ```
 
-## Mermaid, PlantUML и Wiremark по-прежнему визуализируются
+## Mermaid, PlantUML и Balsamiq по-прежнему визуализируются
 
 ```mermaid
 flowchart LR
@@ -72,11 +72,80 @@ Markdown --> Диаграммы: рендерер
 @enduml
 ```
 
-```wireframe
-Wireframe #highlight-example mobile padding=2 gap=2
-  Stack column gap=2 padding=2
-    Typography h4 "Подсветка кода"
-    Alert "JSON, TypeScript и другие блоки удобно просматривать в плане." severity=info
-    TextField "Язык: typescript"
-    Button "Открыть пример" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 32,
+          "y": 32,
+          "w": 311,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "text": "Подсветка кода",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Rectangle",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 40,
+          "zOrder": 2,
+          "properties": {
+            "text": "JSON, TypeScript и другие блоки удобно просматривать в плане.",
+            "color": "#eaf2ff",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "TextInput",
+          "x": 32,
+          "y": 138,
+          "w": 311,
+          "h": 36,
+          "zOrder": 3,
+          "properties": {
+            "text": "Язык: typescript"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Button",
+          "x": 32,
+          "y": 190,
+          "w": 146,
+          "h": 38,
+          "zOrder": 4,
+          "properties": {
+            "text": "Открыть пример",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```

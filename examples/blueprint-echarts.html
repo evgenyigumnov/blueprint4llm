@@ -1,397 +1,404 @@
 <!doctype html>
 <html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Apache ECharts</title>
-<style>
-:root {
-  color-scheme: light;
-  --bp-text: #1f2328;
-  --bp-muted: #656d76;
-  --bp-border: #d0d7de;
-  --bp-surface: #ffffff;
-  --bp-page-bg: #f6f8fa;
-  --bp-accent: #0a5bd3;
-  --bp-code-bg: #f6f8fa;
-  --bp-diagnostic-error: #b42318;
-  --bp-diagnostic-warning: #7a4b00;
-  --bp-diagnostic-error-bg: #fff4f2;
-  --bp-diagnostic-warning-bg: #fff8e6;
-}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apache ECharts</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bp-text: #1f2328;
+        --bp-muted: #656d76;
+        --bp-border: #d0d7de;
+        --bp-surface: #ffffff;
+        --bp-page-bg: #f6f8fa;
+        --bp-accent: #0a5bd3;
+        --bp-code-bg: #f6f8fa;
+        --bp-diagnostic-error: #b42318;
+        --bp-diagnostic-warning: #7a4b00;
+        --bp-diagnostic-error-bg: #fff4f2;
+        --bp-diagnostic-warning-bg: #fff8e6;
+      }
 
-* {
-  box-sizing: border-box;
-}
+      * {
+        box-sizing: border-box;
+      }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
 
-body {
-  margin: 0;
-  background: var(--bp-page-bg);
-  color: var(--bp-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
-}
+      body {
+        margin: 0;
+        background: var(--bp-page-bg);
+        color: var(--bp-text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans',
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
 
-.bp-document {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 2.5rem 1.5rem 4rem;
-  background: var(--bp-surface);
-  border: none;
-}
+      .bp-document {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 1.5rem 4rem;
+        background: var(--bp-surface);
+        border: none;
+      }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.3;
-  margin: 1.8em 0 0.7em;
-  break-after: avoid;
-  page-break-after: avoid;
-}
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        line-height: 1.3;
+        margin: 1.8em 0 0.7em;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
 
-h1 {
-  font-size: 2rem;
-  margin-top: 0;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--bp-border);
-}
+      h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--bp-border);
+      }
 
-h2 {
-  font-size: 1.5rem;
-}
+      h2 {
+        font-size: 1.5rem;
+      }
 
-h3 {
-  font-size: 1.25rem;
-}
+      h3 {
+        font-size: 1.25rem;
+      }
 
-h4,
-h5,
-h6 {
-  font-size: 1.05rem;
-}
+      h4,
+      h5,
+      h6 {
+        font-size: 1.05rem;
+      }
 
-p,
-li {
-  orphans: 3;
-  widows: 3;
-}
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
 
-a {
-  color: var(--bp-accent);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
+      a {
+        color: var(--bp-accent);
+        text-decoration: none;
+        overflow-wrap: break-word;
+      }
 
-a:hover {
-  text-decoration: underline;
-}
+      a:hover {
+        text-decoration: underline;
+      }
 
-img {
-  max-width: 100%;
-  height: auto;
-}
+      img {
+        max-width: 100%;
+        height: auto;
+      }
 
-blockquote {
-  margin: 1em 0;
-  padding: 0.2em 1em;
-  color: var(--bp-muted);
-  border-left: 4px solid var(--bp-border);
-}
+      blockquote {
+        margin: 1em 0;
+        padding: 0.2em 1em;
+        color: var(--bp-muted);
+        border-left: 4px solid var(--bp-border);
+      }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.9em;
-  background: var(--bp-code-bg);
-  padding: 0.15em 0.35em;
-  border-radius: 4px;
-  overflow-wrap: break-word;
-}
+      code {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        background: var(--bp-code-bg);
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        overflow-wrap: break-word;
+      }
 
-pre {
-  margin: 1em 0;
-  padding: 0.9em 1em;
-  background: var(--bp-code-bg);
-  border: 1px solid var(--bp-border);
-  border-radius: 6px;
-  overflow-x: auto;
-}
+      pre {
+        margin: 1em 0;
+        padding: 0.9em 1em;
+        background: var(--bp-code-bg);
+        border: 1px solid var(--bp-border);
+        border-radius: 6px;
+        overflow-x: auto;
+      }
 
-pre.bp-diagram-container {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  overflow: visible;
-}
+      pre.bp-diagram-container {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+      }
 
-pre code {
-  background: none;
-  padding: 0;
-  font-size: 0.875em;
-  line-height: 1.5;
-}
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 0.875em;
+        line-height: 1.5;
+      }
 
-pre.shiki {
-  color: var(--shiki-light);
-  background-color: var(--shiki-light-bg, var(--bp-code-bg));
-}
+      pre.shiki {
+        color: var(--shiki-light);
+        background-color: var(--shiki-light-bg, var(--bp-code-bg));
+      }
 
-pre.shiki span {
-  color: var(--shiki-light);
-}
+      pre.shiki span {
+        color: var(--shiki-light);
+      }
 
-:root[data-bp-theme='dark'] pre.shiki,
-:root[data-bp-theme='dark'] pre.shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg, transparent) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
-}
+      :root[data-bp-theme='dark'] pre.shiki,
+      :root[data-bp-theme='dark'] pre.shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg, transparent) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
 
-:root[data-bp-theme='dark'] {
-  --bp-diagnostic-error: #ff7b72;
-  --bp-diagnostic-warning: #e3b341;
-  --bp-diagnostic-error-bg: #2d1618;
-  --bp-diagnostic-warning-bg: #2b2416;
-}
+      :root[data-bp-theme='dark'] {
+        --bp-diagnostic-error: #ff7b72;
+        --bp-diagnostic-warning: #e3b341;
+        --bp-diagnostic-error-bg: #2d1618;
+        --bp-diagnostic-warning-bg: #2b2416;
+      }
 
-.bp-table {
-  margin: 1em 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-table {
+        margin: 1em 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-table {
-  border-collapse: collapse;
-  font-size: 0.95em;
-}
+      table {
+        border-collapse: collapse;
+        font-size: 0.95em;
+      }
 
-th,
-td {
-  border: 1px solid var(--bp-border);
-  padding: 0.4em 0.8em;
-  text-align: left;
-  vertical-align: top;
-}
+      th,
+      td {
+        border: 1px solid var(--bp-border);
+        padding: 0.4em 0.8em;
+        text-align: left;
+        vertical-align: top;
+      }
 
-thead th {
-  background: var(--bp-code-bg);
-}
+      thead th {
+        background: var(--bp-code-bg);
+      }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--bp-border);
-  margin: 2em 0;
-}
+      hr {
+        border: none;
+        border-top: 1px solid var(--bp-border);
+        margin: 2em 0;
+      }
 
-ul[data-task-list] li,
-li > input[type='checkbox'] {
-  margin-right: 0.4em;
-}
+      ul[data-task-list] li,
+      li > input[type='checkbox'] {
+        margin-right: 0.4em;
+      }
 
-.bp-diagram {
-  max-width: 100%;
-  margin: 1.5rem 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-diagram {
+        max-width: 100%;
+        margin: 1.5rem 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-.bp-diagram > svg {
-  display: block;
-  max-width: none;
-  width: auto;
-  height: auto;
-  margin: 0;
-}
+      .bp-diagram > svg {
+        display: block;
+        max-width: none;
+        width: auto;
+        height: auto;
+        margin: 0;
+      }
 
-.bp-diagnostics-summary,
-.bp-diagnostic {
-  margin: 1rem 0;
-  padding: 0.9rem 1rem;
-  color: var(--bp-text);
-  background: var(--bp-surface);
-  border: 1px solid var(--bp-border);
-  border-inline-start-width: 4px;
-  border-radius: 6px;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostics-summary,
+      .bp-diagnostic {
+        margin: 1rem 0;
+        padding: 0.9rem 1rem;
+        color: var(--bp-text);
+        background: var(--bp-surface);
+        border: 1px solid var(--bp-border);
+        border-inline-start-width: 4px;
+        border-radius: 6px;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-.bp-diagnostics-summary {
-  font-weight: 650;
-}
+      .bp-diagnostics-summary {
+        font-weight: 650;
+      }
 
-.bp-diagnostic {
-  white-space: normal;
-}
+      .bp-diagnostic {
+        white-space: normal;
+      }
 
-.bp-diagnostics-summary--error,
-.bp-diagnostic--error {
-  border-inline-start-color: var(--bp-diagnostic-error);
-}
+      .bp-diagnostics-summary--error,
+      .bp-diagnostic--error {
+        border-inline-start-color: var(--bp-diagnostic-error);
+      }
 
-.bp-diagnostics-summary--warning,
-.bp-diagnostic--warning {
-  border-inline-start-color: var(--bp-diagnostic-warning);
-}
+      .bp-diagnostics-summary--warning,
+      .bp-diagnostic--warning {
+        border-inline-start-color: var(--bp-diagnostic-warning);
+      }
 
-.bp-diagnostic--error {
-  background: var(--bp-diagnostic-error-bg);
-}
+      .bp-diagnostic--error {
+        background: var(--bp-diagnostic-error-bg);
+      }
 
-.bp-diagnostic--warning {
-  background: var(--bp-diagnostic-warning-bg);
-}
+      .bp-diagnostic--warning {
+        background: var(--bp-diagnostic-warning-bg);
+      }
 
-.bp-diagnostic__title {
-  margin: 0 0 0.25rem;
-  color: var(--bp-text);
-  font-size: 1rem;
-}
+      .bp-diagnostic__title {
+        margin: 0 0 0.25rem;
+        color: var(--bp-text);
+        font-size: 1rem;
+      }
 
-.bp-diagnostic__location {
-  margin: 0 0 0.5rem;
-  color: var(--bp-muted);
-  font-size: 0.875rem;
-  overflow-wrap: anywhere;
-}
+      .bp-diagnostic__location {
+        margin: 0 0 0.5rem;
+        color: var(--bp-muted);
+        font-size: 0.875rem;
+        overflow-wrap: anywhere;
+      }
 
-.bp-diagnostic__message {
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  color: var(--bp-text);
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostic__message {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        color: var(--bp-text);
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        font:
+          0.9rem/1.5 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-@media screen and (max-width: 640px) {
-  .bp-document {
-    padding: 1.25rem 1rem 3rem;
-    border: none;
-  }
+      @media screen and (max-width: 640px) {
+        .bp-document {
+          padding: 1.25rem 1rem 3rem;
+          border: none;
+        }
 
-  body {
-    font-size: 15px;
-  }
-}
+        body {
+          font-size: 15px;
+        }
+      }
 
-@media print {
-  :root {
-    --bp-page-bg: #ffffff;
-  }
+      @media print {
+        :root {
+          --bp-page-bg: #ffffff;
+        }
 
-  body {
-    background: #ffffff;
-    font-size: 11pt;
-    line-height: 1.5;
-  }
+        body {
+          background: #ffffff;
+          font-size: 11pt;
+          line-height: 1.5;
+        }
 
-  .bp-document {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    border: none;
-  }
+        .bp-document {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
 
-  pre {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    overflow: visible;
-  }
+        pre {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          overflow: visible;
+        }
 
-  pre.shiki {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        pre.shiki {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  pre.shiki span {
-    color: var(--shiki-light) !important;
-  }
+        pre.shiki span {
+          color: var(--shiki-light) !important;
+        }
 
-  :root[data-bp-theme='dark'] pre.shiki,
-  :root[data-bp-theme='dark'] pre.shiki span {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        :root[data-bp-theme='dark'] pre.shiki,
+        :root[data-bp-theme='dark'] pre.shiki span {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  code {
-    overflow-wrap: break-word;
-  }
+        code {
+          overflow-wrap: break-word;
+        }
 
-  .bp-table {
-    overflow: visible;
-  }
+        .bp-table {
+          overflow: visible;
+        }
 
-  .bp-diagram {
-    overflow: visible;
-  }
+        .bp-diagram {
+          overflow: visible;
+        }
 
-  .bp-diagram > svg {
-    max-width: 100% !important;
-  }
+        .bp-diagram > svg {
+          max-width: 100% !important;
+        }
 
-  .bp-diagnostic__message {
-    overflow: visible;
-  }
+        .bp-diagnostic__message {
+          overflow: visible;
+        }
 
-  table {
-    width: 100%;
-    table-layout: fixed;
-  }
+        table {
+          width: 100%;
+          table-layout: fixed;
+        }
 
-  thead {
-    display: table-header-group;
-  }
+        thead {
+          display: table-header-group;
+        }
 
-  tr,
-  img,
-  figure,
-  .bp-diagram,
-  blockquote {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-}
-
-
-</style>
-</head>
-<body>
-<main class="bp-document">
-<h1>Apache ECharts</h1>
-<p>ECharts blocks use strict JSON and render as static SVG. The examples below cover the supported
-series, a mixed bar and line chart, and a local tabular dataset.</p>
-<h2>Запросы и целевой показатель</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-001"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+        tr,
+        img,
+        figure,
+        .bp-diagram,
+        blockquote {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="bp-document">
+      <h1>Apache ECharts</h1>
+      <p>
+        ECharts blocks use strict JSON and render as static SVG. The examples below cover the
+        supported series, a mixed bar and line chart, and a local tabular dataset.
+      </p>
+      <h2>Запросы и целевой показатель</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-001"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M72 394.5L698 394.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
 <path d="M72 333.5L698 333.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
@@ -459,8 +466,10 @@ fill:rgba(0,0,0,0);
 
 </style>
 </svg></figure></pre>
-<h2>Доля заявок по каналам</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-002"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Доля заявок по каналам</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-002"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <polyline points="612.2 209.5 626.7 205.7 656.7 205.7" fill="none" pointer-events="visible" stroke="#5070dd" class="zr0-cls-0"></polyline>
 <polyline points="394.5 383.8 387.7 397.2 357.7 397.2" fill="none" pointer-events="visible" stroke="#b6d634" class="zr0-cls-0"></polyline>
@@ -502,8 +511,10 @@ fill:rgba(0,0,0,0);
 
 </style>
 </svg></figure></pre>
-<h2>Ошибки в зависимости от нагрузки</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-003"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Ошибки в зависимости от нагрузки</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-003"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M70 402.5L595.3 402.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
 <path d="M70 333.5L595.3 333.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
@@ -562,8 +573,10 @@ pointer-events:none;
 
 </style>
 </svg></figure></pre>
-<h2>Профиль сервиса</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-004"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Профиль сервиса</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-004"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M400 202.5L378.6 218L386.8 243.2L413.2 243.2L421.4 218L400 202.5L400 225ZM400 157.5L335.8 204.1L360.3 279.6L439.7 279.6L464.2 204.1L400 157.5L400 180L442.8 211.1L426.5 261.4L373.5 261.4L357.2 211.1L400 180ZM400 112.5L293 190.2L333.9 316L466.1 316L507 190.2L400 112.5L400 135L485.6 197.2L452.9 297.8L347.1 297.8L314.4 197.2L400 135Z" fill="rgb(234,237,245)" fill-opacity="0.5" class="zr0-cls-0"></path>
 <path d="M400 180L357.2 211.1L373.5 261.4L426.5 261.4L442.8 211.1L400 180L400 202.5L421.4 218L413.2 243.2L386.8 243.2L378.6 218L400 202.5ZM400 135L314.4 197.2L347.1 297.8L452.9 297.8L485.6 197.2L400 135L400 157.5L464.2 204.1L439.7 279.6L360.3 279.6L335.8 204.1L400 157.5Z" fill="rgb(255,255,255)" fill-opacity="0" class="zr0-cls-0"></path>
@@ -601,8 +614,10 @@ pointer-events:none;
 
 </style>
 </svg></figure></pre>
-<h2>Тепловая карта по дням и часам</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-005"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Тепловая карта по дням и часам</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-005"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M72.5 402L72.5 58" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
 <path d="M72 402.5L770 402.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
@@ -883,8 +898,10 @@ fill:[object Object];
 
 </style>
 </svg></figure></pre>
-<h2>Текущая готовность</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-006"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Текущая готовность</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-006"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M566.7 198.6A168.8 168.8 0 0 1 519.3 344.3L508 333A152.8 152.8 0 0 0 550.9 201.1Z" fill="#91cc75" class="zr0-cls-0"></path>
 <path d="M439.4 60.9A168.8 168.8 0 0 1 566.7 198.6L550.9 201.1A152.8 152.8 0 0 0 435.7 76.5Z" fill="#fac858" class="zr0-cls-0"></path>
@@ -926,8 +943,10 @@ pointer-events:none;
 
 </style>
 </svg></figure></pre>
-<h2>Локальный dataset</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-007"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+      <h2>Локальный dataset</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--echarts" data-diagram-id="bp-diagram-007"><svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
 <rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
 <path d="M82.7 402.5L776 402.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
 <path d="M82.7 339.5L776 339.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
@@ -986,7 +1005,6 @@ fill:rgba(0,0,0,0);
 
 </style>
 </svg></figure></pre>
-</main>
-
-</body>
+    </main>
+  </body>
 </html>

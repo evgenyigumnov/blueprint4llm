@@ -353,8 +353,8 @@ async function testStructuredDiagnosticsAreLoggedOnce(): Promise<void> {
           line: 12,
           column: 4,
           diagramId: 'bp-diagram-001',
-          renderer: 'wiremark',
-          message: 'unknown component',
+          renderer: 'balsamiq',
+          message: 'unsupported typeID',
         },
       ],
     }),
@@ -366,7 +366,7 @@ async function testStructuredDiagnosticsAreLoggedOnce(): Promise<void> {
 
   assert.deepEqual(panel.renderedTitles, ['# Partial document']);
   assert.deepEqual(messages, [
-    'blueprint4llm: /docs/partial.md:12:4: wiremark error: unknown component',
+    'blueprint4llm: /docs/partial.md:12:4: balsamiq error: unsupported typeID',
     'blueprint4llm: 1 error(s), 0 warning(s)',
   ]);
   controller.dispose();

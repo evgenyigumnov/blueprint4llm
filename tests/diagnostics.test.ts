@@ -32,9 +32,9 @@ describe('diagnostics', () => {
   it('uses column one when only a line is available and preserves multiline messages', () => {
     expect(
       formatDiagnostic(
-        makeDiagnostic({ line: 8, renderer: 'wiremark', message: 'unknown component\nUnknown' }),
+        makeDiagnostic({ line: 8, renderer: 'balsamiq', message: 'unsupported typeID\nUnknown' }),
       ),
-    ).toBe('plan.md:8:1: wiremark error: unknown component\nUnknown');
+    ).toBe('plan.md:8:1: balsamiq error: unsupported typeID\nUnknown');
   });
 
   it('formats a document diagnostic without adding a renderer label', () => {

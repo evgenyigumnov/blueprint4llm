@@ -4,7 +4,7 @@
 
 ## Цель и границы
 
-Пользователь открывает `.md`-файл, запускает команду **Blueprint: Open Preview to the Side** и видит тот же документ, что создаёт `blueprint4llm`: Markdown, локальные изображения, Mermaid и Wiremark. Предпросмотр обновляется при редактировании, в том числе до сохранения файла.
+Пользователь открывает `.md`-файл, запускает команду **Blueprint: Open Preview to the Side** и видит тот же документ, что создаёт `blueprint4llm`: Markdown, локальные изображения, Mermaid и Balsamiq. Предпросмотр обновляется при редактировании, в том числе до сохранения файла.
 
 Первая версия предназначена для настольного VS Code и файлов `.md` на диске. Она не заменяет текстовый редактор, не редактирует Markdown визуально и не публикуется в Marketplace в рамках реализации самого расширения.
 
@@ -13,7 +13,7 @@
 | Возможность                                               | Текущая точка входа                                                     |
 | --------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Компиляция текста Markdown в полный HTML-документ         | `compileMarkdown()` в `src/compiler.ts`                                 |
-| Mermaid и Wiremark в SVG                                  | `src/renderers/mermaid.ts`, `src/renderers/wiremark.ts`                 |
+| Mermaid и Balsamiq в SVG                                  | `src/renderers/mermaid.ts`, `src/renderers/balsamiq.ts`                 |
 | Проверка ссылок и SVG, безопасное экранирование HTML      | `src/plugins/remark-safe-links.ts`, `src/svg/` и `src/compiler.ts`      |
 | Сбор локальных изображений в результат компиляции         | `src/assets.ts`; `CompiledBlueprint.assets` содержит байты и метаданные |
 | Повторная сборка и просмотр сохранённого файла в браузере | `startPreviewServer()` в `src/server.ts`                                |
@@ -33,58 +33,433 @@
 
 ## Основной экран
 
-Редактор остаётся стандартным редактором VS Code; расширение показывает справа результат компиляции. Каждая Wiremark-диаграмма ниже описывает один отдельный экранный макет.
+Редактор остаётся стандартным редактором VS Code; расширение показывает справа результат компиляции. Каждая Balsamiq-диаграмма ниже описывает один отдельный экранный макет.
 
-````wireframe
-Wireframe #blueprint-preview landscape
-  Stack row gap=2 padding=2
-    Card
-      CardHeader title="Редактор Markdown"
-      CardContent
-        Stack column gap=1
-          Typography caption "blueprint.md · Markdown"
-          Typography body1 "# Blueprint: обработка заявки"
-          Typography body2 "## Компоненты"
-          Typography body2 "| API | Проверяет и сохраняет заявку |"
-          Typography body2 "## Поток обработки"
-          Typography body2 "```mermaid · flowchart LR · User → API → Queue```"
-          Typography caption "Изменения в редакторе сразу попадают в предпросмотр"
-    Card
-      CardHeader title="Blueprint Preview"
-      CardContent
-        Stack column gap=1
-          Typography caption "Автообновление · Последняя сборка успешна"
-          Typography h3 "Blueprint: обработка заявки"
-          Typography h4 "Компоненты"
-          Table
-            TableHead
-              TableRow
-                TableCell "Компонент"
-                TableCell "Ответственность"
-            TableBody
-              TableRow
-                TableCell "API"
-                TableCell "Проверяет и сохраняет заявку"
-          Typography h4 "Поток обработки"
-          Typography body2 "Скомпилированная диаграмма Mermaid / Wiremark"
+````balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 801,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 800,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 430,
+          "h": 332,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 28,
+          "y": 16,
+          "w": 406,
+          "h": 40,
+          "zOrder": 2,
+          "properties": {
+            "text": "Редактор Markdown",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 32,
+          "y": 72,
+          "w": 398,
+          "h": 17,
+          "zOrder": 3,
+          "properties": {
+            "text": "blueprint.md · Markdown",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 97,
+          "w": 398,
+          "h": 23,
+          "zOrder": 4,
+          "properties": {
+            "text": "# Blueprint: обработка заявки",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 128,
+          "w": 398,
+          "h": 20,
+          "zOrder": 5,
+          "properties": {
+            "text": "## Компоненты",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 32,
+          "y": 156,
+          "w": 398,
+          "h": 20,
+          "zOrder": 6,
+          "properties": {
+            "text": "| API | Проверяет и сохраняет заявку |",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 32,
+          "y": 184,
+          "w": 398,
+          "h": 20,
+          "zOrder": 7,
+          "properties": {
+            "text": "## Поток обработки",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 32,
+          "y": 212,
+          "w": 398,
+          "h": 20,
+          "zOrder": 8,
+          "properties": {
+            "text": "```mermaid · flowchart LR · User → API → Queue```",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Label",
+          "x": 32,
+          "y": 240,
+          "w": 398,
+          "h": 17,
+          "zOrder": 9,
+          "properties": {
+            "text": "Изменения в редакторе сразу попадают в предпросмотр",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Rectangle",
+          "x": 462,
+          "y": 16,
+          "w": 534,
+          "h": 332,
+          "zOrder": 10,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Label",
+          "x": 474,
+          "y": 16,
+          "w": 510,
+          "h": 40,
+          "zOrder": 11,
+          "properties": {
+            "text": "Blueprint Preview",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Label",
+          "x": 478,
+          "y": 72,
+          "w": 502,
+          "h": 17,
+          "zOrder": 12,
+          "properties": {
+            "text": "Автообновление · Последняя сборка успешна",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Label",
+          "x": 478,
+          "y": 97,
+          "w": 502,
+          "h": 45,
+          "zOrder": 13,
+          "properties": {
+            "text": "Blueprint: обработка заявки",
+            "size": 28,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Label",
+          "x": 478,
+          "y": 150,
+          "w": 502,
+          "h": 34,
+          "zOrder": 14,
+          "properties": {
+            "text": "Компоненты",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Rectangle",
+          "x": 478,
+          "y": 192,
+          "w": 251,
+          "h": 35,
+          "zOrder": 15,
+          "properties": {
+            "text": "Компонент",
+            "bold": true,
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Rectangle",
+          "x": 729,
+          "y": 192,
+          "w": 251,
+          "h": 35,
+          "zOrder": 16,
+          "properties": {
+            "text": "Ответственность",
+            "bold": true,
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Rectangle",
+          "x": 478,
+          "y": 227,
+          "w": 251,
+          "h": 35,
+          "zOrder": 17,
+          "properties": {
+            "text": "API",
+            "bold": false,
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Rectangle",
+          "x": 729,
+          "y": 227,
+          "w": 251,
+          "h": 35,
+          "zOrder": 18,
+          "properties": {
+            "text": "Проверяет и сохраняет заявку",
+            "bold": false,
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Label",
+          "x": 478,
+          "y": 270,
+          "w": 502,
+          "h": 34,
+          "zOrder": 19,
+          "properties": {
+            "text": "Поток обработки",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Label",
+          "x": 478,
+          "y": 312,
+          "w": 502,
+          "h": 20,
+          "zOrder": 20,
+          "properties": {
+            "text": "Скомпилированная диаграмма Mermaid / Balsamiq",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ````
 
 ## Экран ошибки сборки
 
 При ошибке компиляции оставить панель открытой и показать диагностику с путём к файлу и строкой, если они доступны. После исправления документа автоматически вернуть нормальный предпросмотр.
 
-````wireframe
-Wireframe #blueprint-preview-error landscape
-  Stack column gap=2 padding=3
-    Typography h3 "Не удалось построить предпросмотр"
-    Alert "blueprint.md:18: Mermaid: ошибка синтаксиса" severity=error
-    Typography body2 "Исправьте блок диаграммы. Предпросмотр обновится после следующего изменения."
-    Card
-      CardHeader title="Диагностика"
-      CardContent
-        Typography body2 "```mermaid"
-        Typography body2 "flowchart LR"
-        Typography body2 "A -->"
+````balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 801,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 800,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 1232,
+          "h": 45,
+          "zOrder": 1,
+          "properties": {
+            "text": "Не удалось построить предпросмотр",
+            "size": 28,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 85,
+          "w": 1232,
+          "h": 40,
+          "zOrder": 2,
+          "properties": {
+            "text": "blueprint.md:18: Mermaid: ошибка синтаксиса",
+            "color": "#fee2e2",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 24,
+          "y": 141,
+          "w": 1232,
+          "h": 20,
+          "zOrder": 3,
+          "properties": {
+            "text": "Исправьте блок диаграммы. Предпросмотр обновится после следующего изменения.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 177,
+          "w": 1232,
+          "h": 148,
+          "zOrder": 4,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 36,
+          "y": 177,
+          "w": 1208,
+          "h": 40,
+          "zOrder": 5,
+          "properties": {
+            "text": "Диагностика",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 40,
+          "y": 233,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 6,
+          "properties": {
+            "text": "```mermaid",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 40,
+          "y": 261,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 7,
+          "properties": {
+            "text": "flowchart LR",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 40,
+          "y": 289,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 8,
+          "properties": {
+            "text": "A -->",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ````
 
 ## Поток данных и обновления
@@ -126,7 +501,7 @@ vscode-extension/
     └── webview-html.test.ts
 ```
 
-Зависимость от `blueprint4llm` подключить как локальный пакет монорепозитория для разработки и как production dependency при сборке VSIX. Сборка расширения должна включать все необходимые runtime-пакеты Mermaid/Wiremark, но исключать `vscode` API из бандла. Перед выбором bundler проверить, что Mermaid CLI и Puppeteer находят собственные файлы и Chrome после упаковки.
+Зависимость от `blueprint4llm` подключить как локальный пакет монорепозитория для разработки и как production dependency при сборке VSIX. Сборка расширения должна включать все необходимые runtime-пакеты Mermaid/Balsamiq, но исключать `vscode` API из бандла. Перед выбором bundler проверить, что Mermaid CLI и Puppeteer находят собственные файлы и Chrome после упаковки.
 
 ## Команды и настройки расширения
 
@@ -141,7 +516,7 @@ vscode-extension/
 - Unit-тесты контроллера: debounce, изоляция документов, отмена старой сборки, порядок завершения сборок и закрытие панели.
 - Unit-тесты HTML-адаптера: CSP, URL локальных ресурсов, отсутствие исполняемых скриптов, безопасная обработка диагностического текста.
 - Тесты VS Code API: команда доступна только для Markdown, повторный вызов не создаёт лишнюю панель, изменения несохранённого документа обновляют её.
-- Ручная проверка в Extension Development Host: обычный Markdown, Mermaid, Wiremark, локальные изображения, ошибочная диаграмма, тёмная и high contrast темы, закрытие и повторное открытие панели.
+- Ручная проверка в Extension Development Host: обычный Markdown, Mermaid, Balsamiq, локальные изображения, ошибочная диаграмма, тёмная и high contrast темы, закрытие и повторное открытие панели.
 - Проверка release artifact: собрать VSIX и установить его в чистый профиль VS Code, проверить диагностику отсутствующего Chrome и работу с установленным Chrome.
 - Существующие `npm test`, `npm run build`, `npm run typecheck`, `npm run lint` и `npm run format:check` должны оставаться зелёными; проверки расширения добавить отдельными скриптами в `vscode-extension/package.json`.
 
@@ -149,7 +524,7 @@ vscode-extension/
 
 - Команда открывает предпросмотр активного `.md` справа от редактора.
 - Изменение текста обновляет панель без сохранения файла и не приводит к отображению устаревшего результата.
-- Mermaid и Wiremark выглядят так же, как в HTML, собранном CLI/API.
+- Mermaid и Balsamiq выглядят так же, как в HTML, собранном CLI/API.
 - Локальные изображения доступны только через разрешённые Webview URI; сырой HTML из Markdown не исполняется.
 - Ошибки показывают понятное сообщение и не закрывают панель; после исправления показывается актуальный результат.
 - Закрытие панели освобождает её подписки, кеш и временные файлы.
@@ -160,7 +535,7 @@ vscode-extension/
 - [Исходный код и README blueprint4llm](README.md)
 - [VS Code: Markdown Extension API](https://code.visualstudio.com/api/extension-guides/markdown-extension)
 - [VS Code: Webview API и рекомендации по CSP](https://code.visualstudio.com/api/extension-guides/webview)
-- [Wiremark: инструкция для LLM и синтаксис блоков](https://docs.wiremark.dev/wiremark-llm.md)
+- [Balsamiq Mockups 3 JSON](../examples/blueprint-balsamiq.md)
 
 ## Этапы реализации
 
@@ -179,7 +554,7 @@ vscode-extension/
 - [x] Зарегистрирована команда `blueprint4llm.openPreview` в Command Palette, заголовке и контекстном меню редактора Markdown. Команда работает с файловыми `.md`; повторный вызов фокусирует существующую панель этого документа. Настройка `blueprint4llm.preview.debounceMs` задаёт задержку обновления (200 мс по умолчанию, диапазон 0–2000 мс).
 - [x] Создаётся отдельная `WebviewPanel` рядом с редактором для каждого URI. Компиляция получает актуальный несохранённый текст через `TextDocument.getText()` и использует общий `DiagramRenderCache` с новым публичным экспортом из корневого API.
 - [x] События `workspace.onDidChangeTextDocument` фильтруются по открытым документам. Повторные события объединяются debounce; новая правка сразу отменяет текущую компиляцию через `AbortController`. Поколение сборки проверяется перед показом результата, поэтому поздний результат старой сборки не заменяет новый.
-- [x] Предупреждения и ошибки Mermaid/Wiremark отправляются в Output Channel; ошибка компиляции показывается в Webview с путём и позицией, если они доступны. Сообщения диагностики экранируются.
+- [x] Предупреждения и ошибки Mermaid/Balsamiq отправляются в Output Channel; ошибка компиляции показывается в Webview с путём и позицией, если они доступны. Сообщения диагностики экранируются.
 - [x] Локальные изображения записываются в отдельные каталоги поколений предпросмотра и доступны Webview через `asWebviewUri`. Для Webview отключены скрипты, а CSP разрешает только встроенные стили и изображения из ресурсов Webview, data URI и HTTP(S).
 - [x] При закрытии панели отменяется сборка, очищается кеш, снимается обработчик закрытия и удаляется каталог изображений; при деактивации расширения закрываются все сессии.
 - [x] Добавлены тесты контроллера на debounce, повторное открытие и изоляцию документов, общую и независимую работу кешей, отмену и игнорирование устаревшей сборки, закрытие панели и диагностики. Проверки Webview покрывают CSP, замену URL изображений, stale-ресурсы и экранирование ошибок; Extension Development Host проверяет команду и повторное использование панели.

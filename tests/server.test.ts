@@ -8,6 +8,7 @@ import { EXIT_FAILURE, main } from '../src/cli.js';
 import { compileMarkdown } from '../src/compiler.js';
 import { startPreviewServer } from '../src/server.js';
 import type { PreviewServerHandle } from '../src/server.js';
+import { loginMockupJson } from './fixtures/balsamiq.js';
 
 const directories: string[] = [];
 const servers: PreviewServerHandle[] = [];
@@ -32,7 +33,7 @@ describe('preview server', () => {
         title: 'Rendered',
         assets: [],
         warnings: [],
-        errors: ['blueprint.md:5:4: wiremark error: unexpected token'],
+        errors: ['blueprint.md:5:4: balsamiq error: unexpected token'],
       }),
     });
     servers.push(server);
@@ -41,7 +42,7 @@ describe('preview server', () => {
 
     expect(preview).toContain('<h1>Rendered</h1>');
     expect(errors.join('')).toContain(
-      'blueprint4llm: error: blueprint.md:5:4: wiremark error: unexpected token',
+      'blueprint4llm: error: blueprint.md:5:4: balsamiq error: unexpected token',
     );
   });
 
@@ -183,7 +184,7 @@ describe('preview server', () => {
     const input = path.join(root, 'diagnostics.md');
     await writeFile(
       input,
-      '# Orders\n\nText before.\n\n```wiremark\nWireframe mobile\n  UnknownControl\n```\n\nText after.',
+      '# Orders\n\nText before.\n\n```balsamiq\n{"mockup":{"controls":{"control":[{"ID":"submit","typeID":"UnknownControl"}]}}}\n```\n\nText after.',
     );
     const renderedPdfInputs: string[] = [];
     const server = await startPreviewServer({
@@ -199,18 +200,18 @@ describe('preview server', () => {
 
     const failedHtml = await (await fetch(server.url)).text();
     expect(failedHtml).toContain('Document check: 1 errors · 0 warnings');
-    expect(failedHtml).toContain('unknown component');
+    expect(failedHtml).toContain('unsupported typeID');
     expect(failedHtml).toContain('Text before.');
     expect(failedHtml).toContain('Text after.');
     expect((await fetch(new URL('/document.pdf', server.url))).status).toBe(200);
     expect(renderedPdfInputs[0]).toContain('Document check: 1 errors · 0 warnings');
-    expect(renderedPdfInputs[0]).toContain('unknown component');
+    expect(renderedPdfInputs[0]).toContain('unsupported typeID');
 
     const events = await connectEvents(server.url);
     const reload = waitForReload(events.reader);
     await writeFile(
       input,
-      '# Orders\n\n```wiremark\nWireframe #order-form\n  Stack column\n    Typography h4 "Ready"\n```\n\nRecovered text.',
+      `# Orders\n\n\`\`\`balsamiq\n${loginMockupJson}\n\`\`\`\n\nRecovered text.`,
     );
     await reload;
     await events.close();
@@ -218,10 +219,10 @@ describe('preview server', () => {
     const fixedHtml = await (await fetch(server.url)).text();
     expect(fixedHtml).toContain('Document check: 0 errors · 0 warnings');
     expect(fixedHtml).toContain('Recovered text.');
-    expect(fixedHtml).not.toContain('unknown component');
+    expect(fixedHtml).not.toContain('unsupported typeID');
     expect((await fetch(new URL('/document.pdf', server.url))).status).toBe(200);
     expect(renderedPdfInputs.at(-1)).toContain('Document check: 0 errors · 0 warnings');
-    expect(renderedPdfInputs.at(-1)).not.toContain('unknown component');
+    expect(renderedPdfInputs.at(-1)).not.toContain('unsupported typeID');
   }, 15_000);
 
   it('shows escaped diagnostics, rejects stale PDF, and recovers when a missing image appears', async () => {

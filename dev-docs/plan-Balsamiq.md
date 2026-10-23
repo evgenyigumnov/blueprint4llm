@@ -2,7 +2,7 @@
 
 ## Цель
 
-Добавить локальный рендеринг JSON одного макета Balsamiq в SVG через fenced-блок Markdown. Макет должен компилироваться в HTML и PDF тем же конвейером, что Mermaid, PlantUML, Wiremark и Figma.
+Добавить локальный рендеринг JSON одного макета Balsamiq в SVG через fenced-блок Markdown. Макет должен компилироваться в HTML и PDF тем же конвейером, что Mermaid, PlantUML, Balsamiq и Figma.
 
 ## Статус
 
@@ -14,7 +14,7 @@
 
 ### Формат первой версии
 
-Поддержать JSON отдельного wireframe со структурой `mockup.controls.control`, которую описывает документация Balsamiq Mockups 3. В Markdown использовать метку `balsamiq`:
+Поддержать JSON отдельного balsamiq со структурой `mockup.controls.control`, которую описывает документация Balsamiq Mockups 3. В Markdown использовать метку `balsamiq`:
 
 ```balsamiq
 {
@@ -90,32 +90,203 @@ flowchart LR
 
 ## Целевой вид результата
 
-Каждая Wiremark-диаграмма ниже показывает самостоятельный экран; это отдельные блоки, как и отдельные макеты в Markdown.
+Каждая Balsamiq-диаграмма ниже показывает самостоятельный экран; это отдельные блоки, как и отдельные макеты в Markdown.
 
 ### Экран входа
 
-```wireframe
-Wireframe #balsamiq-login mobile padding=2 gap=2
-  Stack column gap=2 padding=2
-    Typography h4 "Вход"
-    TextField "Электронная почта"
-    TextField "Пароль"
-    Button "Продолжить" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 32,
+          "y": 32,
+          "w": 311,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "text": "Вход",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "TextInput",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 36,
+          "zOrder": 2,
+          "properties": {
+            "text": "Электронная почта"
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "TextInput",
+          "x": 32,
+          "y": 134,
+          "w": 311,
+          "h": 36,
+          "zOrder": 3,
+          "properties": {
+            "text": "Пароль"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Button",
+          "x": 32,
+          "y": 186,
+          "w": 114,
+          "h": 38,
+          "zOrder": 4,
+          "properties": {
+            "text": "Продолжить",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Список проектов
 
-```wireframe
-Wireframe #balsamiq-projects landscape padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Проекты"
-  Stack column gap=2 padding=2
-    Typography h4 "Последние макеты"
-    Box 100% 72px solid padding=2
-      Typography h6 "Личный кабинет"
-    Box 100% 72px solid padding=2
-      Typography h6 "Настройки профиля"
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 801,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 800,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 1248,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 74,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Проекты",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 1216,
+          "h": 34,
+          "zOrder": 3,
+          "properties": {
+            "text": "Последние макеты",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 32,
+          "y": 132,
+          "w": 1216,
+          "h": 72,
+          "zOrder": 4,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 48,
+          "y": 148,
+          "w": 1184,
+          "h": 26,
+          "zOrder": 5,
+          "properties": {
+            "text": "Личный кабинет",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Rectangle",
+          "x": 32,
+          "y": 220,
+          "w": 1216,
+          "h": 72,
+          "zOrder": 6,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 48,
+          "y": 236,
+          "w": 1184,
+          "h": 26,
+          "zOrder": 7,
+          "properties": {
+            "text": "Настройки профиля",
+            "size": 18,
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Проверки и критерии готовности
@@ -124,7 +295,7 @@ Wireframe #balsamiq-projects landscape padding=2 gap=2
 - [x] Проверить пустой и неверный `controls.control`, размеры, `zOrder`, дубликаты ID, большие и глубоко вложенные JSON.
 - [x] Проверить SVG нескольких элементов, порядок слоёв, XML escaping и неизвестный `typeID`.
 - [x] Проверить HTML, PDF, CLI `--check`, Markdown-диагностику со строкой и колонкой, кэш и офлайн-рендеринг.
-- [x] Повторно проверить Mermaid, PlantUML, Wiremark и Figma полным набором тестов.
+- [x] Повторно проверить Mermaid, PlantUML, Balsamiq и Figma полным набором тестов.
 - [x] Обновить README и добавить рабочий пример. После проверок увеличить minor-версию `package.json` до `0.15.0`.
 - [x] Не коммитить изменения.
 

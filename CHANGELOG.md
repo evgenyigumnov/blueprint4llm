@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.4] — 2026-10-23
+
+### Changed
+
+- Remove the legacy text-based UI renderer and its dependency. Use Balsamiq for UI prototypes in examples, exported documents, documentation, and README artwork.
+
 ## [0.16.0] — 2026-10-22
 
 ### Added
@@ -89,5 +95,5 @@ No functional changes. This version only updates `package.json` in the project h
 ### Added
 
 - A basic CLI and programmatic API for converting Markdown to standalone HTML and PDF, plus a local preview server with automatic refresh.
-- Support for Mermaid, Wiremark, GitHub Flavored Markdown, and local images; fonts are embedded for PDF output.
+- Support for Mermaid, GitHub Flavored Markdown, and local images; fonts are embedded for PDF output.
 - SVG validation and sanitization, safe link handling, source-file diagnostics, and tests for core components.

@@ -42,13 +42,31 @@ The service continues after the first failure.
 
 This diagram and the surrounding text remain available.
 
-## Failed Wiremark screen
+## Failed Balsamiq screen
 
-```wiremark
-Wireframe #order-form mobile
-  Stack column gap=2
-    Typography h4 "Order form"
-    UnknownControl "Submit"
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 360,
+    "measuredH": 240,
+    "controls": {
+      "control": [
+        {
+          "ID": "submit",
+          "typeID": "UnknownControl",
+          "x": 24,
+          "y": 120,
+          "w": 312,
+          "h": 40,
+          "zOrder": 0,
+          "properties": {
+            "text": "Submit"
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 The final paragraph remains available after both errors. Run `blueprint4llm` with `--check` to

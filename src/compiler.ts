@@ -19,7 +19,6 @@ import { rehypeDiagramContainersPlugin } from './plugins/rehype-diagram-containe
 import { remarkSafeLinksPlugin } from './plugins/remark-safe-links.js';
 import { mermaidRenderer } from './renderers/mermaid.js';
 import { plantumlRenderer } from './renderers/plantuml.js';
-import { wiremarkRenderer } from './renderers/wiremark.js';
 import { figmaRenderer } from './renderers/figma.js';
 import { drawioRenderer } from './renderers/drawio.js';
 import { pencilRenderer } from './renderers/pencil.js';
@@ -124,7 +123,6 @@ export async function compileMarkdown(
       renderers: [
         mermaidRenderer,
         plantumlRenderer,
-        wiremarkRenderer,
         figmaRenderer,
         drawioRenderer,
         pencilRenderer,
@@ -214,7 +212,6 @@ export async function checkMarkdown(
       renderers: [
         mermaidRenderer,
         plantumlRenderer,
-        wiremarkRenderer,
         figmaRenderer,
         drawioRenderer,
         pencilRenderer,

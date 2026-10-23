@@ -9,9 +9,10 @@ export function layoutSchemaDetails(
   schema: ApiSchema,
   label = 'Schema',
   indent = 0,
+  bounds?: { x: number; width: number },
 ): void {
-  const x = LEFT + Math.min(indent, 8) * 20;
-  const width = builder.width - x - LEFT;
+  const x = bounds?.x ?? LEFT + Math.min(indent, 8) * 20;
+  const width = bounds?.width ?? builder.width - x - LEFT;
   builder.text(label, x, builder.y, width, {
     fontSize: 12,
     color: '#64748b',

@@ -45,11 +45,12 @@ export function layoutOpenApiDocument(document: ApiDocument): OpenApiLayout {
 
 function layoutNamedSchema(layout: OpenApiLayoutBuilder, namedSchema: ApiNamedSchema): void {
   const left = 32;
+  const padding = 16;
   const width = layout.contentWidth;
   const top = layout.y;
   const frame = layout.box(left, top, width, 0, '#ffffff', '#cbd5e1', 9);
   layout.box(left + 1, top + 1, width - 2, 43, '#eef2ff', undefined, 8);
-  layout.text(namedSchema.name, left + 15, top + 9, width - 30, {
+  layout.text(namedSchema.name, left + padding, top + 9, width - padding * 2, {
     fontSize: 16,
     color: '#1e3a8a',
     weight: 700,
@@ -69,8 +70,11 @@ function layoutNamedSchema(layout: OpenApiLayoutBuilder, namedSchema: ApiNamedSc
       pointer: namedSchema.pointer,
     },
   );
-  layout.y = top + 54;
-  layoutSchemaDetails(layout, namedSchema.schema, 'Schema', 0);
+  layout.y = top + 44 + padding;
+  layoutSchemaDetails(layout, namedSchema.schema, 'Schema', 0, {
+    x: left + padding,
+    width: width - padding * 2,
+  });
   layout.y += 9;
   layout.setBoxHeight(frame, layout.y - top + 4);
   layout.y += 15;

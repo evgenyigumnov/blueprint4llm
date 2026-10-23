@@ -1,399 +1,405 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Request workflow</title>
-<style>
-:root {
-  color-scheme: light;
-  --bp-text: #1f2328;
-  --bp-muted: #656d76;
-  --bp-border: #d0d7de;
-  --bp-surface: #ffffff;
-  --bp-page-bg: #f6f8fa;
-  --bp-accent: #0a5bd3;
-  --bp-code-bg: #f6f8fa;
-  --bp-diagnostic-error: #b42318;
-  --bp-diagnostic-warning: #7a4b00;
-  --bp-diagnostic-error-bg: #fff4f2;
-  --bp-diagnostic-warning-bg: #fff8e6;
-}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Request workflow</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bp-text: #1f2328;
+        --bp-muted: #656d76;
+        --bp-border: #d0d7de;
+        --bp-surface: #ffffff;
+        --bp-page-bg: #f6f8fa;
+        --bp-accent: #0a5bd3;
+        --bp-code-bg: #f6f8fa;
+        --bp-diagnostic-error: #b42318;
+        --bp-diagnostic-warning: #7a4b00;
+        --bp-diagnostic-error-bg: #fff4f2;
+        --bp-diagnostic-warning-bg: #fff8e6;
+      }
 
-* {
-  box-sizing: border-box;
-}
+      * {
+        box-sizing: border-box;
+      }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
 
-body {
-  margin: 0;
-  background: var(--bp-page-bg);
-  color: var(--bp-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
-}
+      body {
+        margin: 0;
+        background: var(--bp-page-bg);
+        color: var(--bp-text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans',
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
 
-.bp-document {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 2.5rem 1.5rem 4rem;
-  background: var(--bp-surface);
-  border: none;
-}
+      .bp-document {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 1.5rem 4rem;
+        background: var(--bp-surface);
+        border: none;
+      }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.3;
-  margin: 1.8em 0 0.7em;
-  break-after: avoid;
-  page-break-after: avoid;
-}
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        line-height: 1.3;
+        margin: 1.8em 0 0.7em;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
 
-h1 {
-  font-size: 2rem;
-  margin-top: 0;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--bp-border);
-}
+      h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--bp-border);
+      }
 
-h2 {
-  font-size: 1.5rem;
-}
+      h2 {
+        font-size: 1.5rem;
+      }
 
-h3 {
-  font-size: 1.25rem;
-}
+      h3 {
+        font-size: 1.25rem;
+      }
 
-h4,
-h5,
-h6 {
-  font-size: 1.05rem;
-}
+      h4,
+      h5,
+      h6 {
+        font-size: 1.05rem;
+      }
 
-p,
-li {
-  orphans: 3;
-  widows: 3;
-}
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
 
-a {
-  color: var(--bp-accent);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
+      a {
+        color: var(--bp-accent);
+        text-decoration: none;
+        overflow-wrap: break-word;
+      }
 
-a:hover {
-  text-decoration: underline;
-}
+      a:hover {
+        text-decoration: underline;
+      }
 
-img {
-  max-width: 100%;
-  height: auto;
-}
+      img {
+        max-width: 100%;
+        height: auto;
+      }
 
-blockquote {
-  margin: 1em 0;
-  padding: 0.2em 1em;
-  color: var(--bp-muted);
-  border-left: 4px solid var(--bp-border);
-}
+      blockquote {
+        margin: 1em 0;
+        padding: 0.2em 1em;
+        color: var(--bp-muted);
+        border-left: 4px solid var(--bp-border);
+      }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.9em;
-  background: var(--bp-code-bg);
-  padding: 0.15em 0.35em;
-  border-radius: 4px;
-  overflow-wrap: break-word;
-}
+      code {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        background: var(--bp-code-bg);
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        overflow-wrap: break-word;
+      }
 
-pre {
-  margin: 1em 0;
-  padding: 0.9em 1em;
-  background: var(--bp-code-bg);
-  border: 1px solid var(--bp-border);
-  border-radius: 6px;
-  overflow-x: auto;
-}
+      pre {
+        margin: 1em 0;
+        padding: 0.9em 1em;
+        background: var(--bp-code-bg);
+        border: 1px solid var(--bp-border);
+        border-radius: 6px;
+        overflow-x: auto;
+      }
 
-pre.bp-diagram-container {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  overflow: visible;
-}
+      pre.bp-diagram-container {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+      }
 
-pre code {
-  background: none;
-  padding: 0;
-  font-size: 0.875em;
-  line-height: 1.5;
-}
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 0.875em;
+        line-height: 1.5;
+      }
 
-pre.shiki {
-  color: var(--shiki-light);
-  background-color: var(--shiki-light-bg, var(--bp-code-bg));
-}
+      pre.shiki {
+        color: var(--shiki-light);
+        background-color: var(--shiki-light-bg, var(--bp-code-bg));
+      }
 
-pre.shiki span {
-  color: var(--shiki-light);
-}
+      pre.shiki span {
+        color: var(--shiki-light);
+      }
 
-:root[data-bp-theme='dark'] pre.shiki,
-:root[data-bp-theme='dark'] pre.shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg, transparent) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
-}
+      :root[data-bp-theme='dark'] pre.shiki,
+      :root[data-bp-theme='dark'] pre.shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg, transparent) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
 
-:root[data-bp-theme='dark'] {
-  --bp-diagnostic-error: #ff7b72;
-  --bp-diagnostic-warning: #e3b341;
-  --bp-diagnostic-error-bg: #2d1618;
-  --bp-diagnostic-warning-bg: #2b2416;
-}
+      :root[data-bp-theme='dark'] {
+        --bp-diagnostic-error: #ff7b72;
+        --bp-diagnostic-warning: #e3b341;
+        --bp-diagnostic-error-bg: #2d1618;
+        --bp-diagnostic-warning-bg: #2b2416;
+      }
 
-.bp-table {
-  margin: 1em 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-table {
+        margin: 1em 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-table {
-  border-collapse: collapse;
-  font-size: 0.95em;
-}
+      table {
+        border-collapse: collapse;
+        font-size: 0.95em;
+      }
 
-th,
-td {
-  border: 1px solid var(--bp-border);
-  padding: 0.4em 0.8em;
-  text-align: left;
-  vertical-align: top;
-}
+      th,
+      td {
+        border: 1px solid var(--bp-border);
+        padding: 0.4em 0.8em;
+        text-align: left;
+        vertical-align: top;
+      }
 
-thead th {
-  background: var(--bp-code-bg);
-}
+      thead th {
+        background: var(--bp-code-bg);
+      }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--bp-border);
-  margin: 2em 0;
-}
+      hr {
+        border: none;
+        border-top: 1px solid var(--bp-border);
+        margin: 2em 0;
+      }
 
-ul[data-task-list] li,
-li > input[type='checkbox'] {
-  margin-right: 0.4em;
-}
+      ul[data-task-list] li,
+      li > input[type='checkbox'] {
+        margin-right: 0.4em;
+      }
 
-.bp-diagram {
-  max-width: 100%;
-  margin: 1.5rem 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-diagram {
+        max-width: 100%;
+        margin: 1.5rem 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-.bp-diagram > svg {
-  display: block;
-  max-width: none;
-  width: auto;
-  height: auto;
-  margin: 0;
-}
+      .bp-diagram > svg {
+        display: block;
+        max-width: none;
+        width: auto;
+        height: auto;
+        margin: 0;
+      }
 
-.bp-diagnostics-summary,
-.bp-diagnostic {
-  margin: 1rem 0;
-  padding: 0.9rem 1rem;
-  color: var(--bp-text);
-  background: var(--bp-surface);
-  border: 1px solid var(--bp-border);
-  border-inline-start-width: 4px;
-  border-radius: 6px;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostics-summary,
+      .bp-diagnostic {
+        margin: 1rem 0;
+        padding: 0.9rem 1rem;
+        color: var(--bp-text);
+        background: var(--bp-surface);
+        border: 1px solid var(--bp-border);
+        border-inline-start-width: 4px;
+        border-radius: 6px;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-.bp-diagnostics-summary {
-  font-weight: 650;
-}
+      .bp-diagnostics-summary {
+        font-weight: 650;
+      }
 
-.bp-diagnostic {
-  white-space: normal;
-}
+      .bp-diagnostic {
+        white-space: normal;
+      }
 
-.bp-diagnostics-summary--error,
-.bp-diagnostic--error {
-  border-inline-start-color: var(--bp-diagnostic-error);
-}
+      .bp-diagnostics-summary--error,
+      .bp-diagnostic--error {
+        border-inline-start-color: var(--bp-diagnostic-error);
+      }
 
-.bp-diagnostics-summary--warning,
-.bp-diagnostic--warning {
-  border-inline-start-color: var(--bp-diagnostic-warning);
-}
+      .bp-diagnostics-summary--warning,
+      .bp-diagnostic--warning {
+        border-inline-start-color: var(--bp-diagnostic-warning);
+      }
 
-.bp-diagnostic--error {
-  background: var(--bp-diagnostic-error-bg);
-}
+      .bp-diagnostic--error {
+        background: var(--bp-diagnostic-error-bg);
+      }
 
-.bp-diagnostic--warning {
-  background: var(--bp-diagnostic-warning-bg);
-}
+      .bp-diagnostic--warning {
+        background: var(--bp-diagnostic-warning-bg);
+      }
 
-.bp-diagnostic__title {
-  margin: 0 0 0.25rem;
-  color: var(--bp-text);
-  font-size: 1rem;
-}
+      .bp-diagnostic__title {
+        margin: 0 0 0.25rem;
+        color: var(--bp-text);
+        font-size: 1rem;
+      }
 
-.bp-diagnostic__location {
-  margin: 0 0 0.5rem;
-  color: var(--bp-muted);
-  font-size: 0.875rem;
-  overflow-wrap: anywhere;
-}
+      .bp-diagnostic__location {
+        margin: 0 0 0.5rem;
+        color: var(--bp-muted);
+        font-size: 0.875rem;
+        overflow-wrap: anywhere;
+      }
 
-.bp-diagnostic__message {
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  color: var(--bp-text);
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostic__message {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        color: var(--bp-text);
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        font:
+          0.9rem/1.5 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-@media screen and (max-width: 640px) {
-  .bp-document {
-    padding: 1.25rem 1rem 3rem;
-    border: none;
-  }
+      @media screen and (max-width: 640px) {
+        .bp-document {
+          padding: 1.25rem 1rem 3rem;
+          border: none;
+        }
 
-  body {
-    font-size: 15px;
-  }
-}
+        body {
+          font-size: 15px;
+        }
+      }
 
-@media print {
-  :root {
-    --bp-page-bg: #ffffff;
-  }
+      @media print {
+        :root {
+          --bp-page-bg: #ffffff;
+        }
 
-  body {
-    background: #ffffff;
-    font-size: 11pt;
-    line-height: 1.5;
-  }
+        body {
+          background: #ffffff;
+          font-size: 11pt;
+          line-height: 1.5;
+        }
 
-  .bp-document {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    border: none;
-  }
+        .bp-document {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
 
-  pre {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    overflow: visible;
-  }
+        pre {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          overflow: visible;
+        }
 
-  pre.shiki {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        pre.shiki {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  pre.shiki span {
-    color: var(--shiki-light) !important;
-  }
+        pre.shiki span {
+          color: var(--shiki-light) !important;
+        }
 
-  :root[data-bp-theme='dark'] pre.shiki,
-  :root[data-bp-theme='dark'] pre.shiki span {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        :root[data-bp-theme='dark'] pre.shiki,
+        :root[data-bp-theme='dark'] pre.shiki span {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  code {
-    overflow-wrap: break-word;
-  }
+        code {
+          overflow-wrap: break-word;
+        }
 
-  .bp-table {
-    overflow: visible;
-  }
+        .bp-table {
+          overflow: visible;
+        }
 
-  .bp-diagram {
-    overflow: visible;
-  }
+        .bp-diagram {
+          overflow: visible;
+        }
 
-  .bp-diagram > svg {
-    max-width: 100% !important;
-  }
+        .bp-diagram > svg {
+          max-width: 100% !important;
+        }
 
-  .bp-diagnostic__message {
-    overflow: visible;
-  }
+        .bp-diagnostic__message {
+          overflow: visible;
+        }
 
-  table {
-    width: 100%;
-    table-layout: fixed;
-  }
+        table {
+          width: 100%;
+          table-layout: fixed;
+        }
 
-  thead {
-    display: table-header-group;
-  }
+        thead {
+          display: table-header-group;
+        }
 
-  tr,
-  img,
-  figure,
-  .bp-diagram,
-  blockquote {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-}
-
-
-</style>
-</head>
-<body>
-<main class="bp-document">
-<h1>Request workflow</h1>
-<p>Review the flow and the screen before implementation.</p>
-<h2>Request flow</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-001"><svg id="bp-diagram-001-bp-diagram-001" width="168" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 168px; background-color: transparent;" viewBox="4 4 168 236.60000610351562" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-001-bp-diagram-001{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-001-bp-diagram-001 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .error-icon{fill:#552222;}#bp-diagram-001-bp-diagram-001 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-001-bp-diagram-001 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-001-bp-diagram-001 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-001-bp-diagram-001 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-001-bp-diagram-001 .marker{fill:#333333;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .marker.cross{stroke:#333333;}#bp-diagram-001-bp-diagram-001 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-001-bp-diagram-001 p{margin:0;}#bp-diagram-001-bp-diagram-001 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span{color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span p{background-color:transparent;}#bp-diagram-001-bp-diagram-001 .label text,#bp-diagram-001-bp-diagram-001 span{fill:#333;color:#333;}#bp-diagram-001-bp-diagram-001 .node rect,#bp-diagram-001-bp-diagram-001 .node circle,#bp-diagram-001-bp-diagram-001 .node ellipse,#bp-diagram-001-bp-diagram-001 .node polygon,#bp-diagram-001-bp-diagram-001 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label text,#bp-diagram-001-bp-diagram-001 .node .label text,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-anchor:middle;}#bp-diagram-001-bp-diagram-001 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label,#bp-diagram-001-bp-diagram-001 .node .label,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-align:center;}#bp-diagram-001-bp-diagram-001 .node.clickable{cursor:pointer;}#bp-diagram-001-bp-diagram-001 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .arrowheadPath{fill:#333333;}#bp-diagram-001-bp-diagram-001 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-001-bp-diagram-001 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-001-bp-diagram-001 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .cluster text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster span{color:#333;}#bp-diagram-001-bp-diagram-001 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-001-bp-diagram-001 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-001-bp-diagram-001 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-001-bp-diagram-001 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-001-bp-diagram-001 rect.text{fill:none;stroke-width:0;}#bp-diagram-001-bp-diagram-001 .icon-shape,#bp-diagram-001-bp-diagram-001 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .icon-shape p,#bp-diagram-001-bp-diagram-001 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-001-bp-diagram-001 .icon-shape .label rect,#bp-diagram-001-bp-diagram-001 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-001-bp-diagram-001 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-001-bp-diagram-001 .node .neo-node{stroke:#9370DB;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].cluster rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M88,53L88,89" id="bp-diagram-001-bp-diagram-001-L_Form_API_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Form_API_0" data-points="W3sieCI6ODgsInkiOjUzfSx7IngiOjg4LCJ5Ijo5M31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,134L88,170" id="bp-diagram-001-bp-diagram-001-L_API_Queue_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_API_Queue_0" data-points="W3sieCI6ODgsInkiOjEzNH0seyJ4Ijo4OCwieSI6MTc0fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Form-0" data-look="neo" transform="translate(88, 32.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Request</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> form</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-API-1" data-look="neo" transform="translate(88, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">API</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> validation</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Queue-3" data-look="neo" transform="translate(88, 203.29999923706055)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Processing</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">queue</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
-<h2>New request screen</h2>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--wiremark" data-diagram-id="bp-diagram-002"><svg xmlns="http://www.w3.org/2000/svg" width="420" height="300" viewBox="0 0 420 300"><rect x="0" y="0" width="420" height="300" fill="#ffffff"></rect><g transform="translate(0 0)"><clipPath id="bp-diagram-002-wm-clip-0"><rect x="0" y="0" width="420" height="300"></rect></clipPath><g clip-path="url(#bp-diagram-002-wm-clip-0)"><rect x="0" y="0" width="420" height="300" fill="#ffffff"></rect><path d="M0.4514003578573465 -0.053325868025422093 L421.10702454485 1.1818044539541006 L418.8827968183905 223.4852205272764 L0.680072158947587 224.56318455897272" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><text x="16" y="40" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="24" font-weight="700" text-anchor="start" fill="#22303f">New request</text><path d="M16.96405340212107 67.01410322613172 C123.17641571952525 69.1187862522188, 228.05660035672656 68.93310963035077, 405.2008034555725 66.02687545899688 M15.777382675639414 66.48495843011028 C102.62852172469809 63.44074410622161, 188.89204942608905 64.37141546421967, 404.00338744693147 65.61505219031903 M405.72452419828625 66.90757547486574 C402.59770981912686 74.98203510623425, 402.8570976520069 81.97894213292747, 405.55274262856693 100.43942355383187 M403.94284175867216 65.71453286325558 C404.89170481140167 79.68831182224676, 404.7043560850099 94.14690437605604, 403.4781802230515 101.03754691695795 M404.22204960654454 101.2123755905554 C251.67924898563663 105.30308400927053, 98.90522757726512 103.93534038838898, 15.99710639232213 101.70253034153625 M404.60540030538334 101.96611908056862 C300.8111468341583 99.95818517374683, 198.53742108651304 100.41199650373578, 16.305732769602926 102.53787230292191 M16.763693354837596 103.04193136561662 C14.410449023660272 91.80760321971029, 16.906523944552987 77.97771709803492, 15.082051174156367 68.09222770202905 M16.68317930335179 101.74815209424123 C16.0579363091588 89.26977778999135, 16.79557594794035 79.08902835985646, 15.57531880075112 65.81383105730637" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="26" y="88.2" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="12" font-weight="400" text-anchor="start" fill="#9aa7b2">Title</text><path d="M16.70340550451291 117.60294914273008 C155.13195732060493 114.80211200571364, 292.4315042604081 116.10889689311732, 404.808495250569 118.51160341748754 M16.2428341394263 117.74185568686096 C118.62240741602623 119.14463092039323, 222.70896122992647 119.74188174317653, 404.50129862244967 118.2923042678635 M402.4626671390608 119.80546960365027 C404.81493456871436 128.16601309794933, 403.703613637995 140.2474258473143, 404.880407227762 152.53729130160065 M404.3130188352428 118.13219600701704 C403.21359622376417 128.7283769388683, 403.42570758061856 140.19127931008114, 403.5682768560015 154.89211604679002 M404.0944217847649 153.59611414673887 C267.9146710194329 154.98809620698609, 133.76227537272914 154.81840934497066, 15.115202012933295 153.52103238308277 M403.7927793649264 154.33925868263196 C325.8656566564802 152.42775863362573, 246.5984467340086 151.63184965812667, 16.3712891987015 154.57306868011543 M14.600348492152989 153.4220647169277 C14.288354792062194 144.9509097719565, 13.764333589736372 137.14245757814496, 14.762409641034901 117.07578239571303 M16.46426397031173 153.08611091757194 C16.37247089642286 144.72950553270059, 15.834221573650836 136.2367712453939, 15.305354014690966 116.9436431475915" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="26" y="140.2" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="12" font-weight="400" text-anchor="start" fill="#9aa7b2">Description</text><path d="M17.16535803116858 169.39752253852785 L163.0104572776705 170.58325043283403 L161.6816433314234 207.80525113902985 L16.077732110396028 209.0067009266466" fill="#ffffff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15.87120522983416 170.1481614346141 C15.87120522983416 170.1481614346141, 15.87120522983416 170.1481614346141, 15.87120522983416 170.1481614346141 M15.87120522983416 170.1481614346141 C15.87120522983416 170.1481614346141, 15.87120522983416 170.1481614346141, 15.87120522983416 170.1481614346141 M15.339822618954749 179.13831011624944 C18.108352700122158 175.9433477186137, 20.66463000783269 173.57268732544748, 23.96389214142427 170.23705347056992 M15.876555016257733 179.2678603286476 C18.592299695309848 175.70571646782187, 21.745659222445177 172.5976310367645, 23.71050450689361 170.32254704091258 M15.4237101069702 189.27140255044182 C22.04055317353952 181.18582697232907, 28.87704232281419 173.6590681839306, 31.50841530198588 169.1734216269877 M15.714753305451401 188.61763643654962 C21.966389072998123 182.15036356764455, 27.861563128924658 175.14911555728477, 32.01817565830781 169.41558164291345 M15.320398258397281 197.98531852681188 C24.300582796937604 188.05092153000348, 32.2865978867757 177.70019108121178, 40.445711123808806 170.09901950958098 M16.042913341129125 197.71087707560508 C23.98415070239939 188.41830435513495, 32.48190422063712 178.52896111096396, 40.2880179646011 170.09253139461305 M16.940110923433988 207.03543297349628 C26.34320610834814 195.26335220688532, 35.05259507249277 183.8288163340468, 47.80956715681336 169.9125713411489 M16.365567388097137 206.04443872830984 C29.08202957942643 192.42905174881528, 40.75485536153683 177.99674347435695, 47.93114632741294 169.86071535346593 M23.41337599806692 208.69302920965038 C32.47046637549555 196.2845354256894, 41.88446553400668 184.97772510327204, 54.92969531506206 169.53788083262887 M22.868870783748285 208.08182883491298 C29.353477740816007 200.58648986906874, 36.28037394228688 193.03009055240332, 55.20516572721209 169.9701457265034 M30.571242193424983 207.571128007771 C43.150545928649564 193.85320310249796, 54.382572463113995 180.20370281247364, 64.1022137626174 169.69484544495847 M30.72114030561773 208.10290166400515 C42.33568810564982 194.94539782330133, 53.94058712385749 181.26129526002921, 63.37822801946729 170.17903784575668 M39.0914596155897 208.50529598924123 C48.76311934827901 195.31530199220137, 60.37275173946898 184.17414984360855, 71.0707059425324 169.11974680885243 M38.28153475119325 208.6221667080631 C50.523814853084446 194.86684863903466, 61.956056261087596 181.213921074845, 72.07259096363781 169.51160058803427 M46.61136170761407 207.43806478477575 C60.56575699322918 193.17942986833057, 73.22916294940588 176.86451418879213, 79.02698446088853 170.55908904569375 M46.47543687993408 207.81070784389533 C53.318466052622036 200.0714418184007, 60.453521533025295 191.4639485623051, 79.32788210721137 169.58937469581295 M54.01651107557957 208.5221885157577 C62.69273265086082 198.3144011714188, 71.06117818287736 189.46106247612772, 87.97244526073878 170.4163412861972 M54.34559923932796 207.5369408139787 C65.87401149513516 194.85396696378956, 76.34133698740996 182.20367480068379, 87.82495295964722 170.01547529590118 M62.8020536625392 207.36738631290177 C68.909672148905 200.07015940434533, 76.27051765711347 190.92434245929041, 95.91883150614566 169.54577599130025 M62.075998338834125 207.95085574512166 C72.39129614495153 196.79069829200762, 82.6095163856141 185.11619340831209, 95.34914287641413 170.10593022033027 M69.8734826325555 208.23418063714547 C81.07085656837826 197.27510835020826, 90.34141606303425 184.33568275954488, 103.22535164016224 169.11804979171765 M70.25509853392137 208.4153554693554 C80.7901879130139 195.95742930413815, 92.05828885849407 183.64065283502933, 103.98989711697139 169.69276084590865 M77.6276973996909 207.85418769942626 C86.38911179322143 200.30441381928682, 93.205457258541 190.67583063036588, 112.19944326886993 170.2140418088324 M78.0194110550584 208.26404594371127 C86.71056585199219 198.24590295811186, 95.04549523987141 188.55308380910458, 111.40403072880667 170.0553204151131 M87.23406265699847 207.25040788045888 C99.7761413982839 193.50142572722805, 113.13151470873501 178.71211279575908, 119.65812733532175 169.8715961733593 M86.39705303670449 207.95902666999763 C93.61889559847744 199.05253911568877, 101.14679426903312 190.55977408221332, 119.43958272137924 170.10453655475214 M94.23517226055966 207.33106405162638 C100.92969318872696 199.03739026589795, 108.9769809372582 192.30056140490908, 127.72877200358022 170.2793603462358 M93.97101140134738 208.02222901569132 C102.86032990518788 197.91243236649711, 112.08440555281614 187.8084042874742, 126.99907995015789 170.51424959685698 M102.70820340342753 207.3363440936435 C109.88994930329784 199.94908924475413, 117.34133361830557 191.18071879564144, 134.73015168770783 170.5970755383994 M101.90299703344637 208.01965873260087 C114.20569249145767 193.78191279285366, 126.2546133305229 180.09228116484033, 134.58309614561134 170.4790029984589 M109.6656804996645 208.43223921744772 C122.31151666881755 193.18706985771757, 134.31640767429016 178.75444533649457, 142.8535060807576 169.17586713056477 M109.59670866347011 207.89273427775748 C118.19640779350549 198.65859260918475, 126.56812607237097 188.75303620572618, 143.63381094219883 169.67183376136632 M117.53653421333313 207.93083438397653 C131.28450033232892 193.6159938214129, 144.40203443973652 178.12343054028665, 150.56330403881097 170.35208299411508 M118.04139189688742 208.31607723319237 C126.01640998683925 199.8041508005458, 133.90378033597483 190.3140375370643, 151.39827376240814 169.57561075305614 M126.64716048748642 207.1105987239447 C135.19379339635194 196.37403349142627, 145.7835738062939 185.73148835872112, 158.75859775492103 170.094036009765 M126.35539824315757 207.45530272571412 C134.75138598931142 198.09042026268006, 143.30274883159132 188.0033012745912, 159.1522579906985 170.06727722533677 M134.82218442820582 207.61022385873525 C142.93104069767995 197.81570322418222, 151.2073367059835 187.33512435490533, 162.43743246920712 175.32409986978868 M134.24944899976822 208.29835774779943 C143.65207470330296 197.39502829297155, 152.5785375586731 186.64514400817333, 163.1271706835956 174.4774466165761 M141.14581447854434 207.4753664190629 C148.70808097859887 200.1057763153305, 156.40160788018852 192.31492140286664, 163.05061384573187 184.2824845351236 M141.85048942617868 208.43976367625683 C147.45826217347556 202.12622793773446, 152.83102255497616 195.31823834244872, 162.52631994656826 184.0916780088054 M150.36260630256456 208.75248636586517 C152.35526296764777 204.34207351675826, 155.74804856594523 201.03538340675087, 163.52670797250076 193.5022362353706 M149.76495262785772 208.21195459311755 C152.9499041225093 204.32994127597775, 156.23108224395997 200.31894985082866, 162.6124149340282 193.26297612771924 M158.09396265251675 207.43373959592242 C159.42578331110417 206.22496943868524, 160.91063027394497 204.68901493191856, 162.69244449401347 202.21002461647248 M158.04629152234756 207.62061519928906 C159.8441091559369 205.72750395079484, 161.72529402475587 203.5401352970192, 162.86675306476724 202.5390434723311" fill="none" stroke="#c4c4c4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15.021271072141825 168.57592335809022 C49.26917366869748 171.57606923932397, 83.92528988067062 167.79086363071764, 161.3198462529108 171.0984742568806 M16.189067854825407 170.89442027723416 C59.69868722734973 170.1448337272089, 104.96785488249733 169.40518884512596, 163.09478214317932 170.02883340930566 M162.98331332635135 168.31757630575447 C160.4388935846407 177.04712801761926, 160.82013600889036 187.89700920488684, 163.3124470932409 209.93363783229142 M161.60448957020418 169.91604332542047 C161.60203291344084 183.73387528555466, 161.7079301701728 198.77346847234293, 162.1753277027048 207.84353726422415 M160.94180314373224 207.37955109942703 C119.47993143573403 205.88059701366163, 75.92455215174704 208.8917426471207, 14.197802869789303 206.54232759941368 M161.28479327792303 208.85631862198935 C107.831179794576 208.74541127326523, 55.28572909580543 207.44389753284491, 16.76600977117196 208.65766424154862 M14.832940475456416 206.06969075668604 C17.01133832783811 196.1073370590806, 15.701252703381703 186.38207309078425, 14.380668221227825 169.23570688832552 M16.431459080521016 207.56127583002672 C15.876525118840856 194.43949615294113, 15.641242527855558 182.9192811693065, 16.20434360736981 169.07027134811506" fill="none" stroke="#22303f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><text x="89" y="193.9" font-family="&#x27;Comic Sans MS&#x27;, &#x27;Comic Sans&#x27;, &#x27;Marker Felt&#x27;, &#x27;Segoe Print&#x27;, &#x27;Bradley Hand&#x27;, &#x27;Chalkboard SE&#x27;, cursive" font-size="14" font-weight="700" text-anchor="middle" fill="#22303f">Submit request</text></g><path d="M0.6428136760929715 -0.05426723617326257 C108.56885161904023 1.1208987051234496, 216.02630494145396 0.32056391942253465, 418.94479529540195 1.8854885073465515 M0.638900737929827 1.1321234106797022 C147.52285231795497 1.967246654123588, 293.74775203556925 2.7750636849070327, 419.0833849871183 0.4164899867226629 M417.4263983537527 1.5344418356329996 C414.9971778921496 92.03874383999282, 417.65850920747647 181.08487155345244, 420.25008306799754 297.8160853896927 M419.635781478519 0.2500742305987098 C416.892720106207 80.13116481297742, 416.85273179926367 158.63491648852778, 418.58299846533424 299.1520432703907 M419.8391690985213 299.65367248204075 C310.3950514809248 299.2794341381508, 201.59206491378595 298.0056836840702, 0.3730097232598172 298.01730219464025 M418.4362559215393 299.2643701438151 C262.35670297739927 298.2577926851096, 106.85884545976691 298.4300764211779, 0.9387566532632399 298.8083917498531 M-0.43172948881688544 299.2712304401236 C1.4031956605209135 186.82304864528138, -0.8663827690891647 74.26575874850872, 1.3456753401482897 1.5952511780933243 M1.5065944979834465 298.2599473589439 C-0.48304662199125936 200.5990322841881, -0.1460906007544308 103.54896694776752, 0.9152053633235708 1.4649917120873013" fill="none" stroke="#22303f" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></g></svg></figure></pre>
-</main>
-
-</body>
+        tr,
+        img,
+        figure,
+        .bp-diagram,
+        blockquote {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="bp-document">
+      <h1>Request workflow</h1>
+      <p>Review the flow and the screen before implementation.</p>
+      <h2>Request flow</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--mermaid" data-diagram-id="bp-diagram-001"><svg id="bp-diagram-001-bp-diagram-001" width="168" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 168px; background-color: transparent;" viewBox="4 4 168 236.60000610351562" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#bp-diagram-001-bp-diagram-001{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#bp-diagram-001-bp-diagram-001 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#bp-diagram-001-bp-diagram-001 .error-icon{fill:#552222;}#bp-diagram-001-bp-diagram-001 .error-text{fill:#552222;stroke:#552222;}#bp-diagram-001-bp-diagram-001 .edge-thickness-normal{stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .edge-thickness-thick{stroke-width:3.5px;}#bp-diagram-001-bp-diagram-001 .edge-pattern-solid{stroke-dasharray:0;}#bp-diagram-001-bp-diagram-001 .edge-thickness-invisible{stroke-width:0;fill:none;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dashed{stroke-dasharray:3;}#bp-diagram-001-bp-diagram-001 .edge-pattern-dotted{stroke-dasharray:2;}#bp-diagram-001-bp-diagram-001 .marker{fill:#333333;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .marker.cross{stroke:#333333;}#bp-diagram-001-bp-diagram-001 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#bp-diagram-001-bp-diagram-001 p{margin:0;}#bp-diagram-001-bp-diagram-001 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span{color:#333;}#bp-diagram-001-bp-diagram-001 .cluster-label span p{background-color:transparent;}#bp-diagram-001-bp-diagram-001 .label text,#bp-diagram-001-bp-diagram-001 span{fill:#333;color:#333;}#bp-diagram-001-bp-diagram-001 .node rect,#bp-diagram-001-bp-diagram-001 .node circle,#bp-diagram-001-bp-diagram-001 .node ellipse,#bp-diagram-001-bp-diagram-001 .node polygon,#bp-diagram-001-bp-diagram-001 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label text,#bp-diagram-001-bp-diagram-001 .node .label text,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-anchor:middle;}#bp-diagram-001-bp-diagram-001 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .rough-node .label,#bp-diagram-001-bp-diagram-001 .node .label,#bp-diagram-001-bp-diagram-001 .image-shape .label,#bp-diagram-001-bp-diagram-001 .icon-shape .label{text-align:center;}#bp-diagram-001-bp-diagram-001 .node.clickable{cursor:pointer;}#bp-diagram-001-bp-diagram-001 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#bp-diagram-001-bp-diagram-001 .arrowheadPath{fill:#333333;}#bp-diagram-001-bp-diagram-001 .edgePaths .path{stroke:#333333;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .flowchart-link{stroke:#333333;fill:none;}#bp-diagram-001-bp-diagram-001 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#bp-diagram-001-bp-diagram-001 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 .cluster text{fill:#333;}#bp-diagram-001-bp-diagram-001 .cluster span{color:#333;}#bp-diagram-001-bp-diagram-001 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#bp-diagram-001-bp-diagram-001 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#bp-diagram-001-bp-diagram-001 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#bp-diagram-001-bp-diagram-001 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#bp-diagram-001-bp-diagram-001 rect.text{fill:none;stroke-width:0;}#bp-diagram-001-bp-diagram-001 .icon-shape,#bp-diagram-001-bp-diagram-001 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#bp-diagram-001-bp-diagram-001 .icon-shape p,#bp-diagram-001-bp-diagram-001 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#bp-diagram-001-bp-diagram-001 .icon-shape .label rect,#bp-diagram-001-bp-diagram-001 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#bp-diagram-001-bp-diagram-001 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#bp-diagram-001-bp-diagram-001 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#bp-diagram-001-bp-diagram-001 .node .neo-node{stroke:#9370DB;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].cluster rect,#bp-diagram-001-bp-diagram-001 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].swimlane.cluster rect{filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].node circle .state-start{fill:#000000;}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#bp-diagram-001-bp-diagram-001 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="bp-diagram-001-bp-diagram-001_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M88,53L88,89" id="bp-diagram-001-bp-diagram-001-L_Form_API_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_Form_API_0" data-points="W3sieCI6ODgsInkiOjUzfSx7IngiOjg4LCJ5Ijo5M31d" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path><path d="M88,134L88,170" id="bp-diagram-001-bp-diagram-001-L_API_Queue_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_API_Queue_0" data-points="W3sieCI6ODgsInkiOjEzNH0seyJ4Ijo4OCwieSI6MTc0fV0=" data-look="neo" marker-end="url(#bp-diagram-001-bp-diagram-001_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Form-0" data-look="neo" transform="translate(88, 32.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Request</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> form</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-API-1" data-look="neo" transform="translate(88, 113.5)"><rect class="basic label-container" style="" x="-76" y="-20.5" width="152" height="41"></rect><g class="label" style="" transform="translate(0, -8.5)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">API</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> validation</tspan></tspan></text></g></g></g><g class="node default" id="bp-diagram-001-bp-diagram-001-flowchart-Queue-3" data-look="neo" transform="translate(88, 203.29999923706055)"><rect class="basic label-container" style="" x="-76" y="-29.299999237060547" width="152" height="58.599998474121094"></rect><g class="label" style="" transform="translate(0, -17.299999237060547)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Processing</tspan></tspan><tspan class="text-outer-tspan row" x="0" y="1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">queue</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="bp-diagram-001-bp-diagram-001-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></figure></pre>
+      <h2>New request screen</h2>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--balsamiq" data-diagram-id="bp-diagram-002"><svg xmlns="http://www.w3.org/2000/svg" width="421" height="301" viewBox="0 0 421 301"><title>Balsamiq mockup</title><rect class="balsamiq-canvas" x="0" y="0" width="421" height="301" fill="#ffffff"></rect><g class="balsamiq-control balsamiq-control--rectangle" data-control-id="control-1"><title>control-1</title><rect x="0" y="0" width="420" height="300" fill="#ffffff" stroke="#64748b" stroke-width="1.5"></rect></g><g class="balsamiq-control balsamiq-control--label" data-control-id="control-2"><title>control-2</title><text x="16" y="19.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="22" font-weight="700" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="16" dy="0">New request</tspan></text></g><g class="balsamiq-control balsamiq-control--textinput" data-control-id="control-3"><title>control-3</title><rect x="16" y="66" width="388" height="36" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"></rect><text x="24" y="75.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="24" dy="0">Title</tspan></text></g><g class="balsamiq-control balsamiq-control--textinput" data-control-id="control-4"><title>control-4</title><rect x="16" y="118" width="388" height="36" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"></rect><text x="24" y="127.25" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="hanging"><tspan x="24" dy="0">Description</tspan></text></g><g class="balsamiq-control balsamiq-control--button" data-control-id="control-5"><title>control-5</title><rect x="16" y="170" width="146" height="38" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"></rect><text x="89" y="180.25" fill="#111827" font-family="Arial, sans-serif" font-size="14" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="hanging"><tspan x="89" dy="0">Submit request</tspan></text></g></svg></figure></pre>
+    </main>
+  </body>
 </html>

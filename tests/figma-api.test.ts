@@ -10,6 +10,7 @@ import {
 import { addSvgSansSerifFallback } from '../src/renderers/figma-fonts.js';
 import { FIGMA_URL_CACHE_TTL_MS, figmaRenderer } from '../src/renderers/figma.js';
 import { DiagramRenderCache } from '../src/renderers/cache.js';
+import { loginMockupJson } from './fixtures/balsamiq.js';
 
 const FIGMA_LINK = 'https://www.figma.com/design/AbCd1234/Profile?node-id=12-34';
 const EXPORTED_SVG =
@@ -101,7 +102,7 @@ describe('Figma API renderer', () => {
     );
   });
 
-  it('renders both Figma source forms alongside Mermaid, PlantUML, and Wiremark', async () => {
+  it('renders both Figma source forms alongside Mermaid, PlantUML, and Balsamiq', async () => {
     const fetchMock = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(
@@ -161,10 +162,8 @@ describe('Figma API renderer', () => {
       '@enduml',
       '```',
       '',
-      '```wireframe',
-      'Wireframe #combined mobile',
-      '  Stack column gap=2',
-      '    Typography h4 "Wiremark diagram"',
+      '```balsamiq',
+      loginMockupJson,
       '```',
       '',
       '```figma',
@@ -180,7 +179,7 @@ describe('Figma API renderer', () => {
     expect(compiled.html).toContain('bp-diagram--figma');
     expect(compiled.html).toContain('bp-diagram--mermaid');
     expect(compiled.html).toContain('bp-diagram--plantuml');
-    expect(compiled.html).toContain('bp-diagram--wiremark');
+    expect(compiled.html).toContain('bp-diagram--balsamiq');
     expect(compiled.html).toContain('Offline JSON frame');
     expect(compiled.html).toContain('Searchable Figma text');
     expect(compiled.html.match(/<svg\b/g)).toHaveLength(5);

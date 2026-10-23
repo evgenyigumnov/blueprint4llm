@@ -22,87 +22,753 @@
 
 ### Браузер: две ошибки и одна исправная схема
 
-```wireframe
-Wireframe #diagnostics-browser w=1100 h=990
-  Stack column gap=2 padding=3
-    Stack row gap=2
-      Typography h5 "Blueprint · Архитектура заказов"
-      Spacer
-      Button "Download PDF" outlined
-      Button "Dark mode" outlined
-    Alert "Проверка документа: ошибок 2 · предупреждений 0" severity=error
-    Typography body2 "Цель: принять заказ и отправить его в очередь."
-    Typography h6 "Приём заказа"
-    Card 1040px 160px
-      CardContent
-        Stack column gap=1
-          Typography subtitle1 "Не удалось построить схему"
-          Typography body2 "plan.md:12:4 · mermaid render failed"
-          Typography body2 "Parse error: unexpected token"
-          Typography body2 "Ожидался идентификатор узла после стрелки."
-    Typography body2 "Сервис проверяет запрос перед записью."
-    Placeholder "Исправная схема: API → Очередь → Обработчик" 1040px 105px
-    Typography body2 "Обработчик сохраняет результат операции."
-    Card 1040px 140px
-      CardContent
-        Stack column gap=1
-          Typography subtitle1 "Не удалось построить макет"
-          Typography body2 "plan.md:31:3 · wiremark render failed"
-          Typography body2 "unknown component: Unknown"
-    Typography body2 "Приёмка: повторный запрос не создаёт второй заказ."
-    Typography caption "Исправьте исходник: предпросмотр обновится автоматически."
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1101,
+    "measuredH": 991,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1100,
+          "h": 990,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 360,
+          "h": 38,
+          "zOrder": 1,
+          "properties": {
+            "text": "Blueprint · Архитектура заказов",
+            "size": 20,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Button",
+          "x": 824,
+          "y": 24,
+          "w": 130,
+          "h": 38,
+          "zOrder": 2,
+          "properties": {
+            "text": "Download PDF",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Button",
+          "x": 970,
+          "y": 24,
+          "w": 106,
+          "h": 38,
+          "zOrder": 3,
+          "properties": {
+            "text": "Dark mode",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 78,
+          "w": 1052,
+          "h": 40,
+          "zOrder": 4,
+          "properties": {
+            "text": "Проверка документа: ошибок 2 · предупреждений 0",
+            "color": "#fee2e2",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 24,
+          "y": 134,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 5,
+          "properties": {
+            "text": "Цель: принять заказ и отправить его в очередь.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 24,
+          "y": 170,
+          "w": 1052,
+          "h": 26,
+          "zOrder": 6,
+          "properties": {
+            "text": "Приём заказа",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 212,
+          "w": 1040,
+          "h": 160,
+          "zOrder": 7,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 40,
+          "y": 228,
+          "w": 1008,
+          "h": 23,
+          "zOrder": 8,
+          "properties": {
+            "text": "Не удалось построить схему",
+            "size": 16
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Label",
+          "x": 40,
+          "y": 259,
+          "w": 1008,
+          "h": 20,
+          "zOrder": 9,
+          "properties": {
+            "text": "plan.md:12:4 · mermaid render failed",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Label",
+          "x": 40,
+          "y": 287,
+          "w": 1008,
+          "h": 20,
+          "zOrder": 10,
+          "properties": {
+            "text": "Parse error: unexpected token",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Label",
+          "x": 40,
+          "y": 315,
+          "w": 1008,
+          "h": 20,
+          "zOrder": 11,
+          "properties": {
+            "text": "Ожидался идентификатор узла после стрелки.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Label",
+          "x": 24,
+          "y": 388,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 12,
+          "properties": {
+            "text": "Сервис проверяет запрос перед записью.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 424,
+          "w": 1040,
+          "h": 105,
+          "zOrder": 13,
+          "properties": {
+            "text": "Исправная схема: API → Очередь → Обработчик",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Label",
+          "x": 24,
+          "y": 545,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 14,
+          "properties": {
+            "text": "Обработчик сохраняет результат операции.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 581,
+          "w": 1040,
+          "h": 140,
+          "zOrder": 15,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Label",
+          "x": 40,
+          "y": 597,
+          "w": 1008,
+          "h": 23,
+          "zOrder": 16,
+          "properties": {
+            "text": "Не удалось построить макет",
+            "size": 16
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Label",
+          "x": 40,
+          "y": 628,
+          "w": 1008,
+          "h": 20,
+          "zOrder": 17,
+          "properties": {
+            "text": "plan.md:31:3 · balsamiq render failed",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Label",
+          "x": 40,
+          "y": 656,
+          "w": 1008,
+          "h": 20,
+          "zOrder": 18,
+          "properties": {
+            "text": "unsupported typeID: UnknownControl",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Label",
+          "x": 24,
+          "y": 737,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 19,
+          "properties": {
+            "text": "Приёмка: повторный запрос не создаёт второй заказ.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Label",
+          "x": 24,
+          "y": 773,
+          "w": 1052,
+          "h": 17,
+          "zOrder": 20,
+          "properties": {
+            "text": "Исправьте исходник: предпросмотр обновится автоматически.",
+            "size": 12
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### VS Code: тот же документ рядом с исходником
 
-```wireframe
-Wireframe #diagnostics-vscode w=1200 h=740
-  Stack column gap=2 padding=3
-    Typography h5 "VS Code · plan.md | Blueprint Preview"
-    Stack row gap=3
-      Card 400px 590px
-        CardHeader title="plan.md" subheader="Исходник с несохранёнными изменениями"
-        CardContent
-          Stack column gap=2
-            Typography body2 "10  mermaid: блок приёма заказа"
-            Typography body2 "12  API --> неожиданный токен"
-            Typography body2 "20  drawio: исправная схема"
-            Typography body2 "29  wireframe: макет"
-            Typography body2 "31  Unknown"
-            Typography caption "Исправление запускает новую проверку."
-      Card 725px 590px
-        CardContent
-          Stack column gap=2
-            Typography h6 "Архитектура заказов"
-            Alert "Ошибок 2 · предупреждений 0" severity=error
-            Typography body2 "Цель: принять заказ."
-            Alert "plan.md:12:4 · mermaid render failed" severity=error
-            Typography body2 "Parse error: unexpected token"
-            Typography body2 "Текст между схемами сохранён."
-            Placeholder "API → Очередь → Обработчик" 665px 85px
-            Alert "plan.md:31:3 · wiremark render failed" severity=error
-            Typography body2 "unknown component: Unknown"
-            Typography body2 "Приёмка: повторного заказа нет."
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1201,
+    "measuredH": 741,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 740,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 1152,
+          "h": 28,
+          "zOrder": 1,
+          "properties": {
+            "text": "VS Code · plan.md | Blueprint Preview",
+            "size": 20,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 68,
+          "w": 400,
+          "h": 590,
+          "zOrder": 2,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 36,
+          "y": 68,
+          "w": 376,
+          "h": 57,
+          "zOrder": 3,
+          "properties": {
+            "text": "plan.md",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 40,
+          "y": 141,
+          "w": 368,
+          "h": 20,
+          "zOrder": 4,
+          "properties": {
+            "text": "10  mermaid: блок приёма заказа",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 40,
+          "y": 177,
+          "w": 368,
+          "h": 20,
+          "zOrder": 5,
+          "properties": {
+            "text": "12  API --> неожиданный токен",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 40,
+          "y": 213,
+          "w": 368,
+          "h": 20,
+          "zOrder": 6,
+          "properties": {
+            "text": "20  drawio: исправная схема",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 40,
+          "y": 249,
+          "w": 368,
+          "h": 20,
+          "zOrder": 7,
+          "properties": {
+            "text": "29  balsamiq: макет",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 40,
+          "y": 285,
+          "w": 368,
+          "h": 20,
+          "zOrder": 8,
+          "properties": {
+            "text": "31  Unknown",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Label",
+          "x": 40,
+          "y": 321,
+          "w": 368,
+          "h": 17,
+          "zOrder": 9,
+          "properties": {
+            "text": "Исправление запускает новую проверку.",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Rectangle",
+          "x": 448,
+          "y": 68,
+          "w": 725,
+          "h": 590,
+          "zOrder": 10,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Label",
+          "x": 464,
+          "y": 84,
+          "w": 693,
+          "h": 26,
+          "zOrder": 11,
+          "properties": {
+            "text": "Архитектура заказов",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Rectangle",
+          "x": 464,
+          "y": 126,
+          "w": 693,
+          "h": 40,
+          "zOrder": 12,
+          "properties": {
+            "text": "Ошибок 2 · предупреждений 0",
+            "color": "#fee2e2",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Label",
+          "x": 464,
+          "y": 182,
+          "w": 693,
+          "h": 20,
+          "zOrder": 13,
+          "properties": {
+            "text": "Цель: принять заказ.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Rectangle",
+          "x": 464,
+          "y": 218,
+          "w": 693,
+          "h": 40,
+          "zOrder": 14,
+          "properties": {
+            "text": "plan.md:12:4 · mermaid render failed",
+            "color": "#fee2e2",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Label",
+          "x": 464,
+          "y": 274,
+          "w": 693,
+          "h": 20,
+          "zOrder": 15,
+          "properties": {
+            "text": "Parse error: unexpected token",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Label",
+          "x": 464,
+          "y": 310,
+          "w": 693,
+          "h": 20,
+          "zOrder": 16,
+          "properties": {
+            "text": "Текст между схемами сохранён.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Rectangle",
+          "x": 464,
+          "y": 346,
+          "w": 665,
+          "h": 85,
+          "zOrder": 17,
+          "properties": {
+            "text": "API → Очередь → Обработчик",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Rectangle",
+          "x": 464,
+          "y": 447,
+          "w": 693,
+          "h": 40,
+          "zOrder": 18,
+          "properties": {
+            "text": "plan.md:31:3 · balsamiq render failed",
+            "color": "#fee2e2",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Label",
+          "x": 464,
+          "y": 503,
+          "w": 693,
+          "h": 20,
+          "zOrder": 19,
+          "properties": {
+            "text": "unsupported typeID: UnknownControl",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Label",
+          "x": 464,
+          "y": 539,
+          "w": 693,
+          "h": 20,
+          "zOrder": 20,
+          "properties": {
+            "text": "Приёмка: повторного заказа нет.",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### После исправления исходника
 
-```wireframe
-Wireframe #diagnostics-recovered w=1100 h=620
-  Stack column gap=2 padding=3
-    Stack row gap=2
-      Typography h5 "Blueprint · Архитектура заказов"
-      Spacer
-      Button "Download PDF" outlined
-      Button "Dark mode" outlined
-    Alert "Проверка документа: ошибок 0 · предупреждений 0" severity=success
-    Typography body2 "Цель: принять заказ и отправить его в очередь."
-    Placeholder "Исправленная схема приёма заказа" 1040px 90px
-    Typography body2 "Сервис проверяет запрос перед записью."
-    Placeholder "API → Очередь → Обработчик" 1040px 90px
-    Typography body2 "Обработчик сохраняет результат операции."
-    Placeholder "Исправленный макет оформления заказа" 1040px 90px
-    Typography body2 "Приёмка: повторный запрос не создаёт второй заказ."
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1101,
+    "measuredH": 621,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1100,
+          "h": 620,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 360,
+          "h": 38,
+          "zOrder": 1,
+          "properties": {
+            "text": "Blueprint · Архитектура заказов",
+            "size": 20,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Button",
+          "x": 824,
+          "y": 24,
+          "w": 130,
+          "h": 38,
+          "zOrder": 2,
+          "properties": {
+            "text": "Download PDF",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Button",
+          "x": 970,
+          "y": 24,
+          "w": 106,
+          "h": 38,
+          "zOrder": 3,
+          "properties": {
+            "text": "Dark mode",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 78,
+          "w": 1052,
+          "h": 40,
+          "zOrder": 4,
+          "properties": {
+            "text": "Проверка документа: ошибок 0 · предупреждений 0",
+            "color": "#eaf2ff",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 24,
+          "y": 134,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 5,
+          "properties": {
+            "text": "Цель: принять заказ и отправить его в очередь.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 170,
+          "w": 1040,
+          "h": 90,
+          "zOrder": 6,
+          "properties": {
+            "text": "Исправленная схема приёма заказа",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 24,
+          "y": 276,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 7,
+          "properties": {
+            "text": "Сервис проверяет запрос перед записью.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 312,
+          "w": 1040,
+          "h": 90,
+          "zOrder": 8,
+          "properties": {
+            "text": "API → Очередь → Обработчик",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Label",
+          "x": 24,
+          "y": 418,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 9,
+          "properties": {
+            "text": "Обработчик сохраняет результат операции.",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 454,
+          "w": 1040,
+          "h": 90,
+          "zOrder": 10,
+          "properties": {
+            "text": "Исправленный макет оформления заказа",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Label",
+          "x": 24,
+          "y": 560,
+          "w": 1052,
+          "h": 20,
+          "zOrder": 11,
+          "properties": {
+            "text": "Приёмка: повторный запрос не создаёт второй заказ.",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 В VS Code после исправления исчезают обе ошибки и обновляются схемы. Экспорт PDF из браузера и расширения включает текущий документ и те же встроенные сообщения. При включённом счётчике после исправления отображается `0/0`; при выключенном документ не содержит общего счётчика. При наличии только предупреждений документ остаётся доступным.
@@ -193,8 +859,8 @@ flowchart TD
       "line": 31,
       "column": 3,
       "diagramId": "bp-diagram-003",
-      "renderer": "wiremark",
-      "message": "unknown component: Unknown"
+      "renderer": "balsamiq",
+      "message": "unsupported typeID: UnknownControl"
     }
   ],
   "outputs": { "html": "/project/plan.html" }
@@ -239,7 +905,7 @@ JSON содержит сериализуемые поля диагностики
 
 ## Проверки и приёмка
 
-Основная fixture: текст до первой схемы → сломанная Mermaid → текст → исправная draw.io JSON → текст → сломанный Wiremark → заключительный текст. Две ошибки должны иметь разные ID и позиции.
+Основная fixture: текст до первой схемы → сломанная Mermaid → текст → исправная draw.io JSON → текст → сломанный Balsamiq → заключительный текст. Две ошибки должны иметь разные ID и позиции.
 
 | Проверка                | Тесты и подтверждённое поведение                                                                                                                                                                               |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -255,7 +921,7 @@ JSON содержит сериализуемые поля диагностики
 
 Устаревшие ожидания кода `0` при `compiled.errors` обновлены на `1`, при этом тесты подтверждают запись HTML. Тесты фатальных ошибок сохранены; прежние ожидания остановки обработки на ошибке отдельной диаграммы заменены проверками продолжения.
 
-Ручная приёмка выполнена 2026-10-23: `plan-feat-05-diagnostics.md --check` прошёл без диагностик; все три Wiremark макета и Mermaid flowchart экспортированы отдельно и осмотрены. Полный браузерный plan-preview осмотрен в светлой и тёмной темах. Fixture с ошибками проверен в браузере: при настройке по умолчанию в документе нет общего счётчика, при явном включении показывается `2/0`; в обоих случаях видны две карточки, исправный SVG draw.io и завершающий текст. PDF fixture содержит оба сообщения и заключительный текст на трёх страницах. HTML VS Code preview осмотрен для light/dark/high contrast цветовых переменных; Extension Development Host проверил включение настройки.
+Ручная приёмка выполнена 2026-10-23: `plan-feat-05-diagnostics.md --check` прошёл без диагностик; все три Balsamiq макета и Mermaid flowchart экспортированы отдельно и осмотрены. Полный браузерный plan-preview осмотрен в светлой и тёмной темах. Fixture с ошибками проверен в браузере: при настройке по умолчанию в документе нет общего счётчика, при явном включении показывается `2/0`; в обоих случаях видны две карточки, исправный SVG draw.io и завершающий текст. PDF fixture содержит оба сообщения и заключительный текст на трёх страницах. HTML VS Code preview осмотрен для light/dark/high contrast цветовых переменных; Extension Development Host проверил включение настройки.
 
 ```bash
 npm run build

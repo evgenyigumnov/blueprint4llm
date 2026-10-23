@@ -9,7 +9,7 @@ import type { DiagramRenderer } from './types.js';
 export const openapiRenderer: DiagramRenderer = {
   name: 'openapi',
   languages: ['openapi'],
-  cacheKey: 'openapi-3.1.1-static-svg-v2;yaml@2.9.1;refs=json-pointer;layout=reference-v2',
+  cacheKey: 'openapi-3.1.1-static-svg-v3;yaml@2.9.1;refs=json-pointer;layout=reference-v3',
   maxSourceBytes: MAX_OPENAPI_SOURCE_BYTES,
 
   async render(source, context) {

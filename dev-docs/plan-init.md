@@ -1,6 +1,6 @@
 # Blueprint4LLM — техническое задание и план реализации
 
-> **Задача для кодинг-агента:** создать работающий CLI-проект `blueprint4llm`, который преобразует Markdown-документ с Mermaid-диаграммами и Wiremark-макетами в готовые **HTML и/или PDF**. Реализовать проект, тесты и документацию, а не ограничиваться прототипом или псевдокодом. Работать по этапам ниже, запускать проверки после каждого этапа.
+> **Задача для кодинг-агента:** создать работающий CLI-проект `blueprint4llm`, который преобразует Markdown-документ с Mermaid-диаграммами и Balsamiq-макетами в готовые **HTML и/или PDF**. Реализовать проект, тесты и документацию, а не ограничиваться прототипом или псевдокодом. Работать по этапам ниже, запускать проверки после каждого этапа.
 
 ## 1. Назначение
 
@@ -9,10 +9,10 @@
 Основные зависимости:
 
 - [remark / unified](https://github.com/remarkjs/remark) — разбор Markdown и система плагинов.
-- [@wiremark/core](https://github.com/Blackburn-Labs/wiremark) — преобразование Wiremark DSL в SVG.
+- Balsamiq Mockups 3 JSON — локальный разбор и преобразование UI-макетов в SVG.
 - [Mermaid](https://github.com/mermaid-js/mermaid) — диаграммы; для серверного SVG-рендеринга использовать официальный [@mermaid-js/mermaid-cli](https://github.com/mermaid-js/mermaid-cli).
 
-**Главное требование:** к моменту отдачи или записи HTML все Mermaid и Wiremark-блоки уже заменены **встроенными SVG-элементами** (`<svg>...</svg>`), а не исходным кодом диаграмм, ссылками на `.svg` или браузерными плейсхолдерами. PDF строится из **того же уже отрендеренного HTML** через Chromium в режиме печати и содержит текст, таблицы и обе разновидности диаграмм. Для просмотра готовых HTML/PDF не нужны Mermaid.js, Wiremark, доступ к интернету или клиентский рендерер.
+**Главное требование:** к моменту отдачи или записи HTML все Mermaid и Balsamiq-блоки уже заменены **встроенными SVG-элементами** (`<svg>...</svg>`), а не исходным кодом диаграмм, ссылками на `.svg` или браузерными плейсхолдерами. PDF строится из **того же уже отрендеренного HTML** через Chromium в режиме печати и содержит текст, таблицы и обе разновидности диаграмм. Для просмотра готовых HTML/PDF не нужны Mermaid.js, Balsamiq, доступ к интернету или клиентский рендерер.
 
 ## 2. CLI: два основных режима, три формата экспорта
 
@@ -103,24 +103,91 @@ flowchart LR
 ```
 ````
 
-### Wiremark
+### Balsamiq
 
-В **Blackburn-Labs/wiremark** канонический идентификатор блока — `wireframe`, а не `wiremark`. Для удобства проекта принимать **оба** написания: `wireframe` и `wiremark`.
+Для макетов использовать идентификатор `balsamiq` и JSON одного макета Mockups 3.
 
 ````markdown
 ## Экран входа
 
-```wireframe
-Wireframe #login mobile
-  Stack column gap=2 padding=2
-    Typography h4 "Sign in"
-    TextField "Email"
-    TextField "Password"
-    Button "Sign in" contained to=#dashboard
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "text": "Sign in",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "TextInput",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 36,
+          "zOrder": 2,
+          "properties": {
+            "text": "Email"
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "TextInput",
+          "x": 16,
+          "y": 118,
+          "w": 343,
+          "h": 36,
+          "zOrder": 3,
+          "properties": {
+            "text": "Password"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Button",
+          "x": 16,
+          "y": 170,
+          "w": 89,
+          "h": 38,
+          "zOrder": 4,
+          "properties": {
+            "text": "Sign in",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 ````
 
-Проверить конкретную Wiremark-конструкцию на установленной версии `@wiremark/core`; если атрибут, используемый в примере, не поддерживается, исправить пример и зафиксировать проверенный синтаксис в `examples/blueprint.md`. **Не путать Blackburn-Labs/wiremark с одноимёнными проектами других авторов.**
+Проверить JSON и поддерживаемые типы контролов по `examples/blueprint-balsamiq.md`. Рабочий пример хранится в `examples/blueprint.md`.
 
 ### Остальные языки
 
@@ -138,7 +205,7 @@ Wireframe #login mobile
 | Markdown parser    | `unified` + `remark-parse` + `remark-gfm`               |
 | HTML AST           | `remark-rehype`, `hast-util-from-html`                  |
 | HTML serialization | `rehype-stringify`                                      |
-| Wiremark           | `@wiremark/core` (`render`)                             |
+| Balsamiq           | Локальные JSON parser и SVG renderer                    |
 | Mermaid SVG        | `@mermaid-js/mermaid-cli`, локальный Chromium/Puppeteer |
 | PDF                | `puppeteer` + Chromium, `page.pdf()` с печатными CSS    |
 | CLI arguments      | `commander` или эквивалент с типизированной валидацией  |
@@ -155,7 +222,7 @@ Wireframe #login mobile
 flowchart TD
     A[blueprint.md] --> B[remark-parse + remark-gfm]
     B --> C[Remark plugin: diagram blocks]
-    C --> D[Wiremark renderer]
+    C --> D[Balsamiq renderer]
     C --> E[Mermaid renderer]
     D --> F[SVG fragments / HAST]
     E --> F
@@ -174,7 +241,7 @@ flowchart TD
 1. `cli` — аргументы, help, выбор режима, exit codes.
 2. `compiler` — принимает Markdown, возвращает полный HTML и диагностику.
 3. `plugins/remark-diagrams` — находит fenced blocks, вызывает нужный SVG-renderer, заменяет mdast-узлы на HAST-представление диаграммы.
-4. `renderers/wiremark` — тонкая обёртка над `@wiremark/core`.
+4. `renderers/balsamiq` — локальная проверка JSON и построение SVG из контролов.
 5. `renderers/mermaid` — тонкая обёртка над Mermaid CLI с управлением временными файлами и дочерними процессами.
 6. `svg` — проверка SVG, нормализация/обработка ID и безопасное превращение SVG в HAST.
 7. `template` — `<!doctype html>`, `<head>`, встроенные CSS-стили, layout.
@@ -183,7 +250,7 @@ flowchart TD
 10. `build` — сохранение результата без повреждения предыдущей успешной сборки.
 11. `server` — HTTP, SSE, watcher, инкрементальные перестройки, PDF download и остановка.
 
-Рендереры не должны знать о CLI, сервере, структуре Markdown или формате экспорта. Преобразования Markdown и рендеринг диаграмм должны быть доступны также программно для будущих интеграций. HTML и PDF **не должны запускать два отдельных прохода парсинга Markdown и рендеринга Mermaid/Wiremark**: оба формата строятся из одного результата компиляции.
+Рендереры не должны знать о CLI, сервере, структуре Markdown или формате экспорта. Преобразования Markdown и рендеринг диаграмм должны быть доступны также программно для будущих интеграций. HTML и PDF **не должны запускать два отдельных прохода парсинга Markdown и рендеринга Mermaid/Balsamiq**: оба формата строятся из одного результата компиляции.
 
 ### 5.2. Контракт плагинных рендереров
 
@@ -209,7 +276,7 @@ export interface DiagramRenderer {
 }
 ```
 
-Реализовать `wiremarkRenderer` (`wireframe`, `wiremark`) и `mermaidRenderer` (`mermaid`). Регистрация через массив рендереров в `.use(remarkDiagramPlugin, { renderers })`, чтобы позже можно было добавить PlantUML или другой формат, не меняя `compiler`.
+Реализовать `balsamiqRenderer` (`balsamiq`) и `mermaidRenderer` (`mermaid`). Регистрация через массив рендереров в `.use(remarkDiagramPlugin, { renderers })`, чтобы позже можно было добавить PlantUML или другой формат, не меняя `compiler`.
 
 Важные правила:
 
@@ -239,30 +306,19 @@ const processor = unified()
 3. Вызвать `renderer.render(...)` и получить SVG.
 4. Проверить, что это корректный SVG-фрагмент с корневым `<svg>`.
 5. Преобразовать SVG в HAST, например `fromHtml(svg, { fragment: true })`, и выделить собственно SVG-узел.
-6. Создать обёртку `<figure class="bp-diagram bp-diagram--mermaid|wiremark">` с HAST-дочерним узлом `<svg>`; использовать поддерживаемые `node.data.hName`, `hProperties`, `hChildren` или явный `remark-rehype` handler.
+6. Создать обёртку `<figure class="bp-diagram bp-diagram--mermaid|balsamiq">` с HAST-дочерним узлом `<svg>`; использовать поддерживаемые `node.data.hName`, `hProperties`, `hChildren` или явный `remark-rehype` handler.
 7. Передать дерево в обычный HTML-serializer.
 
 **Не** вставлять SVG в Markdown как сырой HTML с глобальными `allowDangerousHtml: true` / `rehype-raw`. Это ненужно и создаёт опасную цепочку для произвольного HTML из входного Markdown. Проверить, что `hast-util-from-html` корректно сохраняет пространства имён SVG, `viewBox`, `<defs>`, `<style>` и внутренние ссылки.
 
-## 6. Интеграция Wiremark
+## 6. Интеграция UI-макетов Balsamiq
 
-У `@wiremark/core` имеется API:
-
-```ts
-import { render } from '@wiremark/core';
-
-const { svg, diagnostics } = render(source);
-```
-
-Требования:
-
-- Передавать внутрь `render` **только содержимое fenced block**, без маркеров тройных кавычек и идентификатора языка.
-- Не переписывать парсер, layout или SVG-рендерер Wiremark; использовать готовый пакет.
-- Критические ошибки (`WiremarkError` и другие ошибки рендера) преобразовывать в ошибку компиляции с позицией блока.
-- Некритические `diagnostics` отображать как предупреждения в CLI; сам блок при этом может успешно рендериться.
-- По умолчанию светлая тема `render(source, { theme: 'light' })`. Переключатель темы в MVP не требуется.
-- Проверить рендер отдельного кадра и нескольких Wireframe-кадров одним блоком, если версия библиотеки их поддерживает.
-- Проверить отсутствие конфликтов SVG IDs между несколькими Wiremark-блоками.
+- Передавать в `balsamiqRenderer` содержимое fenced-блока `balsamiq` без маркеров Markdown.
+- Разбирать JSON через `parseBalsamiqJson` и строить SVG через `renderBalsamiqSvg`.
+- Проверять размеры макета, типы контролов, координаты, уникальность ID и текстовые свойства.
+- Преобразовывать ошибки JSON и неподдерживаемых контролов в диагностики с позицией источника.
+- Пропускать SVG через общий безопасный HAST-конвейер и изолировать SVG ID каждого блока.
+- Проверять несколько независимых макетов в одном документе и совместный вывод с Mermaid.
 
 ## 7. Интеграция Mermaid
 
@@ -316,7 +372,7 @@ const { svg, diagnostics } = render(source);
 
 ### 10.1. Принцип работы
 
-**PDF — не второй независимый Markdown-рендерер.** Сначала всегда выполняется общая цепочка `remark → Mermaid/Wiremark SVG → HAST → HTML`. Затем для PDF подготавливается вариант той же страницы с `@media print` и локальными изображениями, встроенными в документ. Chromium печатает эту страницу в PDF через `puppeteer.page.pdf()`.
+**PDF — не второй независимый Markdown-рендерер.** Сначала всегда выполняется общая цепочка `remark → Mermaid/Balsamiq SVG → HAST → HTML`. Затем для PDF подготавливается вариант той же страницы с `@media print` и локальными изображениями, встроенными в документ. Chromium печатает эту страницу в PDF через `puppeteer.page.pdf()`.
 
 Это гарантирует, что текст, таблицы, подписи, диаграммы и порядок блоков совпадают в HTML и PDF. Не использовать Markdown→PDF пакеты, которые заново парсят `.md`, и не конвертировать весь HTML в одно растровое изображение.
 
@@ -371,7 +427,7 @@ const pdf = await page.pdf({
 
 ### 10.3. Загрузка ресурсов и изоляция Chromium
 
-1. Для PDF генерировать автономный print-ready HTML: локальные картинки превращать в `data:` URL с корректным MIME, CSS и шрифты делать встроенными, Mermaid/Wiremark уже встроены как SVG. При этом ограничения размера файлов из раздела безопасности сохраняются.
+1. Для PDF генерировать автономный print-ready HTML: локальные картинки превращать в `data:` URL с корректным MIME, CSS и шрифты делать встроенными, Mermaid/Balsamiq уже встроены как SVG. При этом ограничения размера файлов из раздела безопасности сохраняются.
 2. Не использовать относительные `file://` ссылки и не запускать временный публичный HTTP-сервер ради PDF: после `page.setContent(printHtml)` все ресурсы должны быть уже доступны внутри документа.
 3. Заблокировать исходящие HTTP(S)-запросы из страницы PDF (request interception / browser context). Если PDF содержит внешний `<img>`, удалённый CSS или шрифт — завершиться диагностикой с URL или исходной строкой, а не пытаться скачивать его.
 4. Отключить пользовательские сценарии JavaScript; HTML уже полностью отрендерен. Не подключать live reload в PDF-страницу.
@@ -382,7 +438,7 @@ const pdf = await page.pdf({
 ### 10.4. Нормы качества PDF
 
 - `index.pdf` начинается с корректного PDF-заголовка, открывается стандартными PDF-viewer и содержит минимум одну страницу.
-- На страницах присутствуют Mermaid и Wiremark, без пустых прямоугольников и обрезанных краёв.
+- На страницах присутствуют Mermaid и Balsamiq, без пустых прямоугольников и обрезанных краёв.
 - Русский и английский текст извлекается инструментом вроде `pdftotext`; текст не превращён в единую картинку.
 - В многостраничном документе нумерация согласована, нет пустых листов из-за неудачных CSS-разрывов.
 - Заголовки, таблицы и диаграммы сохраняют логический порядок. Отличия цвета/шрифтов от HTML допустимы только ради печатной читабельности.
@@ -444,7 +500,7 @@ blueprint4llm/
 │   │   └── remark-diagrams.ts
 │   ├── renderers/
 │   │   ├── types.ts
-│   │   ├── wiremark.ts
+│   │   ├── balsamiq.ts
 │   │   └── mermaid.ts
 │   ├── svg/
 │   │   ├── parse-and-validate.ts
@@ -460,7 +516,7 @@ blueprint4llm/
 │   └── images/
 └── tests/
     ├── compiler.test.ts
-    ├── wiremark.test.ts
+    ├── balsamiq.test.ts
     ├── mermaid.test.ts
     ├── svg.test.ts
     ├── pdf.test.ts
@@ -482,15 +538,15 @@ blueprint4llm/
 
 Результат этапа A: реализованы компиляция CommonMark/GFM в автономный HTML5, inline CSS, безопасное экранирование сырого HTML, формирование заголовка и языка документа, атомарная запись `index.html` и валидация CLI. Добавлены unit-тесты CLI, компилятора, шаблона, диагностики и записи файлов. Проверки: `npm run typecheck`, `npm run build`, `npm run lint`, `npm run format:check`, `npm test` — успешно; 39 тестов пройдены. Собранный CLI проверен командами `--help`, `--version` и end-to-end HTML-сборкой. PDF и `--serve` пока сообщают, что их реализация появится на этапах E и F.
 
-### Этап B — Wiremark
+### Этап B — UI-макеты и общий конвейер диаграмм
 
 - [x] Реализовать обобщённый remark plugin для fenced code blocks.
-- [x] Подключить `@wiremark/core`; поддержать точные языковые идентификаторы `wireframe` и `wiremark`.
+- [x] Поддержать `balsamiq` через локальный JSON parser и SVG renderer.
 - [x] Переносить проверенный SVG в HAST без включения глобального unsafe HTML.
-- [x] Передавать warnings и ошибки с номерами строк Markdown.
-- [x] Написать тесты для одного и нескольких Wiremark-блоков.
+- [x] Передавать ошибки с номерами строк Markdown.
+- [x] Написать тесты для одного и нескольких UI-макетов.
 
-Результат этапа B: добавлен общий remark-плагин, который обходит mdast-дерево и заменяет Wiremark fences на `<figure>` со встроенным SVG. Renderer использует официальный `@wiremark/core` Blackburn-Labs; проверен пример `Wireframe #login mobile` с `Stack`, `Typography`, полями и кнопкой. Поддержаны `wireframe` и `wiremark`; другие языки остаются обычными блоками кода. SVG разбирается через `hast-util-from-html`, проверяется наличие одного корневого `<svg>` и сериализуется через обычный HAST pipeline без `allowDangerousHtml`. Каждая диаграмма получает стабильный ID, внутренние SVG ID и ссылки на них изолируются между блоками. Предупреждения и ошибки Wiremark локализуются до строки исходного Markdown. Добавлены unit/integration-тесты renderer, алиасов, нескольких блоков, warnings/errors и SVG ID. Проверки `npm test` (45 тестов), `npm run typecheck`, `npm run build`, `npm run lint`, `npm run format:check` и CLI-сборка HTML с Wiremark прошли. Также проверено, что ошибка синтаксиса даёт CLI-код `1` с номером строки и не публикует частичный `index.html`.
+Текущее поведение общего конвейера и макетов проверяют `tests/compiler.test.ts` и `tests/balsamiq.test.ts`.
 
 ### Этап C — Mermaid
 
@@ -509,7 +565,7 @@ blueprint4llm/
 - [x] Проверить отсутствие любых script/CDN-зависимостей в статическом HTML.
 - [x] Добавить адаптивный CSS для узких экранов и широких схем.
 
-Результат этапа D: добавлен remark-проход для Markdown-изображений. Относительные локальные пути разрешаются от каталога исходного Markdown, URL-декодируются, проверяются на выход за каталог проекта и symlink-обход; отсутствующие файлы, абсолютные пути и схемы `javascript:`, `data:`, `file:` получают диагностику с позицией в Markdown. HTTP(S)-картинки остаются внешними и не скачиваются. Локальные файлы копируются в `assets/` под стабильными SHA-256-именами с сохранением расширений; файлы публикуются до `index.html`, существующие пользовательские assets не перезаписываются. HTML ссылается на относительные пути и открывается через `file://`. Проверка в Chromium с запрещёнными HTTP(S)-запросами подтвердила загрузку локального SVG-изображения, наличие inline Mermaid/Wiremark SVG и отсутствие скриптов, внешних stylesheet и сетевых запросов. Ширина Mermaid SVG берётся из `viewBox`, поэтому широкие диаграммы можно прокручивать на узком экране. Добавлены тесты URL-валидации, копирования assets, диагностики, автономности и Mermaid-размеров. Проверки: `npm test` (72 теста), `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check` — успешно.
+Результат этапа D: добавлен remark-проход для Markdown-изображений. Относительные локальные пути разрешаются от каталога исходного Markdown, URL-декодируются, проверяются на выход за каталог проекта и symlink-обход; отсутствующие файлы, абсолютные пути и схемы `javascript:`, `data:`, `file:` получают диагностику с позицией в Markdown. HTTP(S)-картинки остаются внешними и не скачиваются. Локальные файлы копируются в `assets/` под стабильными SHA-256-именами с сохранением расширений; файлы публикуются до `index.html`, существующие пользовательские assets не перезаписываются. HTML ссылается на относительные пути и открывается через `file://`. Проверка в Chromium с запрещёнными HTTP(S)-запросами подтвердила загрузку локального SVG-изображения, наличие inline Mermaid/Balsamiq SVG и отсутствие скриптов, внешних stylesheet и сетевых запросов. Ширина Mermaid SVG берётся из `viewBox`, поэтому широкие диаграммы можно прокручивать на узком экране. Добавлены тесты URL-валидации, копирования assets, диагностики, автономности и Mermaid-размеров. Проверки: `npm test` (72 теста), `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check` — успешно.
 
 ### Этап E — PDF-экспорт
 
@@ -523,7 +579,7 @@ blueprint4llm/
 
 Результат этапа E: PDF формируется Puppeteer 25.14.0 из автономной версии HTML, созданной тем же `compileMarkdown`; Mermaid CLI 12.0.0 и PDF используют одну зафиксированную установку Puppeteer и Chromium (`npx puppeteer browsers install chrome`). Для печати локальные картинки встраиваются как `data:` URI, внешние изображения отклоняются с инструкцией сохранить их рядом с Markdown, а все исходящие HTTP(S)-запросы Chromium блокируются. Добавлены локальные Noto Sans Regular/Bold с лицензией SIL OFL 1.1, печатные стили с масштабированием диаграмм до 220 мм, переносом содержимого таблиц и кода, повторением заголовка таблицы и нумерацией страниц. Размер A4 и поля задаются параметрами `page.pdf()`. `renderPdf()` доступен через программный API, ограничен тайм-аутом 60 секунд, ожидает шрифты и декодирование изображений, проверяет размеры SVG и закрывает страницу/браузер при завершении или ошибке. CLI поддерживает PDF-only и `both`; при ошибке подготовки PDF прежние выходные файлы сохраняются, а `both` использует одну компиляцию Markdown.
 
-Добавлены тесты print HTML и PDF: валидность PDF, извлечение кириллического и английского текста, таблиц и подписей Mermaid/Wiremark, многостраничная раскладка A4, номера страниц, локальная SVG-картинка, отклонение внешней картинки, отмена по `AbortSignal`, PDF-only и `both`, сохранение прежних результатов при ошибке. Интеграционный PDF на шесть страниц проверен через PDF.js; дополнительный CLI smoke test с Mermaid и Wiremark визуально проверен по PNG-рендеру страниц через Poppler. Проверки `npm run typecheck`, `npm run build`, `npm run lint`, `npm run format:check` и `npm test` прошли (80 тестов). Тестовые сценарии в этом ограниченном Linux-контейнере явно включают `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1`; при обычном запуске CLI Chromium sandbox остаётся включён. `npm pack --dry-run` подтвердил, что оба шрифта и файл лицензии включены в опубликованный пакет.
+Добавлены тесты print HTML и PDF: валидность PDF, извлечение кириллического и английского текста, таблиц и подписей Mermaid/Balsamiq, многостраничная раскладка A4, номера страниц, локальная SVG-картинка, отклонение внешней картинки, отмена по `AbortSignal`, PDF-only и `both`, сохранение прежних результатов при ошибке. Интеграционный PDF на шесть страниц проверен через PDF.js; дополнительный CLI smoke test с Mermaid и Balsamiq визуально проверен по PNG-рендеру страниц через Poppler. Проверки `npm run typecheck`, `npm run build`, `npm run lint`, `npm run format:check` и `npm test` прошли (80 тестов). Тестовые сценарии в этом ограниченном Linux-контейнере явно включают `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1`; при обычном запуске CLI Chromium sandbox остаётся включён. `npm pack --dry-run` подтвердил, что оба шрифта и файл лицензии включены в опубликованный пакет.
 
 ### Этап F — сервер с live reload и PDF download
 
@@ -536,7 +592,7 @@ blueprint4llm/
 
 Результат этапа F: режим `--serve` запускает сервер только на `127.0.0.1`; `GET /` отдаёт компилированный HTML со ссылкой Download PDF и клиентом SSE, добавленными только для предпросмотра. SSE поддерживает heartbeat, автоматическое переподключение и проверку версии при подключении, чтобы не пропустить перезагрузку между запросом страницы и подпиской. `GET /assets/<name>` выдаёт только изображения из allowlist текущей успешной компиляции, остальные пути возвращают `404`. PDF создаётся по запросу из той же версии `compileMarkdown`, параллельные запросы ждут один рендер, успешные байты кэшируются по SHA-256 HTML и assets. Во время новой сборки или после ошибки PDF не раздаётся как актуальный: сервер отвечает `503` или `422`.
 
-Подключён `chokidar@5` и debounce 200 мс для Markdown и используемых локальных изображений, в том числе отсутствующих ссылок, чтобы предпросмотр восстанавливался после создания файла. Generation counter и `AbortController` отбрасывают устаревшие результаты; для успешных Mermaid/Wiremark SVG работает ограниченный LRU-кэш на 500 элементов и 32 MiB. Ошибка чтения или компиляции показывает экранированную диагностическую страницу, сервер остаётся доступен и автоматически восстанавливается после исправления. `SIGINT`/`SIGTERM` закрывают watcher, HTTP/SSE, отменяют PDF/Puppeteer и завершают дерево дочерних процессов Mermaid.
+Подключён `chokidar@5` и debounce 200 мс для Markdown и используемых локальных изображений, в том числе отсутствующих ссылок, чтобы предпросмотр восстанавливался после создания файла. Generation counter и `AbortController` отбрасывают устаревшие результаты; для успешных Mermaid/Balsamiq SVG работает ограниченный LRU-кэш на 500 элементов и 32 MiB. Ошибка чтения или компиляции показывает экранированную диагностическую страницу, сервер остаётся доступен и автоматически восстанавливается после исправления. `SIGINT`/`SIGTERM` закрывают watcher, HTTP/SSE, отменяют PDF/Puppeteer и завершают дерево дочерних процессов Mermaid.
 
 Добавлены HTTP-тесты маршрутов, allowlist assets, SSE-перезагрузки и восстановления после ошибки, PDF-кэша, отказа от устаревшего PDF, портов и остановки; тесты кэша диаграмм, слежения за отсутствующими assets и отмены процесса. Проверки `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check` и `npm test` прошли (93 теста). CLI smoke test подтвердил запуск `--serve` и корректное завершение по `SIGINT` и `SIGTERM`.
 
@@ -544,18 +600,18 @@ blueprint4llm/
 
 - [x] Проверить edge cases и защиту от XSS, path traversal, ID collision.
 - [x] Написать интеграционные тесты на оба CLI-режима и все три формата экспорта.
-- [x] Добавить `examples/blueprint.md` с обычным Markdown, таблицей, Wiremark и несколькими Mermaid-диаграммами.
+- [x] Добавить `examples/blueprint.md` с обычным Markdown, таблицей, Balsamiq и несколькими Mermaid-диаграммами.
 - [x] Добавить README с установкой, требованиями Chromium/Puppeteer, примерами HTML/PDF/both/serve, ограничениями и программным API.
 - [x] Убедиться, что `npm ci && npm run build && npm test && npm run typecheck && npm run lint` проходят на чистом окружении с документированными браузерными зависимостями.
 
-Результат этапа G: добавлены README с установкой Puppeteer Chrome, CLI-примерами, ограничениями и API, а также включённый в npm-пакет `examples/blueprint.md` с GFM-таблицей, чекбоксами, двумя Mermaid-блоками и Wiremark. Безопасность усилена удалением небезопасных схем Markdown-ссылок, проверкой CSS escapes/comments при валидации SVG и уникализацией повторных ID внутри одной диаграммы; traversal-проверка дополнена percent-encoded `..`. Добавлены пределы в 100 диаграмм и 256 KiB на блок с диагностикой по строке. Новые интеграционные тесты запускают собранный CLI как отдельный процесс и проверяют HTML/PDF/both, предпросмотр и скачивание PDF; также проверяются CSS/XSS, traversal, ID collision и пределы диаграмм. После чистого `npm ci` прошли `npm run build`, `npm test` (99 тестов), `npm run typecheck`, `npm run lint` и `npm run format:check`; `npm ci` сообщил 0 уязвимостей. Все три формата проверены на `examples/blueprint.md`, npm bin проверен через `npm link` и `--version`, `npm pack --dry-run` проверил состав пакета. Для CLI smoke-тестов в этом ограниченном Linux-контейнере явно задан `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1`; README документирует эту настройку и сохраняет включённый sandbox по умолчанию.
+Результат этапа G: добавлены README с установкой Puppeteer Chrome, CLI-примерами, ограничениями и API, а также включённый в npm-пакет `examples/blueprint.md` с GFM-таблицей, чекбоксами, двумя Mermaid-блоками и Balsamiq. Безопасность усилена удалением небезопасных схем Markdown-ссылок, проверкой CSS escapes/comments при валидации SVG и уникализацией повторных ID внутри одной диаграммы; traversal-проверка дополнена percent-encoded `..`. Добавлены пределы в 100 диаграмм и 256 KiB на блок с диагностикой по строке. Новые интеграционные тесты запускают собранный CLI как отдельный процесс и проверяют HTML/PDF/both, предпросмотр и скачивание PDF; также проверяются CSS/XSS, traversal, ID collision и пределы диаграмм. После чистого `npm ci` прошли `npm run build`, `npm test` (99 тестов), `npm run typecheck`, `npm run lint` и `npm run format:check`; `npm ci` сообщил 0 уязвимостей. Все три формата проверены на `examples/blueprint.md`, npm bin проверен через `npm link` и `--version`, `npm pack --dry-run` проверил состав пакета. Для CLI smoke-тестов в этом ограниченном Linux-контейнере явно задан `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1`; README документирует эту настройку и сохраняет включённый sandbox по умолчанию.
 
 ## 16. Обязательные тесты и критерии приёмки
 
-1. **Одна сборка, два SVG.** Markdown с одним `mermaid` и одним `wireframe` создаёт `index.html` с двумя настоящими `<svg>` и соответствующими графическими элементами, а не `<pre><code>` с исходниками.
+1. **Одна сборка, два SVG.** Markdown с одним `mermaid` и одним `balsamiq` создаёт `index.html` с двумя настоящими `<svg>` и соответствующими графическими элементами, а не `<pre><code>` с исходниками.
 2. **Markdown GFM.** Таблицы, чекбоксы, заголовки, русские символы и обычные кодовые блоки выглядят правильно.
-3. **Много диаграмм.** Два одинаковых Mermaid-блока и два одинаковых Wiremark-блока отображаются независимо; у SVG не конфликтуют IDs и стрелки/градиенты.
-4. **Нет runtime-rendering.** Статический HTML открывается без JavaScript, без интернета, без отдельно загружаемых SVG и без Mermaid/Wiremark-библиотек в браузере.
+3. **Много диаграмм.** Два одинаковых Mermaid-блока и два одинаковых Balsamiq-блока отображаются независимо; у SVG не конфликтуют IDs и стрелки/градиенты.
+4. **Нет runtime-rendering.** Статический HTML открывается без JavaScript, без интернета, без отдельно загружаемых SVG и без Mermaid/Balsamiq-библиотек в браузере.
 5. **Ошибки.** Синтаксически неверная диаграмма приводит к содержательной диагностике вида `blueprint.md:12:1: Mermaid render failed: ...` и ненулевому коду в `--out`.
 6. **Без потери файла.** Неуспешная повторная сборка не повреждает ранее успешно сгенерированный `index.html`.
 7. **Serve/reload.** Изменение `blueprint.md` автоматически меняет HTML в браузере без перезапуска CLI. Ошибка не убивает сервер; после исправления всё восстанавливается.
@@ -592,7 +648,7 @@ node dist/cli.js examples/blueprint.md --serve --port=8080
 
 ## 17. Что НЕ входит в MVP
 
-- Графическое редактирование Wiremark и Mermaid.
+- Графическое редактирование Balsamiq и Mermaid.
 - PNG экспорт всего документа и экспорт в DOCX/EPUB (PDF **входит** в MVP).
 - Отдельный движок Markdown→PDF, независимо от HTML-пайплайна.
 - Настройка формата бумаги, ориентации и колонтитулов через CLI — в MVP фиксирован A4 с номерами страниц.
@@ -612,8 +668,6 @@ node dist/cli.js examples/blueprint.md --serve --port=8080
 
 - [remark: Markdown → HTML с unified/remark-rehype](https://github.com/remarkjs/remark)
 - [remark-rehype: преобразование mdast → hast и предупреждения о сыром HTML](https://github.com/remarkjs/remark-rehype)
-- [Wiremark, Blackburn-Labs: официальный синтаксис `wireframe`](https://github.com/Blackburn-Labs/wiremark)
-- [Wiremark Core: пакет `@wiremark/core`](https://www.npmjs.com/package/@wiremark/core)
 - [Mermaid CLI: генерация SVG и Node API](https://github.com/mermaid-js/mermaid-cli)
 - [Mermaid: использование `mermaid.render` и конфигурация](https://mermaid.js.org/config/usage.html)
 - [hast-util-from-html: разбор SVG в HAST](https://github.com/syntax-tree/hast-util-from-html)

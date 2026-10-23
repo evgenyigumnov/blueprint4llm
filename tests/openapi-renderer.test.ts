@@ -20,7 +20,7 @@ function fence(source: string): string {
 describe('OpenAPI renderer integration', () => {
   it('versions the cache key with the parser and layout rules', () => {
     expect(openapiRenderer.cacheKey).toContain('yaml@2.9.1');
-    expect(openapiRenderer.cacheKey).toContain('layout=reference-v2');
+    expect(openapiRenderer.cacheKey).toContain('layout=reference-v3');
   });
 
   it('renders OpenAPI fences through compileMarkdown and checkMarkdown', async () => {

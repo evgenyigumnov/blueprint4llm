@@ -8,207 +8,2140 @@
 
 ### Готов к вводу
 
-```wireframe
-Wireframe #calculator-idle mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "Готов к вводу"
-    Typography h2 right "0"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "Готов к вводу",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 56,
+          "zOrder": 5,
+          "properties": {
+            "text": "0",
+            "size": 34,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 6,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Введено первое число
 
-```wireframe
-Wireframe #calculator-first-input mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "Первое число"
-    Typography h2 right "12.5"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "Первое число",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 56,
+          "zOrder": 5,
+          "properties": {
+            "text": "12.5",
+            "size": 34,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 6,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Выбран оператор
 
-```wireframe
-Wireframe #calculator-operator-selected mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "12.5 ×"
-    Typography h2 right "12.5"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "12.5 ×",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 56,
+          "zOrder": 5,
+          "properties": {
+            "text": "12.5",
+            "size": 34,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 6,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Введено второе число
 
-```wireframe
-Wireframe #calculator-second-input mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "12.5 ×"
-    Typography h2 right "4"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "12.5 ×",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 56,
+          "zOrder": 5,
+          "properties": {
+            "text": "4",
+            "size": 34,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 6,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Результат
 
-```wireframe
-Wireframe #calculator-result mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "12.5 × 4 ="
-    Typography h2 right "50"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "12.5 × 4 =",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 56,
+          "zOrder": 5,
+          "properties": {
+            "text": "50",
+            "size": 34,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 6,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Ошибка деления на ноль
 
-```wireframe
-Wireframe #calculator-error mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Калькулятор"
-  Box 100% 130px solid padding=2
-    Typography caption right "9 ÷ 0 ="
-    Typography h3 right "Ошибка"
-    Typography body2 right "Деление на ноль"
-  Divider
-  Grid cols=4 gap=1
-    Button "AC" outlined
-    Button "±" outlined
-    Button "%" outlined
-    Button "÷" contained
-    Button "7" outlined
-    Button "8" outlined
-    Button "9" outlined
-    Button "×" contained
-    Button "4" outlined
-    Button "5" outlined
-    Button "6" outlined
-    Button "−" contained
-    Button "1" outlined
-    Button "2" outlined
-    Button "3" outlined
-    Button "+" contained
-    Button "⌫" outlined
-    Button "0" outlined
-    Button "." outlined
-    Button "=" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 115,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Калькулятор",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 66,
+          "w": 343,
+          "h": 130,
+          "zOrder": 3,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 17,
+          "zOrder": 4,
+          "properties": {
+            "text": "9 ÷ 0 =",
+            "size": 12,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 99,
+          "w": 311,
+          "h": 45,
+          "zOrder": 5,
+          "properties": {
+            "text": "Ошибка",
+            "size": 28,
+            "bold": true,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 32,
+          "y": 144,
+          "w": 311,
+          "h": 20,
+          "zOrder": 6,
+          "properties": {
+            "text": "Деление на ноль",
+            "size": 14,
+            "align": "right"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 16,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "AC",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 8,
+          "properties": {
+            "text": "±",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 9,
+          "properties": {
+            "text": "%",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 237,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 10,
+          "properties": {
+            "text": "÷",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Button",
+          "x": 16,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 11,
+          "properties": {
+            "text": "7",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 12,
+          "properties": {
+            "text": "8",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 13,
+          "properties": {
+            "text": "9",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-15",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 283,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 14,
+          "properties": {
+            "text": "×",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-16",
+          "typeID": "Button",
+          "x": 16,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 15,
+          "properties": {
+            "text": "4",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-17",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 16,
+          "properties": {
+            "text": "5",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-18",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 17,
+          "properties": {
+            "text": "6",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-19",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 329,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 18,
+          "properties": {
+            "text": "−",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-20",
+          "typeID": "Button",
+          "x": 16,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 19,
+          "properties": {
+            "text": "1",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-21",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 20,
+          "properties": {
+            "text": "2",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-22",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 21,
+          "properties": {
+            "text": "3",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-23",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 375,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 22,
+          "properties": {
+            "text": "+",
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-24",
+          "typeID": "Button",
+          "x": 16,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 23,
+          "properties": {
+            "text": "⌫",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-25",
+          "typeID": "Button",
+          "x": 103.8,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 24,
+          "properties": {
+            "text": "0",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-26",
+          "typeID": "Button",
+          "x": 191.5,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 25,
+          "properties": {
+            "text": ".",
+            "bold": false
+          }
+        },
+        {
+          "ID": "control-27",
+          "typeID": "Button",
+          "x": 279.3,
+          "y": 421,
+          "w": 79.8,
+          "h": 38,
+          "zOrder": 26,
+          "properties": {
+            "text": "=",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ### Пример использования
@@ -331,8 +2264,8 @@ flowchart TD
 - Одна адаптивная страница; на широком экране калькулятор расположен по центру, максимальная ширина — около 400 px. Мобильный прототип выше — основной.
 - Управление мышью, касанием и клавиатурой. Все кнопки одинаковой высоты, результат визуально выделен.
 - Без истории, памяти `M+`, скобок, функций научного калькулятора, сети, авторизации и хранения данных.
-- Реализация считается готовой, когда все сценарии из раздела 7 проходят автоматически, а UI соответствует Wiremark-прототипу.
+- Реализация считается готовой, когда все сценарии из раздела 7 проходят автоматически, а UI соответствует Balsamiq-прототипу.
 
 ---
 
-Формат UI: [Wiremark / инструкция для LLM](https://docs.wiremark.dev/wiremark-llm.md). Формат схем: [Mermaid](https://mermaid.js.org/).
+Формат UI: [Balsamiq Mockups 3 JSON](./blueprint-balsamiq.md). Формат схем: [Mermaid](https://mermaid.js.org/).

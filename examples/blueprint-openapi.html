@@ -1,397 +1,404 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Orders API</title>
-<style>
-:root {
-  color-scheme: light;
-  --bp-text: #1f2328;
-  --bp-muted: #656d76;
-  --bp-border: #d0d7de;
-  --bp-surface: #ffffff;
-  --bp-page-bg: #f6f8fa;
-  --bp-accent: #0a5bd3;
-  --bp-code-bg: #f6f8fa;
-  --bp-diagnostic-error: #b42318;
-  --bp-diagnostic-warning: #7a4b00;
-  --bp-diagnostic-error-bg: #fff4f2;
-  --bp-diagnostic-warning-bg: #fff8e6;
-}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orders API</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bp-text: #1f2328;
+        --bp-muted: #656d76;
+        --bp-border: #d0d7de;
+        --bp-surface: #ffffff;
+        --bp-page-bg: #f6f8fa;
+        --bp-accent: #0a5bd3;
+        --bp-code-bg: #f6f8fa;
+        --bp-diagnostic-error: #b42318;
+        --bp-diagnostic-warning: #7a4b00;
+        --bp-diagnostic-error-bg: #fff4f2;
+        --bp-diagnostic-warning-bg: #fff8e6;
+      }
 
-* {
-  box-sizing: border-box;
-}
+      * {
+        box-sizing: border-box;
+      }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
 
-body {
-  margin: 0;
-  background: var(--bp-page-bg);
-  color: var(--bp-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
-}
+      body {
+        margin: 0;
+        background: var(--bp-page-bg);
+        color: var(--bp-text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans',
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
 
-.bp-document {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 2.5rem 1.5rem 4rem;
-  background: var(--bp-surface);
-  border: none;
-}
+      .bp-document {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 1.5rem 4rem;
+        background: var(--bp-surface);
+        border: none;
+      }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.3;
-  margin: 1.8em 0 0.7em;
-  break-after: avoid;
-  page-break-after: avoid;
-}
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        line-height: 1.3;
+        margin: 1.8em 0 0.7em;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
 
-h1 {
-  font-size: 2rem;
-  margin-top: 0;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--bp-border);
-}
+      h1 {
+        font-size: 2rem;
+        margin-top: 0;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--bp-border);
+      }
 
-h2 {
-  font-size: 1.5rem;
-}
+      h2 {
+        font-size: 1.5rem;
+      }
 
-h3 {
-  font-size: 1.25rem;
-}
+      h3 {
+        font-size: 1.25rem;
+      }
 
-h4,
-h5,
-h6 {
-  font-size: 1.05rem;
-}
+      h4,
+      h5,
+      h6 {
+        font-size: 1.05rem;
+      }
 
-p,
-li {
-  orphans: 3;
-  widows: 3;
-}
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
 
-a {
-  color: var(--bp-accent);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
+      a {
+        color: var(--bp-accent);
+        text-decoration: none;
+        overflow-wrap: break-word;
+      }
 
-a:hover {
-  text-decoration: underline;
-}
+      a:hover {
+        text-decoration: underline;
+      }
 
-img {
-  max-width: 100%;
-  height: auto;
-}
+      img {
+        max-width: 100%;
+        height: auto;
+      }
 
-blockquote {
-  margin: 1em 0;
-  padding: 0.2em 1em;
-  color: var(--bp-muted);
-  border-left: 4px solid var(--bp-border);
-}
+      blockquote {
+        margin: 1em 0;
+        padding: 0.2em 1em;
+        color: var(--bp-muted);
+        border-left: 4px solid var(--bp-border);
+      }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.9em;
-  background: var(--bp-code-bg);
-  padding: 0.15em 0.35em;
-  border-radius: 4px;
-  overflow-wrap: break-word;
-}
+      code {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        background: var(--bp-code-bg);
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        overflow-wrap: break-word;
+      }
 
-pre {
-  margin: 1em 0;
-  padding: 0.9em 1em;
-  background: var(--bp-code-bg);
-  border: 1px solid var(--bp-border);
-  border-radius: 6px;
-  overflow-x: auto;
-}
+      pre {
+        margin: 1em 0;
+        padding: 0.9em 1em;
+        background: var(--bp-code-bg);
+        border: 1px solid var(--bp-border);
+        border-radius: 6px;
+        overflow-x: auto;
+      }
 
-pre.bp-diagram-container {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  overflow: visible;
-}
+      pre.bp-diagram-container {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+      }
 
-pre code {
-  background: none;
-  padding: 0;
-  font-size: 0.875em;
-  line-height: 1.5;
-}
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 0.875em;
+        line-height: 1.5;
+      }
 
-pre.shiki {
-  color: var(--shiki-light);
-  background-color: var(--shiki-light-bg, var(--bp-code-bg));
-}
+      pre.shiki {
+        color: var(--shiki-light);
+        background-color: var(--shiki-light-bg, var(--bp-code-bg));
+      }
 
-pre.shiki span {
-  color: var(--shiki-light);
-}
+      pre.shiki span {
+        color: var(--shiki-light);
+      }
 
-:root[data-bp-theme='dark'] pre.shiki,
-:root[data-bp-theme='dark'] pre.shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg, transparent) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
-}
+      :root[data-bp-theme='dark'] pre.shiki,
+      :root[data-bp-theme='dark'] pre.shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg, transparent) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
 
-:root[data-bp-theme='dark'] {
-  --bp-diagnostic-error: #ff7b72;
-  --bp-diagnostic-warning: #e3b341;
-  --bp-diagnostic-error-bg: #2d1618;
-  --bp-diagnostic-warning-bg: #2b2416;
-}
+      :root[data-bp-theme='dark'] {
+        --bp-diagnostic-error: #ff7b72;
+        --bp-diagnostic-warning: #e3b341;
+        --bp-diagnostic-error-bg: #2d1618;
+        --bp-diagnostic-warning-bg: #2b2416;
+      }
 
-.bp-table {
-  margin: 1em 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-table {
+        margin: 1em 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-table {
-  border-collapse: collapse;
-  font-size: 0.95em;
-}
+      table {
+        border-collapse: collapse;
+        font-size: 0.95em;
+      }
 
-th,
-td {
-  border: 1px solid var(--bp-border);
-  padding: 0.4em 0.8em;
-  text-align: left;
-  vertical-align: top;
-}
+      th,
+      td {
+        border: 1px solid var(--bp-border);
+        padding: 0.4em 0.8em;
+        text-align: left;
+        vertical-align: top;
+      }
 
-thead th {
-  background: var(--bp-code-bg);
-}
+      thead th {
+        background: var(--bp-code-bg);
+      }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--bp-border);
-  margin: 2em 0;
-}
+      hr {
+        border: none;
+        border-top: 1px solid var(--bp-border);
+        margin: 2em 0;
+      }
 
-ul[data-task-list] li,
-li > input[type='checkbox'] {
-  margin-right: 0.4em;
-}
+      ul[data-task-list] li,
+      li > input[type='checkbox'] {
+        margin-right: 0.4em;
+      }
 
-.bp-diagram {
-  max-width: 100%;
-  margin: 1.5rem 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-}
+      .bp-diagram {
+        max-width: 100%;
+        margin: 1.5rem 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+      }
 
-.bp-diagram > svg {
-  display: block;
-  max-width: none;
-  width: auto;
-  height: auto;
-  margin: 0;
-}
+      .bp-diagram > svg {
+        display: block;
+        max-width: none;
+        width: auto;
+        height: auto;
+        margin: 0;
+      }
 
-.bp-diagnostics-summary,
-.bp-diagnostic {
-  margin: 1rem 0;
-  padding: 0.9rem 1rem;
-  color: var(--bp-text);
-  background: var(--bp-surface);
-  border: 1px solid var(--bp-border);
-  border-inline-start-width: 4px;
-  border-radius: 6px;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostics-summary,
+      .bp-diagnostic {
+        margin: 1rem 0;
+        padding: 0.9rem 1rem;
+        color: var(--bp-text);
+        background: var(--bp-surface);
+        border: 1px solid var(--bp-border);
+        border-inline-start-width: 4px;
+        border-radius: 6px;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-.bp-diagnostics-summary {
-  font-weight: 650;
-}
+      .bp-diagnostics-summary {
+        font-weight: 650;
+      }
 
-.bp-diagnostic {
-  white-space: normal;
-}
+      .bp-diagnostic {
+        white-space: normal;
+      }
 
-.bp-diagnostics-summary--error,
-.bp-diagnostic--error {
-  border-inline-start-color: var(--bp-diagnostic-error);
-}
+      .bp-diagnostics-summary--error,
+      .bp-diagnostic--error {
+        border-inline-start-color: var(--bp-diagnostic-error);
+      }
 
-.bp-diagnostics-summary--warning,
-.bp-diagnostic--warning {
-  border-inline-start-color: var(--bp-diagnostic-warning);
-}
+      .bp-diagnostics-summary--warning,
+      .bp-diagnostic--warning {
+        border-inline-start-color: var(--bp-diagnostic-warning);
+      }
 
-.bp-diagnostic--error {
-  background: var(--bp-diagnostic-error-bg);
-}
+      .bp-diagnostic--error {
+        background: var(--bp-diagnostic-error-bg);
+      }
 
-.bp-diagnostic--warning {
-  background: var(--bp-diagnostic-warning-bg);
-}
+      .bp-diagnostic--warning {
+        background: var(--bp-diagnostic-warning-bg);
+      }
 
-.bp-diagnostic__title {
-  margin: 0 0 0.25rem;
-  color: var(--bp-text);
-  font-size: 1rem;
-}
+      .bp-diagnostic__title {
+        margin: 0 0 0.25rem;
+        color: var(--bp-text);
+        font-size: 1rem;
+      }
 
-.bp-diagnostic__location {
-  margin: 0 0 0.5rem;
-  color: var(--bp-muted);
-  font-size: 0.875rem;
-  overflow-wrap: anywhere;
-}
+      .bp-diagnostic__location {
+        margin: 0 0 0.5rem;
+        color: var(--bp-muted);
+        font-size: 0.875rem;
+        overflow-wrap: anywhere;
+      }
 
-.bp-diagnostic__message {
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  color: var(--bp-text);
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  break-inside: auto;
-  page-break-inside: auto;
-}
+      .bp-diagnostic__message {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        color: var(--bp-text);
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        font:
+          0.9rem/1.5 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
-@media screen and (max-width: 640px) {
-  .bp-document {
-    padding: 1.25rem 1rem 3rem;
-    border: none;
-  }
+      @media screen and (max-width: 640px) {
+        .bp-document {
+          padding: 1.25rem 1rem 3rem;
+          border: none;
+        }
 
-  body {
-    font-size: 15px;
-  }
-}
+        body {
+          font-size: 15px;
+        }
+      }
 
-@media print {
-  :root {
-    --bp-page-bg: #ffffff;
-  }
+      @media print {
+        :root {
+          --bp-page-bg: #ffffff;
+        }
 
-  body {
-    background: #ffffff;
-    font-size: 11pt;
-    line-height: 1.5;
-  }
+        body {
+          background: #ffffff;
+          font-size: 11pt;
+          line-height: 1.5;
+        }
 
-  .bp-document {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    border: none;
-  }
+        .bp-document {
+          max-width: none;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
 
-  pre {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    overflow: visible;
-  }
+        pre {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          overflow: visible;
+        }
 
-  pre.shiki {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        pre.shiki {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  pre.shiki span {
-    color: var(--shiki-light) !important;
-  }
+        pre.shiki span {
+          color: var(--shiki-light) !important;
+        }
 
-  :root[data-bp-theme='dark'] pre.shiki,
-  :root[data-bp-theme='dark'] pre.shiki span {
-    color: var(--shiki-light) !important;
-    background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
-  }
+        :root[data-bp-theme='dark'] pre.shiki,
+        :root[data-bp-theme='dark'] pre.shiki span {
+          color: var(--shiki-light) !important;
+          background-color: var(--shiki-light-bg, var(--bp-code-bg)) !important;
+        }
 
-  code {
-    overflow-wrap: break-word;
-  }
+        code {
+          overflow-wrap: break-word;
+        }
 
-  .bp-table {
-    overflow: visible;
-  }
+        .bp-table {
+          overflow: visible;
+        }
 
-  .bp-diagram {
-    overflow: visible;
-  }
+        .bp-diagram {
+          overflow: visible;
+        }
 
-  .bp-diagram > svg {
-    max-width: 100% !important;
-  }
+        .bp-diagram > svg {
+          max-width: 100% !important;
+        }
 
-  .bp-diagnostic__message {
-    overflow: visible;
-  }
+        .bp-diagnostic__message {
+          overflow: visible;
+        }
 
-  table {
-    width: 100%;
-    table-layout: fixed;
-  }
+        table {
+          width: 100%;
+          table-layout: fixed;
+        }
 
-  thead {
-    display: table-header-group;
-  }
+        thead {
+          display: table-header-group;
+        }
 
-  tr,
-  img,
-  figure,
-  .bp-diagram,
-  blockquote {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-}
-
-
-</style>
-</head>
-<body>
-<main class="bp-document">
-<h1>Orders API</h1>
-<p>The <code>openapi</code> fence renders an OpenAPI 3.1.1 contract as a fully expanded static API reference. The
-renderer works locally and keeps references between operations and models visible.</p>
-<pre class="bp-diagram-container"><figure class="bp-diagram bp-diagram--openapi" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1567" viewBox="0 0 1200 1567"><title>Orders API</title><rect x="0" y="0" width="1200" height="1567" fill="#f8fafc"></rect><rect x="32" y="78.95" width="57" height="23" rx="11.5" fill="#e0e7ff" stroke="none" stroke-width="1"></rect><rect x="98" y="78.95" width="102" height="23" rx="11.5" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="32" y="138.7" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="182.2" y="160.7" width="34" height="22" rx="11" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="32" y="200.15" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="32" y="215.15" width="1136" height="421.4" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="216.15" width="1134" height="66.85" rx="8" fill="#eff6ff" stroke="none" stroke-width="1"></rect><rect x="48" y="230.15" width="76" height="25" rx="12.5" fill="#2563eb" stroke="none" stroke-width="1"></rect><rect x="42" y="291" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="295" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="327" width="1116" height="82.7" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="968" y="335" width="72" height="21" rx="10.5" fill="#e0f2fe" stroke="none" stroke-width="1"></rect><rect x="1050" y="335" width="78" height="21" rx="10.5" fill="#fef3c7" stroke="none" stroke-width="1"></rect><rect x="42" y="416.7" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="420.7" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="452.7" width="1116" height="110.85" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="461.7" width="58" height="22" rx="11" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"></rect><rect x="72" y="490.7" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="42" y="570.55" width="1116" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="579.55" width="58" height="22" rx="11" fill="#fef3c7" stroke="#fde68a" stroke-width="1"></rect><rect x="32" y="644.55" width="1136" height="343.55" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="645.55" width="1134" height="66.85" rx="8" fill="#ecfdf5" stroke="none" stroke-width="1"></rect><rect x="48" y="659.55" width="76" height="25" rx="12.5" fill="#059669" stroke="none" stroke-width="1"></rect><rect x="42" y="720.4" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="724.4" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="62" y="756.4" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="42" y="821.25" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="825.25" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="857.25" width="1116" height="110.85" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="866.25" width="58" height="22" rx="11" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"></rect><rect x="72" y="895.25" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="134.32" y="1005.1" width="34" height="22" rx="11" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="32" y="1044.55" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="32" y="1059.55" width="1136" height="267.75" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="1060.55" width="1134" height="43" rx="8" fill="#eef2ff" stroke="none" stroke-width="1"></rect><rect x="1036" y="1069.55" width="116" height="22" rx="11" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="40" y="1174.4" width="1128" height="72.65" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><rect x="40" y="1253.05" width="1128" height="55.25" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><rect x="32" y="1338.3" width="1136" height="189.1" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="1339.3" width="1134" height="43" rx="8" fill="#eef2ff" stroke="none" stroke-width="1"></rect><rect x="1036" y="1348.3" width="116" height="22" rx="11" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="40" y="1453.15" width="1128" height="55.25" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><text x="32" y="61" font-family="Noto Sans, Arial, sans-serif" font-size="31" fill="#172554" font-weight="700"><tspan x="32" dy="0">Orders API</tspan></text><text x="40.04" y="93.47" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#3730a3" font-weight="700"><tspan x="40.04" dy="0">v1.0.0</tspan></text><text x="106.21" y="93.47" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#1d4ed8" font-weight="700"><tspan x="106.21" dy="0">OpenAPI 3.1.1</tspan></text><text x="32" y="127.95" font-family="Noto Sans, Arial, sans-serif" font-size="15" fill="#475569"><tspan x="32" dy="0">Create orders and retrieve them by ID.</tspan></text><text x="32" y="180.7" font-family="Noto Sans, Arial, sans-serif" font-size="21" fill="#0f172a" font-weight="700"><tspan x="32" dy="0">Operations</tspan></text><text x="195.79" y="174.72" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#334155" font-weight="700"><tspan x="195.79" dy="0">2</tspan></text><text x="75.77" y="245.67" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="700"><tspan x="75.77" dy="0">GET</tspan></text><text x="140" y="245.15" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" fill="#0f172a" font-weight="700"><tspan x="140" dy="0">/orders/{id}</tspan></text><text x="140" y="265.15" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#475569"><tspan x="140" dy="0">Get an order</tspan></text><text x="53" y="308" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Parameters</tspan></text><text x="1127.9" y="307.75" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="54" y="349" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="54" dy="0">id</tspan></text><text x="991.6" y="348.25" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#0369a1" font-weight="700"><tspan x="991.6" dy="0">PATH</tspan></text><text x="1064.2" y="348.25" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#92400e" font-weight="700"><tspan x="1064.2" dy="0">required</tspan></text><text x="52" y="374.85" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="52" dy="0">Schema</tspan></text><text x="64" y="395.85" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="64" dy="0">string</tspan></text><text x="53" y="433.7" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Responses</tspan></text><text x="1127.9" y="433.45" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">2</tspan></text><text x="73.7" y="475.45" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#166534" font-weight="700"><tspan x="73.7" dy="0">200</tspan></text><text x="126" y="473.7" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order.</tspan></text><text x="112.4" y="503.95" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="112.4" dy="0">application/json</tspan></text><text x="92" y="528.7" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="92" dy="0">Schema</tspan></text><text x="104" y="549.7" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="104" dy="0">Order (#/components/schemas/Order)</tspan></text><text x="73.7" y="593.3" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#92400e" font-weight="700"><tspan x="73.7" dy="0">404</tspan></text><text x="126" y="591.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order does not exist.</tspan></text><text x="72.36" y="675.08" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="700"><tspan x="72.36" dy="0">POST</tspan></text><text x="140" y="674.55" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" fill="#0f172a" font-weight="700"><tspan x="140" dy="0">/orders</tspan></text><text x="140" y="694.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#475569"><tspan x="140" dy="0">Create an order</tspan></text><text x="53" y="737.4" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Request body · required</tspan></text><text x="1127.9" y="737.15" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="102.4" y="769.65" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="102.4" dy="0">application/json</tspan></text><text x="72" y="794.4" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="72" dy="0">Schema</tspan></text><text x="84" y="815.4" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="84" dy="0">NewOrder (#/components/schemas/NewOrder)</tspan></text><text x="53" y="838.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Responses</tspan></text><text x="1127.9" y="838" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="73.7" y="880" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#166534" font-weight="700"><tspan x="73.7" dy="0">201</tspan></text><text x="126" y="878.25" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order.</tspan></text><text x="112.4" y="908.5" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="112.4" dy="0">application/json</tspan></text><text x="92" y="933.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="92" dy="0">Schema</tspan></text><text x="104" y="954.25" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="104" dy="0">Order (#/components/schemas/Order)</tspan></text><text x="32" y="1025.1" font-family="Noto Sans, Arial, sans-serif" font-size="21" fill="#0f172a" font-weight="700"><tspan x="32" dy="0">Models</tspan></text><text x="147.91" y="1019.13" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#334155" font-weight="700"><tspan x="147.91" dy="0">2</tspan></text><text x="47" y="1084.55" font-family="Noto Sans, Arial, sans-serif" font-size="16" fill="#1e3a8a" font-weight="700"><tspan x="47" dy="0">Order</tspan></text><text x="1058.2" y="1083.3" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#1e40af" font-weight="700"><tspan x="1058.2" dy="0">2 properties</tspan></text><text x="32" y="1125.55" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="32" dy="0">Schema</tspan></text><text x="44" y="1146.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="44" dy="0">object</tspan></text><text x="36" y="1166.4" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#64748b" font-weight="700"><tspan x="36" dy="0">Properties · 2</tspan></text><text x="52" y="1196.4" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">id (required)</tspan></text><text x="61" y="1216.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string</tspan></text><text x="61" y="1235.65" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#475569"><tspan x="61" dy="0">Server-assigned order ID.</tspan></text><text x="52" y="1275.05" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">status (required)</tspan></text><text x="61" y="1294.9" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string · enum "new" | "paid"</tspan></text><text x="47" y="1363.3" font-family="Noto Sans, Arial, sans-serif" font-size="16" fill="#1e3a8a" font-weight="700"><tspan x="47" dy="0">NewOrder</tspan></text><text x="1064.4" y="1362.05" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#1e40af" font-weight="700"><tspan x="1064.4" dy="0">1 property</tspan></text><text x="32" y="1404.3" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="32" dy="0">Schema</tspan></text><text x="44" y="1425.3" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="44" dy="0">object</tspan></text><text x="36" y="1445.15" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#64748b" font-weight="700"><tspan x="36" dy="0">Properties · 1</tspan></text><text x="52" y="1475.15" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">customerId (required)</tspan></text><text x="61" y="1495" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string</tspan></text></svg></figure></pre>
-</main>
-
-</body>
+        tr,
+        img,
+        figure,
+        .bp-diagram,
+        blockquote {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="bp-document">
+      <h1>Orders API</h1>
+      <p>
+        The <code>openapi</code> fence renders an OpenAPI 3.1.1 contract as a fully expanded static
+        API reference. The renderer works locally and keeps references between operations and models
+        visible.
+      </p>
+      <pre
+        class="bp-diagram-container"
+      ><figure class="bp-diagram bp-diagram--openapi" data-diagram-id="bp-diagram-001"><svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1567" viewBox="0 0 1200 1567"><title>Orders API</title><rect x="0" y="0" width="1200" height="1567" fill="#f8fafc"></rect><rect x="32" y="78.95" width="57" height="23" rx="11.5" fill="#e0e7ff" stroke="none" stroke-width="1"></rect><rect x="98" y="78.95" width="102" height="23" rx="11.5" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="32" y="138.7" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="182.2" y="160.7" width="34" height="22" rx="11" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="32" y="200.15" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="32" y="215.15" width="1136" height="421.4" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="216.15" width="1134" height="66.85" rx="8" fill="#eff6ff" stroke="none" stroke-width="1"></rect><rect x="48" y="230.15" width="76" height="25" rx="12.5" fill="#2563eb" stroke="none" stroke-width="1"></rect><rect x="42" y="291" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="295" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="327" width="1116" height="82.7" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="968" y="335" width="72" height="21" rx="10.5" fill="#e0f2fe" stroke="none" stroke-width="1"></rect><rect x="1050" y="335" width="78" height="21" rx="10.5" fill="#fef3c7" stroke="none" stroke-width="1"></rect><rect x="42" y="416.7" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="420.7" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="452.7" width="1116" height="110.85" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="461.7" width="58" height="22" rx="11" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"></rect><rect x="72" y="490.7" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="42" y="570.55" width="1116" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="579.55" width="58" height="22" rx="11" fill="#fef3c7" stroke="#fde68a" stroke-width="1"></rect><rect x="32" y="644.55" width="1136" height="343.55" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="645.55" width="1134" height="66.85" rx="8" fill="#ecfdf5" stroke="none" stroke-width="1"></rect><rect x="48" y="659.55" width="76" height="25" rx="12.5" fill="#059669" stroke="none" stroke-width="1"></rect><rect x="42" y="720.4" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="724.4" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="62" y="756.4" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="42" y="821.25" width="1116" height="28" rx="5" fill="#f1f5f9" stroke="none" stroke-width="1"></rect><rect x="1116" y="825.25" width="30" height="20" rx="10" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="42" y="857.25" width="1116" height="110.85" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"></rect><rect x="54" y="866.25" width="58" height="22" rx="11" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"></rect><rect x="72" y="895.25" width="180" height="21" rx="10.5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"></rect><rect x="134.32" y="1005.1" width="34" height="22" rx="11" fill="#e2e8f0" stroke="none" stroke-width="1"></rect><rect x="32" y="1044.55" width="1136" height="1" fill="#dbe3ee" stroke="none" stroke-width="1"></rect><rect x="32" y="1059.55" width="1136" height="267.75" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="1060.55" width="1134" height="43" rx="8" fill="#eef2ff" stroke="none" stroke-width="1"></rect><rect x="1036" y="1069.55" width="116" height="22" rx="11" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="40" y="1174.4" width="1128" height="72.65" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><rect x="40" y="1253.05" width="1128" height="55.25" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><rect x="32" y="1338.3" width="1136" height="189.1" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"></rect><rect x="33" y="1339.3" width="1134" height="43" rx="8" fill="#eef2ff" stroke="none" stroke-width="1"></rect><rect x="1036" y="1348.3" width="116" height="22" rx="11" fill="#dbeafe" stroke="none" stroke-width="1"></rect><rect x="40" y="1453.15" width="1128" height="55.25" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"></rect><text x="32" y="61" font-family="Noto Sans, Arial, sans-serif" font-size="31" fill="#172554" font-weight="700"><tspan x="32" dy="0">Orders API</tspan></text><text x="40.04" y="93.47" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#3730a3" font-weight="700"><tspan x="40.04" dy="0">v1.0.0</tspan></text><text x="106.21" y="93.47" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#1d4ed8" font-weight="700"><tspan x="106.21" dy="0">OpenAPI 3.1.1</tspan></text><text x="32" y="127.95" font-family="Noto Sans, Arial, sans-serif" font-size="15" fill="#475569"><tspan x="32" dy="0">Create orders and retrieve them by ID.</tspan></text><text x="32" y="180.7" font-family="Noto Sans, Arial, sans-serif" font-size="21" fill="#0f172a" font-weight="700"><tspan x="32" dy="0">Operations</tspan></text><text x="195.79" y="174.72" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#334155" font-weight="700"><tspan x="195.79" dy="0">2</tspan></text><text x="75.77" y="245.67" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="700"><tspan x="75.77" dy="0">GET</tspan></text><text x="140" y="245.15" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" fill="#0f172a" font-weight="700"><tspan x="140" dy="0">/orders/{id}</tspan></text><text x="140" y="265.15" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#475569"><tspan x="140" dy="0">Get an order</tspan></text><text x="53" y="308" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Parameters</tspan></text><text x="1127.9" y="307.75" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="54" y="349" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="54" dy="0">id</tspan></text><text x="991.6" y="348.25" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#0369a1" font-weight="700"><tspan x="991.6" dy="0">PATH</tspan></text><text x="1064.2" y="348.25" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#92400e" font-weight="700"><tspan x="1064.2" dy="0">required</tspan></text><text x="52" y="374.85" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="52" dy="0">Schema</tspan></text><text x="64" y="395.85" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="64" dy="0">string</tspan></text><text x="53" y="433.7" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Responses</tspan></text><text x="1127.9" y="433.45" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">2</tspan></text><text x="73.7" y="475.45" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#166534" font-weight="700"><tspan x="73.7" dy="0">200</tspan></text><text x="126" y="473.7" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order.</tspan></text><text x="112.4" y="503.95" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="112.4" dy="0">application/json</tspan></text><text x="92" y="528.7" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="92" dy="0">Schema</tspan></text><text x="104" y="549.7" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="104" dy="0">Order (#/components/schemas/Order)</tspan></text><text x="73.7" y="593.3" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#92400e" font-weight="700"><tspan x="73.7" dy="0">404</tspan></text><text x="126" y="591.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order does not exist.</tspan></text><text x="72.36" y="675.08" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#ffffff" font-weight="700"><tspan x="72.36" dy="0">POST</tspan></text><text x="140" y="674.55" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" fill="#0f172a" font-weight="700"><tspan x="140" dy="0">/orders</tspan></text><text x="140" y="694.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#475569"><tspan x="140" dy="0">Create an order</tspan></text><text x="53" y="737.4" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Request body · required</tspan></text><text x="1127.9" y="737.15" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="102.4" y="769.65" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="102.4" dy="0">application/json</tspan></text><text x="72" y="794.4" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="72" dy="0">Schema</tspan></text><text x="84" y="815.4" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="84" dy="0">NewOrder (#/components/schemas/NewOrder)</tspan></text><text x="53" y="838.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#334155" font-weight="700"><tspan x="53" dy="0">Responses</tspan></text><text x="1127.9" y="838" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#475569" font-weight="700"><tspan x="1127.9" dy="0">1</tspan></text><text x="73.7" y="880" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#166534" font-weight="700"><tspan x="73.7" dy="0">201</tspan></text><text x="126" y="878.25" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#334155"><tspan x="126" dy="0">The order.</tspan></text><text x="112.4" y="908.5" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#334155" font-weight="700"><tspan x="112.4" dy="0">application/json</tspan></text><text x="92" y="933.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="92" dy="0">Schema</tspan></text><text x="104" y="954.25" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="104" dy="0">Order (#/components/schemas/Order)</tspan></text><text x="32" y="1025.1" font-family="Noto Sans, Arial, sans-serif" font-size="21" fill="#0f172a" font-weight="700"><tspan x="32" dy="0">Models</tspan></text><text x="147.91" y="1019.13" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#334155" font-weight="700"><tspan x="147.91" dy="0">2</tspan></text><text x="47" y="1084.55" font-family="Noto Sans, Arial, sans-serif" font-size="16" fill="#1e3a8a" font-weight="700"><tspan x="47" dy="0">Order</tspan></text><text x="1058.2" y="1083.3" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#1e40af" font-weight="700"><tspan x="1058.2" dy="0">2 properties</tspan></text><text x="32" y="1125.55" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="32" dy="0">Schema</tspan></text><text x="44" y="1146.55" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="44" dy="0">object</tspan></text><text x="36" y="1166.4" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#64748b" font-weight="700"><tspan x="36" dy="0">Properties · 2</tspan></text><text x="52" y="1196.4" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">id (required)</tspan></text><text x="61" y="1216.25" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string</tspan></text><text x="61" y="1235.65" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#475569"><tspan x="61" dy="0">Server-assigned order ID.</tspan></text><text x="52" y="1275.05" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">status (required)</tspan></text><text x="61" y="1294.9" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string · enum "new" | "paid"</tspan></text><text x="47" y="1363.3" font-family="Noto Sans, Arial, sans-serif" font-size="16" fill="#1e3a8a" font-weight="700"><tspan x="47" dy="0">NewOrder</tspan></text><text x="1064.4" y="1362.05" font-family="Noto Sans, Arial, sans-serif" font-size="10" fill="#1e40af" font-weight="700"><tspan x="1064.4" dy="0">1 property</tspan></text><text x="32" y="1404.3" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#64748b" font-weight="700"><tspan x="32" dy="0">Schema</tspan></text><text x="44" y="1425.3" font-family="Noto Sans, Arial, sans-serif" font-size="13" fill="#0f766e" font-weight="700"><tspan x="44" dy="0">object</tspan></text><text x="36" y="1445.15" font-family="Noto Sans, Arial, sans-serif" font-size="11" fill="#64748b" font-weight="700"><tspan x="36" dy="0">Properties · 1</tspan></text><text x="52" y="1475.15" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" fill="#0f172a" font-weight="700"><tspan x="52" dy="0">customerId (required)</tspan></text><text x="61" y="1495" font-family="Noto Sans, Arial, sans-serif" font-size="12" fill="#0f766e" font-weight="400"><tspan x="61" dy="0">string</tspan></text></svg></figure></pre>
+    </main>
+  </body>
 </html>

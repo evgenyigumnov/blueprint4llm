@@ -113,15 +113,118 @@
 
 Это один пример дизайна, который может находиться в `.pen`-документе. В HTML его рисунок заменит SVG, созданный рендерером.
 
-```wireframe
-Wireframe #pencil-profile mobile padding=2 gap=2
-  AppBar dense
-    Toolbar dense
-      Typography h6 "Профиль"
-  Stack column gap=2 padding=2
-    TextField "Имя" value="Анна Иванова"
-    TextField "Электронная почта" value="anna@example.com"
-    Button "Сохранить" contained
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 376,
+    "measuredH": 813,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 375,
+          "h": 812,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Rectangle",
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 34,
+          "zOrder": 1,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 20,
+          "y": 20,
+          "w": 74,
+          "h": 26,
+          "zOrder": 2,
+          "properties": {
+            "text": "Профиль",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 32,
+          "y": 82,
+          "w": 311,
+          "h": 18,
+          "zOrder": 3,
+          "properties": {
+            "text": "Имя",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "TextInput",
+          "x": 32,
+          "y": 102,
+          "w": 311,
+          "h": 36,
+          "zOrder": 4,
+          "properties": {
+            "text": "Анна Иванова"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 32,
+          "y": 154,
+          "w": 311,
+          "h": 18,
+          "zOrder": 5,
+          "properties": {
+            "text": "Электронная почта",
+            "size": 12
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "TextInput",
+          "x": 32,
+          "y": 174,
+          "w": 311,
+          "h": 36,
+          "zOrder": 6,
+          "properties": {
+            "text": "anna@example.com"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Button",
+          "x": 32,
+          "y": 226,
+          "w": 106,
+          "h": 38,
+          "zOrder": 7,
+          "properties": {
+            "text": "Сохранить",
+            "bold": true
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Поддерживаемая подмножина

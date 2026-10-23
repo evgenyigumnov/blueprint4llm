@@ -55,30 +55,202 @@ sequenceDiagram
 
 ## Макет диаграммы в документе
 
-Wiremark показывает вид готовой диаграммы после рендеринга. В приложении блок SVG заменит карточки и стрелки макета.
+Balsamiq показывает вид готовой диаграммы после рендеринга. В приложении блок SVG заменит карточки и стрелки макета.
 
-```wireframe
-Wireframe #drawio-preview landscape
-  Stack column gap=2 padding=3
-    Breadcrumbs
-      Link "План"
-      Link "Сценарий релиза"
-    Typography h4 "Сценарий релиза"
-    Card
-      CardHeader title="draw.io JSON" subheader="Страница: Сценарий · раскладка: сверху вниз"
-      CardContent
-        Stack row gap=2
-          Card
-            CardContent
-              Typography body1 "Старт"
-          Typography h5 "↓"
-          Card
-            CardContent
-              Typography body1 "Релиз"
-    Stack row gap=1
-      Chip "2 узла"
-      Chip "1 связь"
-      Chip "SVG · доступно офлайн"
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 801,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 800,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 38,
+          "h": 23,
+          "zOrder": 1,
+          "properties": {
+            "text": "План",
+            "color": "#2563eb",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 88,
+          "y": 24,
+          "w": 140,
+          "h": 23,
+          "zOrder": 2,
+          "properties": {
+            "text": "Сценарий релиза",
+            "color": "#2563eb",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 24,
+          "y": 63,
+          "w": 1232,
+          "h": 34,
+          "zOrder": 3,
+          "properties": {
+            "text": "Сценарий релиза",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 113,
+          "w": 1232,
+          "h": 189,
+          "zOrder": 4,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Label",
+          "x": 36,
+          "y": 113,
+          "w": 1208,
+          "h": 57,
+          "zOrder": 5,
+          "properties": {
+            "text": "draw.io JSON",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Rectangle",
+          "x": 40,
+          "y": 186,
+          "w": 160,
+          "h": 100,
+          "zOrder": 6,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 56,
+          "y": 202,
+          "w": 128,
+          "h": 23,
+          "zOrder": 7,
+          "properties": {
+            "text": "Старт",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 216,
+          "y": 186,
+          "w": 12,
+          "h": 100,
+          "zOrder": 8,
+          "properties": {
+            "text": "↓",
+            "size": 20,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Rectangle",
+          "x": 244,
+          "y": 186,
+          "w": 160,
+          "h": 100,
+          "zOrder": 9,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Label",
+          "x": 260,
+          "y": 202,
+          "w": 128,
+          "h": 23,
+          "zOrder": 10,
+          "properties": {
+            "text": "Релиз",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 318,
+          "w": 70,
+          "h": 29,
+          "zOrder": 11,
+          "properties": {
+            "text": "2 узла",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Rectangle",
+          "x": 102,
+          "y": 318,
+          "w": 77,
+          "h": 29,
+          "zOrder": 12,
+          "properties": {
+            "text": "1 связь",
+            "color": "#f1f5f9"
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Rectangle",
+          "x": 187,
+          "y": 318,
+          "w": 183,
+          "h": 29,
+          "zOrder": 13,
+          "properties": {
+            "text": "SVG · доступно офлайн",
+            "color": "#f1f5f9"
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Архитектура реализации
@@ -111,9 +283,9 @@ Wireframe #drawio-preview landscape
    - Готово 2026-10-21: добавлены `drawio-rank.ts`, `drawio-layout.ts` и `drawio-svg.ts`. Локальная раскладка размещает группы и узлы по направлению `TB`/`LR`, сводит циклы в компоненты и строит стрелки с метками. Подписи экранируются; размеры SVG, вложенность групп и длина меток ограничены.
    - Тесты покрывают дерево, ветвление, цикл, группы, направление, длинные подписи и безопасный SVG. `npm test` прошёл: 32 файла, 250 тестов. Также прошли сборка, typecheck и lint. Общий `npm run format:check` сообщает о 10 ранее существовавших файлах; новые и изменённые файлы этапа отформатированы.
    - Версия пакета изменена с `0.10.0` на `0.11.0`.
-4. [x] Подключить renderer к `compileMarkdown()` и `checkMarkdown()`. Добавить тесты на рендер вместе с Mermaid/PlantUML/Wiremark, диагностики, кэш и повторную сборку предпросмотра.
+4. [x] Подключить renderer к `compileMarkdown()` и `checkMarkdown()`. Добавить тесты на рендер вместе с Mermaid/PlantUML/Balsamiq, диагностики, кэш и повторную сборку предпросмотра.
    - Готово 2026-10-21: добавлен `src/renderers/drawio.ts` с языками `drawio` и `draw.io`; renderer зарегистрирован в обоих потоках компилятора. Общий pipeline проверяет SVG, присваивает уникальные ID и добавляет диагностики с файлом и строкой блока. Metadata входит в ключ кэша.
-   - Добавлены тесты интеграции с Mermaid, PlantUML и Wiremark, проверки `checkMarkdown()`, кэша по направлению, обновления `--serve`, PDF и VS Code host. Для расширения обновлён lock локального пакета до версии `0.12.0`.
+   - Добавлены тесты интеграции с Mermaid, PlantUML и Balsamiq, проверки `checkMarkdown()`, кэша по направлению, обновления `--serve`, PDF и VS Code host. Для расширения обновлён lock локального пакета до версии `0.12.0`.
 5. [x] Добавить `examples/blueprint-draw.io.md` с рабочим образцом JSON. Обновить README: JSON-экспорт, параметры fenced-блока, автоперестроение, лимиты и отличия от исходного вида draw.io.
    - Готово 2026-10-21: добавлен рабочий пример с группой, узлами и рёбрами. README описывает JSON-экспорт, алиасы языка, параметры `page`/`direction`, автоматическое обновление preview, ограничения входа и то, что новая раскладка не сохраняет геометрию и стили исходника.
 6. [x] Собрать проект и выполнить тесты, проверку типов, lint и форматирование. После успешной полной проверки увеличить версию `package.json` как для новой функции.

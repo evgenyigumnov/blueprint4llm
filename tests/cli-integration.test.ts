@@ -9,6 +9,8 @@ import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { loginMockupJson } from './fixtures/balsamiq.js';
+
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const cliPath = path.join(projectRoot, 'dist', 'cli.js');
 const temporaryDirectories: string[] = [];
@@ -37,10 +39,7 @@ describe('built CLI integration', () => {
   it('exports one rendered diagram as SVG, PNG, or JPEG', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'one-diagram.md');
-    await writeFile(
-      input,
-      '# Login screen\n\n```wireframe\nWireframe #login mobile\n  Typography h4 "Sign in"\n```',
-    );
+    await writeFile(input, `# Login screen\n\n\`\`\`balsamiq\n${loginMockupJson}\n\`\`\``);
 
     const svgPath = path.join(root, 'exports', 'login.svg');
     const svgRun = await runCli([input, '--out', svgPath, '--format', 'svg']);

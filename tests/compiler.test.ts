@@ -15,6 +15,7 @@ import {
   MAX_MARKDOWN_BYTES,
 } from '../src/compiler.js';
 import { DiagnosticError } from '../src/errors.js';
+import { loginMockupJson } from './fixtures/balsamiq.js';
 
 describe('compileMarkdown', () => {
   it('keeps the document order and reports every independent diagram failure', async () => {
@@ -38,9 +39,10 @@ describe('compileMarkdown', () => {
       '',
       'Text before the first failure.',
       '',
-      '```wiremark',
-      'Wireframe mobile',
-      '  UnknownFirst',
+      '```balsamiq',
+      '{"mockup":{"controls":{"control":[',
+      '  {"ID":"first","typeID":"UnknownFirst"}',
+      ']}}}',
       '```',
       '',
       'Text between failures.',
@@ -51,9 +53,10 @@ describe('compileMarkdown', () => {
       '',
       'Text before the second failure.',
       '',
-      '```wireframe',
-      'Wireframe mobile',
-      '  UnknownSecond',
+      '```balsamiq',
+      '{"mockup":{"controls":{"control":[',
+      '  {"ID":"second","typeID":"UnknownSecond"}',
+      ']}}}',
       '```',
       '',
       'Text after the last failure.',
@@ -72,15 +75,15 @@ describe('compileMarkdown', () => {
         sourceFile: 'orders.md',
         line: 7,
         diagramId: 'bp-diagram-001',
-        renderer: 'wiremark',
+        renderer: 'balsamiq',
       },
       {
         severity: 'error',
         code: 'diagram.render',
         sourceFile: 'orders.md',
-        line: 20,
+        line: 21,
         diagramId: 'bp-diagram-003',
-        renderer: 'wiremark',
+        renderer: 'balsamiq',
       },
     ]);
     expect(checked.diagnostics).toEqual(compiled.diagnostics);
@@ -138,7 +141,7 @@ describe('compileMarkdown', () => {
     ]);
   }, 60_000);
 
-  it('renders PlantUML alongside Mermaid and Wiremark with document-unique SVG IDs', async () => {
+  it('renders PlantUML alongside Mermaid and Balsamiq with document-unique SVG IDs', async () => {
     const drawioJson = JSON.stringify({
       version: '26.0',
       pages: [
@@ -183,10 +186,8 @@ flowchart TB
 ${drawioJson}
 \`\`\`
 
-\`\`\`wireframe
-Wireframe #combined mobile
-  Stack column gap=2
-    Typography h4 "Combined diagram preview"
+\`\`\`balsamiq
+${loginMockupJson}
 \`\`\``,
       { sourceFile: 'combined-diagrams.md' },
     );
@@ -195,11 +196,9 @@ Wireframe #combined mobile
     expect(compiled.html).toContain('bp-diagram--plantuml');
     expect(compiled.html).toContain('bp-diagram--mermaid');
     expect(compiled.html).toContain('bp-diagram--drawio');
-    expect(compiled.html).toContain('bp-diagram--wiremark');
+    expect(compiled.html).toContain('bp-diagram--balsamiq');
     expect(compiled.html.match(/class="shiki/g)).toHaveLength(1);
-    expect(compiled.html).not.toMatch(
-      /class="language-(?:plantuml|mermaid|drawio|wireframe|wiremark)"/,
-    );
+    expect(compiled.html).not.toMatch(/class="language-(?:plantuml|mermaid|drawio|balsamiq)"/);
     expect(compiled.html.match(/<svg\b/g)).toHaveLength(4);
     expect(ids.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);

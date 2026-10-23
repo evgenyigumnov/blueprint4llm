@@ -2,7 +2,7 @@
 
 ## Цель
 
-Добавить подсветку синтаксиса для обычных fenced-блоков Markdown. Mermaid, PlantUML и Wiremark должны продолжать преобразовываться в диаграммы, а JSON, TypeScript и другие примеры кода — оставаться доступными и читабельными в HTML, предпросмотре и PDF.
+Добавить подсветку синтаксиса для обычных fenced-блоков Markdown. Mermaid, PlantUML и Balsamiq должны продолжать преобразовываться в диаграммы, а JSON, TypeScript и другие примеры кода — оставаться доступными и читабельными в HTML, предпросмотре и PDF.
 
 ## Что есть сейчас
 
@@ -17,7 +17,7 @@
 
 Плагин разместить после `remarkRehype` и до `rehypeStringify`. В этом месте он видит обычные `<pre><code>`; диаграммы уже заменены на `<figure>` с SVG и не должны попасть под подсветку. Текущие обработчики безопасных ссылок и таблиц сохраняются в pipeline.
 
-Для fenced-блоков язык берётся из info string после открывающих обратных кавычек, например `json`, `ts`, `typescript`, `bash`, `sql` или `html`. Если язык не указан или Shiki не знает метку языка, сборка должна оставить содержимое экранированным обычным кодом и продолжить работу. Inline-код, PlantUML, Mermaid и Wiremark эта функция не меняет.
+Для fenced-блоков язык берётся из info string после открывающих обратных кавычек, например `json`, `ts`, `typescript`, `bash`, `sql` или `html`. Если язык не указан или Shiki не знает метку языка, сборка должна оставить содержимое экранированным обычным кодом и продолжить работу. Inline-код, PlantUML, Mermaid и Balsamiq эта функция не меняет.
 
 В `src/template.ts` добавить стили для цветов Shiki и фоновой поверхности. Цвета переключать по уже используемому предпросмотром атрибуту `data-bp-theme="dark"`. Стили должны оставаться внутри документа, чтобы результат работал офлайн, при открытии HTML напрямую и при печати в PDF. Для PDF оставить светлую тему по умолчанию.
 
@@ -29,7 +29,7 @@
 flowchart LR
   MD[Markdown] --> R[remark parse и GFM]
   R --> D[remarkDiagramPlugin]
-  D -->|mermaid, PlantUML, Wiremark| SVG[figure с inline SVG]
+  D -->|mermaid, PlantUML, Balsamiq| SVG[figure с inline SVG]
   D -->|остальные code fences| H[remark-rehype]
   H --> S[Shiki rehype: раскраска токенов]
   S --> SAFE[безопасные ссылки и обёртки таблиц]
@@ -41,27 +41,204 @@ flowchart LR
 
 ## Макет предпросмотра кода
 
-Wiremark показывает отдельный экран предпросмотра: подпись языка, кодовый блок и короткое пояснение. Макет демонстрирует результат для пользователя; реальные цвета токенов формирует Shiki.
+Balsamiq показывает отдельный экран предпросмотра: подпись языка, кодовый блок и короткое пояснение. Макет демонстрирует результат для пользователя; реальные цвета токенов формирует Shiki.
 
-```wireframe
-Wireframe #code-highlight-preview landscape
-  Stack column gap=2 padding=3
-    Breadcrumbs
-      Link "Планы"
-      Link "Подсветка кода"
-    Typography h4 "Пример TypeScript"
-    Alert "Язык блока указан как ts. Цвета помогают быстро различать ключевые слова, строки и значения." severity=info
-    Card
-      CardHeader title="Проверка конфигурации" subheader="typescript"
-      CardContent
-        Stack column gap=1
-          Typography body2 "const config = {"
-          Typography body2 "  format: 'html',"
-          Typography body2 "  highlight: true,"
-          Typography body2 "};"
-          Typography body2 "export function isReady(): boolean {"
-          Typography body2 "  return config.highlight;"
-          Typography body2 "}"
+```balsamiq
+{
+  "mockup": {
+    "measuredW": 1281,
+    "measuredH": 801,
+    "controls": {
+      "control": [
+        {
+          "ID": "control-1",
+          "typeID": "Rectangle",
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 800,
+          "zOrder": 0,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-2",
+          "typeID": "Label",
+          "x": 24,
+          "y": 24,
+          "w": 47,
+          "h": 23,
+          "zOrder": 1,
+          "properties": {
+            "text": "Планы",
+            "color": "#2563eb",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-3",
+          "typeID": "Label",
+          "x": 97,
+          "y": 24,
+          "w": 130,
+          "h": 23,
+          "zOrder": 2,
+          "properties": {
+            "text": "Подсветка кода",
+            "color": "#2563eb",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-4",
+          "typeID": "Label",
+          "x": 24,
+          "y": 63,
+          "w": 1232,
+          "h": 34,
+          "zOrder": 3,
+          "properties": {
+            "text": "Пример TypeScript",
+            "size": 22,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-5",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 113,
+          "w": 1232,
+          "h": 40,
+          "zOrder": 4,
+          "properties": {
+            "text": "Язык блока указан как ts. Цвета помогают быстро различать ключевые слова, строки и значения.",
+            "color": "#eaf2ff",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-6",
+          "typeID": "Rectangle",
+          "x": 24,
+          "y": 169,
+          "w": 1232,
+          "h": 277,
+          "zOrder": 5,
+          "properties": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "ID": "control-7",
+          "typeID": "Label",
+          "x": 36,
+          "y": 169,
+          "w": 1208,
+          "h": 57,
+          "zOrder": 6,
+          "properties": {
+            "text": "Проверка конфигурации",
+            "size": 18,
+            "bold": true
+          }
+        },
+        {
+          "ID": "control-8",
+          "typeID": "Label",
+          "x": 40,
+          "y": 242,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 7,
+          "properties": {
+            "text": "const config = {",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-9",
+          "typeID": "Label",
+          "x": 40,
+          "y": 270,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 8,
+          "properties": {
+            "text": "  format: 'html',",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-10",
+          "typeID": "Label",
+          "x": 40,
+          "y": 298,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 9,
+          "properties": {
+            "text": "  highlight: true,",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-11",
+          "typeID": "Label",
+          "x": 40,
+          "y": 326,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 10,
+          "properties": {
+            "text": "};",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-12",
+          "typeID": "Label",
+          "x": 40,
+          "y": 354,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 11,
+          "properties": {
+            "text": "export function isReady(): boolean {",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-13",
+          "typeID": "Label",
+          "x": 40,
+          "y": 382,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 12,
+          "properties": {
+            "text": "  return config.highlight;",
+            "size": 14
+          }
+        },
+        {
+          "ID": "control-14",
+          "typeID": "Label",
+          "x": 40,
+          "y": 410,
+          "w": 1200,
+          "h": 20,
+          "zOrder": 13,
+          "properties": {
+            "text": "}",
+            "size": 14
+          }
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## План реализации
@@ -70,12 +247,12 @@ Wireframe #code-highlight-preview landscape
 - [x] Подключить Shiki после `remarkRehype` в `src/compiler.ts`. Выбрать светлую и тёмную темы; ограничить обработку обычными code-блоками. Проверить поведение для отсутствующей и неизвестной метки языка: в обоих случаях исходный код остаётся видимым и экранированным.
 - [x] Добавить стили Shiki в `src/template.ts`: сохранить текущие размеры, отступы и горизонтальную прокрутку `<pre>`, задать читаемый фон и переключение цветов через `data-bp-theme`. Убедиться, что PDF получает светлые цвета и не теряет контраст при печати.
 - [x] Добавить unit-тесты pipeline: JSON и TypeScript получают токены; текст кода сохраняется; `<`, `>` и кавычки остаются безопасно экранированными; неизвестная и пустая метка языка не прерывает компиляцию; inline-код не меняется.
-- [x] Добавить регрессионную проверку совместной компиляции: Mermaid, PlantUML и Wiremark остаются SVG, когда в документе есть подсвечиваемый блок кода, и не получают разметку Shiki. Уточнить README, добавить PlantUML в `examples/blueprint-highlight.md` и подтвердить, что каталог `examples` входит в npm-пакет.
+- [x] Добавить регрессионную проверку совместной компиляции: Mermaid, PlantUML и Balsamiq остаются SVG, когда в документе есть подсвечиваемый блок кода, и не получают разметку Shiki. Уточнить README, добавить PlantUML в `examples/blueprint-highlight.md` и подтвердить, что каталог `examples` входит в npm-пакет.
 - [x] Проверить предпросмотр в светлой и тёмной темах и PDF. Если подсветка длинных блоков заметно замедляет сборку, отдельно определить и задокументировать разумное ограничение размера кода; не менять существующий лимит Markdown без измерения.
 
 Выполненный этап подключает подсветку в компиляторе и задаёт офлайн-палитры Shiki для светлой, тёмной и печатной тем. Грамматики загружаются по мере необходимости; неизвестные и пустые метки сохраняют исходный экранированный код. Добавлены unit-тесты для токенизации, сохранения текста и безопасного fallback.
 
-Регрессионный этап завершён: добавлена проверка совместной обработки подсвечиваемого TypeScript-блока и трёх видов диаграмм; README описывает offline-подсветку и fallback; демонстрационный пример включает Mermaid, PlantUML и Wiremark. В `package.json` каталог `examples` уже указан среди публикуемых файлов и проверен через `npm pack --dry-run`.
+Регрессионный этап завершён: добавлена проверка совместной обработки подсвечиваемого TypeScript-блока и трёх видов диаграмм; README описывает offline-подсветку и fallback; демонстрационный пример включает Mermaid, PlantUML и Balsamiq. В `package.json` каталог `examples` уже указан среди публикуемых файлов и проверен через `npm pack --dry-run`.
 
 Финальная проверка выполнена на `examples/blueprint-highlight.md` в Chromium: в светлой и тёмной темах меняются фон страницы, фон кодового блока и цвет токенов; четыре обычных блока подсвечены, три диаграммы остаются SVG. PDF состоит из четырёх страниц A4, сохраняет светлую палитру и читаемый текст.
 
@@ -83,7 +260,7 @@ Wireframe #code-highlight-preview landscape
 
 ## Демонстрационный пример
 
-Файл `examples/blueprint-highlight.md` создаётся вместе с этим планом. Он показывает блоки JSON, TypeScript, Bash и YAML, блок без языковой метки, а также Mermaid- и Wiremark-блоки для проверки сосуществования подсветки с уже поддерживаемыми диаграммами.
+Файл `examples/blueprint-highlight.md` создаётся вместе с этим планом. Он показывает блоки JSON, TypeScript, Bash и YAML, блок без языковой метки, а также Mermaid- и Balsamiq-блоки для проверки сосуществования подсветки с уже поддерживаемыми диаграммами.
 
 ## Критерии готовности
 
@@ -91,5 +268,5 @@ Wireframe #code-highlight-preview landscape
 - Подсветка работает без сетевых запросов и клиентского JavaScript.
 - Светлая/тёмная тема предпросмотра меняет палитру кода согласованно с темой страницы.
 - Код без языковой метки и код с неподдерживаемой меткой не ломают компиляцию и выводятся как обычный экранированный текст.
-- Mermaid, PlantUML и Wiremark остаются диаграммами, а inline-код сохраняет прежнее оформление.
+- Mermaid, PlantUML и Balsamiq остаются диаграммами, а inline-код сохраняет прежнее оформление.
 - Тесты и сборка проходят без ошибок и предупреждений. После этого увеличить версию `package.json` в соответствии с правилами проекта.
