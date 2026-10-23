@@ -159,10 +159,10 @@ URL 模式接受指向 `/design/` 或 `/file/` frame 的 HTTPS 链接。使用�
 
 ## 智能代理和编辑器工作流
 
-| 工作流   | 设置                                                                                                                                                                              |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 编码代理 | 使用 `blueprint4llm` skill；Codex 和 Claude Code 的安装与调用方式见[快速开始](#快速开始)。                                                                                        |
-| VS Code  | 使用 `code --install-extension <file.vsix>` 安装构建好的 VSIX。打开 Markdown 文件并运行 **Blueprint: Open Preview to the Side**。使用 **Blueprint: Export Preview as PDF** 保存。 |
+| 工作流                                                                               | 设置                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 编码代理                                                                             | 使用 `blueprint4llm` skill；Codex 和 Claude Code 的安装与调用方式见[快速开始](#快速开始)。                                                                                        |
+| [VS Code](https://github.com/evgenyigumnov/blueprint4llm/tree/main/vscode-extension) | 使用 `code --install-extension <file.vsix>` 安装构建好的 VSIX。打开 Markdown 文件并运行 **Blueprint: Open Preview to the Side**。使用 **Blueprint: Export Preview as PDF** 保存。 |
 
 VS Code 预览会在延迟 200 毫秒后编译未保存的更改，可通过 `blueprint4llm.preview.debounceMs` 配置。需要桌面版 VS Code ≥1.101.0 和 Puppeteer 的 Chrome。
 

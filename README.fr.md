@@ -160,10 +160,10 @@ Dans l’aperçu en direct, les diagrammes en échec restent intégrés et le PD
 
 ## Workflows des agents et éditeurs
 
-| Workflow               | Configuration                                                                                                                                                                                                         |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Agent de programmation | Utilisez la skill `blueprint4llm` ; consultez le [Démarrage rapide](#démarrage-rapide) pour l’installation et l’utilisation avec Codex et Claude Code.                                                                |
-| VS Code                | Installez un VSIX généré avec `code --install-extension <file.vsix>`. Ouvrez un fichier Markdown et lancez **Blueprint: Open Preview to the Side**. Utilisez **Blueprint: Export Preview as PDF** pour l’enregistrer. |
+| Workflow                                                                             | Configuration                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent de programmation                                                               | Utilisez la skill `blueprint4llm` ; consultez le [Démarrage rapide](#démarrage-rapide) pour l’installation et l’utilisation avec Codex et Claude Code.                                                                |
+| [VS Code](https://github.com/evgenyigumnov/blueprint4llm/tree/main/vscode-extension) | Installez un VSIX généré avec `code --install-extension <file.vsix>`. Ouvrez un fichier Markdown et lancez **Blueprint: Open Preview to the Side**. Utilisez **Blueprint: Export Preview as PDF** pour l’enregistrer. |
 
 L’aperçu VS Code compile les modifications non enregistrées après un délai de 200 ms, configurable via `blueprint4llm.preview.debounceMs`. Nécessite VS Code Desktop ≥1.101.0 et Chrome de Puppeteer.
 

@@ -188,10 +188,10 @@ the next build. A fatal document error still shows a diagnostic page until the s
 
 ## Agent and editor workflows
 
-| Workflow     | Setup                                                                                                                                                                                        |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Coding agent | Use the `blueprint4llm` skill; see [Quick start](#quick-start) for Codex and Claude Code installation and invocation.                                                                        |
-| VS Code      | Install a built VSIX with `code --install-extension <file.vsix>`. Open a Markdown file and run **Blueprint: Open Preview to the Side**. Use **Blueprint: Export Preview as PDF** to save it. |
+| Workflow                                                                             | Setup                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Coding agent                                                                         | Use the `blueprint4llm` skill; see [Quick start](#quick-start) for Codex and Claude Code installation and invocation.                                                                        |
+| [VS Code](https://github.com/evgenyigumnov/blueprint4llm/tree/main/vscode-extension) | Install a built VSIX with `code --install-extension <file.vsix>`. Open a Markdown file and run **Blueprint: Open Preview to the Side**. Use **Blueprint: Export Preview as PDF** to save it. |
 
 The VS Code preview compiles unsaved edits with a 200 ms delay, configurable through
 `blueprint4llm.preview.debounceMs`. It requires desktop VS Code ≥1.101.0 and Puppeteer's Chrome.

@@ -160,10 +160,10 @@ URL मोड HTTPS `/design/` या `/file/` फ़्रेम URL स्व�
 
 ## एजेंट और एडिटर कार्यप्रवाह
 
-| कार्यप्रवाह  | सेटअप                                                                                                                                                                                                        |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Coding agent | `blueprint4llm` skill उपयोग करें; Codex और Claude Code को इंस्टॉल और चलाने के लिए [जल्दी शुरू करें](#जल्दी-शुरू-करें) देखें।                                                                                 |
-| VS Code      | बने हुए VSIX को `code --install-extension <file.vsix>` से इंस्टॉल करें। Markdown फ़ाइल खोलें और **Blueprint: Open Preview to the Side** चलाएँ। PDF सहेजने के लिए **Blueprint: Export Preview as PDF** चुनें। |
+| कार्यप्रवाह                                                                          | सेटअप                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Coding agent                                                                         | `blueprint4llm` skill उपयोग करें; Codex और Claude Code को इंस्टॉल और चलाने के लिए [जल्दी शुरू करें](#जल्दी-शुरू-करें) देखें।                                                                                 |
+| [VS Code](https://github.com/evgenyigumnov/blueprint4llm/tree/main/vscode-extension) | बने हुए VSIX को `code --install-extension <file.vsix>` से इंस्टॉल करें। Markdown फ़ाइल खोलें और **Blueprint: Open Preview to the Side** चलाएँ। PDF सहेजने के लिए **Blueprint: Export Preview as PDF** चुनें। |
 
 VS Code प्रीव्यू 200 ms की देरी के बाद बिना सहेजे बदलाव compile करता है; इसे `blueprint4llm.preview.debounceMs` से कॉन्फ़िगर करें। Desktop VS Code ≥1.101.0 और Puppeteer का Chrome चाहिए।
 
