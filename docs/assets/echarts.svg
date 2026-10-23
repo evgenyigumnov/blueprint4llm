@@ -1,35 +1,340 @@
-<svg width="600" height="340" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 600 340">
-<rect width="600" height="340" x="0" y="0" fill="#ffffff"></rect>
-<path d="M58 292.5L560.6 292.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<path d="M58 248.5L560.6 248.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<path d="M58 204.5L560.6 204.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<path d="M58 160.5L560.6 160.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<path d="M58 116.5L560.6 116.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<path d="M58 72.5L560.6 72.5" fill="none" pointer-events="visible" stroke="#dbdee4" class="zr0-cls-0"></path>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="-6" transform="translate(58 57)" fill="#54555a">Requests</text>
-<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Arial;" transform="translate(575.64 292)" fill="#54555a">Day</text>
-<path d="M58 292.5L560.6 292.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 292)" fill="#54555a">0</text>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 248)" fill="#54555a">50</text>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 204)" fill="#54555a">100</text>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 160)" fill="#54555a">150</text>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 116)" fill="#54555a">200</text>
-<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(50 72)" fill="#54555a">250</text>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(108.264 300)" fill="#54555a">Mon</text>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(208.792 300)" fill="#54555a">Tue</text>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(309.32 300)" fill="#54555a">Wed</text>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(409.848 300)" fill="#54555a">Thu</text>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(510.376 300)" fill="#54555a">Fri</text>
-<path d="M77.6 186.4L138.9 186.4A4 4 0 0 1 142.9 190.4L142.9 288A4 4 0 0 1 138.9 292L77.6 292A4 4 0 0 1 73.6 288L73.6 190.4A4 4 0 0 1 77.6 186.4Z" fill="#5470c6" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
-<path d="M178.1 133.6L239.5 133.6A4 4 0 0 1 243.5 137.6L243.5 288A4 4 0 0 1 239.5 292L178.1 292A4 4 0 0 1 174.1 288L174.1 137.6A4 4 0 0 1 178.1 133.6Z" fill="#5470c6" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
-<path d="M278.6 160L340 160A4 4 0 0 1 344 164L344 288A4 4 0 0 1 340 292L278.6 292A4 4 0 0 1 274.6 288L274.6 164A4 4 0 0 1 278.6 160Z" fill="#5470c6" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
-<path d="M379.2 98.4L440.5 98.4A4 4 0 0 1 444.5 102.4L444.5 288A4 4 0 0 1 440.5 292L379.2 292A4 4 0 0 1 375.2 288L375.2 102.4A4 4 0 0 1 379.2 98.4Z" fill="#5470c6" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
-<path d="M479.7 120.4L541.1 120.4A4 4 0 0 1 545.1 124.4L545.1 288A4 4 0 0 1 541.1 292L479.7 292A4 4 0 0 1 475.7 288L475.7 124.4A4 4 0 0 1 479.7 120.4Z" fill="#5470c6" ecmeta_series_index="0" ecmeta_data_index="4" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
-<path d="M-72.3 -5l144.6 0l0 28l-144.6 0Z" transform="translate(300 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
-<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Arial;font-weight:bold;" xml:space="preserve" y="9" transform="translate(300 20)" fill="#3c3c41">Requests by day</text>
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" viewBox="0 0 800 450">
+<rect width="800" height="450" x="0" y="0" fill="#ffffff"></rect>
+<path d="M86.5 394L86.5 78" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<path d="M86 394.5L766 394.5" fill="none" pointer-events="visible" stroke="#54555a" stroke-linecap="round" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 367.6667)" fill="#54555a">00–04</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 315)" fill="#54555a">04–08</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 262.3333)" fill="#54555a">08–12</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 209.6667)" fill="#54555a">12–16</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 157)" fill="#54555a">16–20</text>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" transform="translate(78 104.3333)" fill="#54555a">20–24</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(134.5714 402)" fill="#54555a">Mon</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(231.7143 402)" fill="#54555a">Tue</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(328.8571 402)" fill="#54555a">Wed</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(426 402)" fill="#54555a">Thu</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(523.1429 402)" fill="#54555a">Fri</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(620.2857 402)" fill="#54555a">Sat</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" y="6" transform="translate(717.4286 402)" fill="#54555a">Sun</text>
+<path d="M85.7 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(202,232,230)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="0" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(207,235,232)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="1" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(204,233,231)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="2" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(208,235,233)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="3" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(198,230,228)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="4" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(189,225,223)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="5" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 341.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(194,228,225)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="6" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M85.7 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(181,221,219)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="7" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(185,223,221)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="8" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(177,220,216)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="9" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(186,224,221)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="10" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(163,212,209)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="11" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(171,216,213)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="12" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 288.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(180,221,218)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="13" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M85.7 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(91,149,173)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="14" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(82,137,166)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="15" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(99,141,159)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="16" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(132,148,146)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="17" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(191,162,122)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="18" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(122,181,188)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="19" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 235.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(131,190,192)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="20" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M85.7 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(115,144,152)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="21" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(155,153,136)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="22" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(199,164,118)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="23" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(216,168,112)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="24" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(227,140,96)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="25" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(105,162,179)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="26" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 183.1l97.6 0l0 53.2l-97.6 0Z" fill="rgb(118,176,186)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="27" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M85.7 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(236,172,104)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="28" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(233,157,99)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="29" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(214,109,90)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="30" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(221,127,94)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="31" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(208,93,87)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="32" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(80,137,168)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="33" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 130.4l97.6 0l0 53.2l-97.6 0Z" fill="rgb(95,152,175)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="34" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M85.7 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(118,176,186)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="35" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M182.9 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(105,162,179)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="36" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M280 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(97,154,176)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="37" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M377.2 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(87,144,171)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="38" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M474.3 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(96,140,160)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="39" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M571.5 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(145,203,199)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="40" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<path d="M668.6 77.7l97.6 0l0 53.2l-97.6 0Z" fill="rgb(155,208,205)" stroke="#ffffff" stroke-width="2" ecmeta_series_index="0" ecmeta_data_index="41" ecmeta_ssr_type="chart" ecmeta_silent="true" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 367.6667)" fill="#17324d">62</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 367.6667)" fill="#17324d">58</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 367.6667)" fill="#17324d">60</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 367.6667)" fill="#17324d">57</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 367.6667)" fill="#17324d">65</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 367.6667)" fill="#17324d">72</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 367.6667)" fill="#17324d">68</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 315)" fill="#17324d">78</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 315)" fill="#17324d">75</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 315)" fill="#17324d">81</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 315)" fill="#17324d">74</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 315)" fill="#17324d">92</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 315)" fill="#17324d">86</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 315)" fill="#17324d">79</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 262.3333)" fill="#17324d">154</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 262.3333)" fill="#17324d">166</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 262.3333)" fill="#17324d">172</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 262.3333)" fill="#17324d">184</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 262.3333)" fill="#17324d">205</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 262.3333)" fill="#17324d">126</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 262.3333)" fill="#17324d">118</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 209.6667)" fill="#17324d">178</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 209.6667)" fill="#17324d">192</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 209.6667)" fill="#17324d">208</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 209.6667)" fill="#17324d">214</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 209.6667)" fill="#17324d">246</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 209.6667)" fill="#17324d">142</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 209.6667)" fill="#17324d">130</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 157)" fill="#17324d">221</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 157)" fill="#17324d">234</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 157)" fill="#17324d">268</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 157)" fill="#17324d">255</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 157)" fill="#17324d">279</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 157)" fill="#17324d">164</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 157)" fill="#17324d">151</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(134.5714 104.3333)" fill="#17324d">130</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(231.7143 104.3333)" fill="#17324d">142</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(328.8571 104.3333)" fill="#17324d">149</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(426 104.3333)" fill="#17324d">158</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(523.1429 104.3333)" fill="#17324d">171</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(620.2857 104.3333)" fill="#17324d">106</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:10px;font-family:Arial;" transform="translate(717.4286 104.3333)" fill="#17324d">98</text>
+<path d="M-48.4 -35l239.4 0l0 50l-239.4 0Z" transform="translate(328.68 427)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#cfd2d7" stroke-width="0" class="zr0-cls-0"></path>
+<g clip-path="url(#bp-diagram-001-zr0-c0)">
+<polygon points="0 0 20 0 20 140 0 140" transform="matrix(0,-1,1,0,328.68,427)" fill="url(#bp-diagram-001-zr0-g0)" class="zr0-cls-2"></polygon>
+<polygon points="0 0 20 0 20 140 0 140" transform="matrix(0,-1,1,0,328.68,427)" fill="url(#bp-diagram-001-zr0-g1)" class="zr0-cls-3"></polygon>
+</g>
+<text dominant-baseline="central" text-anchor="end" style="font-size:12px;font-family:Arial;" x="-10" y="-10" transform="translate(328.68 427)" fill="#54555a">Fast</text>
+<text dominant-baseline="central" text-anchor="start" style="font-size:12px;font-family:Arial;" x="150" y="-9.999999999999991" transform="translate(328.68 427)" fill="#54555a">Slow</text>
+<path d="M-154.7 -5l309.3 0l0 50l-309.3 0Z" transform="translate(400 20)" fill="rgb(0,0,0)" fill-opacity="0" stroke="#3c3c41" stroke-width="0" class="zr0-cls-0"></path>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:18px;font-family:Arial;font-weight:bold;" xml:space="preserve" y="9" transform="translate(400 20)" fill="#3c3c41">API latency by day and traffic window</text>
+<text dominant-baseline="central" text-anchor="middle" style="font-size:12px;font-family:Arial;" xml:space="preserve" y="34" transform="translate(400 20)" fill="#86878c">p95 response time · milliseconds</text>
+<defs>
+<clipPath id="bp-diagram-001-zr0-c0">
+<path d="M3 0L17 0A3 3 0 0 1 20 3L20 137A3 3 0 0 1 17 140L3 140A3 3 0 0 1 0 137L0 3A3 3 0 0 1 3 0Z" transform="matrix(0,-1,1,0,328.68,427)" fill="#000" class="zr0-cls-1"></path>
+</clipPath>
+<linearGradient gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="1" id="bp-diagram-001-zr0-g0">
+<stop offset="0%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="1%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="2%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="3%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="4%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="5%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="6%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="7.000000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="8%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="9%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="10%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="11%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="12%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="13%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="14.000000000000002%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="15%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="16%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="17%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="18%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="19%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="20%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="21%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="22%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="23%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="24%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="25%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="26%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="27%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="28.000000000000004%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="28.999999999999996%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="30%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="31%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="32%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="33%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="34%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="35%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="36%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="37%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="38%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="39%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="40%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="41%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="42%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="43%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="44%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="45%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="46%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="47%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="48%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="49%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="50%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="51%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="52%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="53%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="54%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="55.00000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="56.00000000000001%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="56.99999999999999%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="57.99999999999999%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="59%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="60%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="61%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="62%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="63%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="64%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="65%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="66%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="67%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="68%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="69%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="70%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="71%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="72%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="73%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="74%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="75%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="76%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="77%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="78%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="79%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="80%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="81%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="82%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="83%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="84%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="85%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="86%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="87%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="88%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="89%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="90%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="91%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="92%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="93%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="94%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="95%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="96%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="97%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="98%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="99%" stop-color="rgb(207,210,215)"></stop>
+<stop offset="100%" stop-color="rgb(207,210,215)"></stop>
+</linearGradient>
+<linearGradient gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="1" id="bp-diagram-001-zr0-g1">
+<stop offset="0%" stop-color="rgb(217,240,238)"></stop>
+<stop offset="1%" stop-color="rgb(214,238,236)"></stop>
+<stop offset="2%" stop-color="rgb(211,237,235)"></stop>
+<stop offset="3%" stop-color="rgb(208,235,233)"></stop>
+<stop offset="4%" stop-color="rgb(205,234,232)"></stop>
+<stop offset="5%" stop-color="rgb(202,232,230)"></stop>
+<stop offset="6%" stop-color="rgb(199,231,228)"></stop>
+<stop offset="7.000000000000001%" stop-color="rgb(196,229,227)"></stop>
+<stop offset="8%" stop-color="rgb(193,228,225)"></stop>
+<stop offset="9%" stop-color="rgb(190,226,224)"></stop>
+<stop offset="10%" stop-color="rgb(187,225,222)"></stop>
+<stop offset="11%" stop-color="rgb(184,223,220)"></stop>
+<stop offset="12%" stop-color="rgb(181,222,219)"></stop>
+<stop offset="13%" stop-color="rgb(179,220,217)"></stop>
+<stop offset="14.000000000000002%" stop-color="rgb(176,219,216)"></stop>
+<stop offset="15%" stop-color="rgb(173,217,214)"></stop>
+<stop offset="16%" stop-color="rgb(170,216,212)"></stop>
+<stop offset="17%" stop-color="rgb(167,214,211)"></stop>
+<stop offset="18%" stop-color="rgb(164,213,209)"></stop>
+<stop offset="19%" stop-color="rgb(161,211,208)"></stop>
+<stop offset="20%" stop-color="rgb(158,210,206)"></stop>
+<stop offset="21%" stop-color="rgb(155,208,204)"></stop>
+<stop offset="22%" stop-color="rgb(152,207,203)"></stop>
+<stop offset="23%" stop-color="rgb(149,205,201)"></stop>
+<stop offset="24%" stop-color="rgb(146,204,200)"></stop>
+<stop offset="25%" stop-color="rgb(143,202,198)"></stop>
+<stop offset="26%" stop-color="rgb(140,199,197)"></stop>
+<stop offset="27%" stop-color="rgb(138,197,196)"></stop>
+<stop offset="28.000000000000004%" stop-color="rgb(135,194,194)"></stop>
+<stop offset="28.999999999999996%" stop-color="rgb(133,191,193)"></stop>
+<stop offset="30%" stop-color="rgb(130,189,192)"></stop>
+<stop offset="31%" stop-color="rgb(128,186,191)"></stop>
+<stop offset="32%" stop-color="rgb(125,184,189)"></stop>
+<stop offset="33%" stop-color="rgb(123,181,188)"></stop>
+<stop offset="34%" stop-color="rgb(120,178,187)"></stop>
+<stop offset="35%" stop-color="rgb(117,176,186)"></stop>
+<stop offset="36%" stop-color="rgb(115,173,184)"></stop>
+<stop offset="37%" stop-color="rgb(112,170,183)"></stop>
+<stop offset="38%" stop-color="rgb(110,168,182)"></stop>
+<stop offset="39%" stop-color="rgb(107,165,181)"></stop>
+<stop offset="40%" stop-color="rgb(105,162,179)"></stop>
+<stop offset="41%" stop-color="rgb(102,160,178)"></stop>
+<stop offset="42%" stop-color="rgb(99,157,177)"></stop>
+<stop offset="43%" stop-color="rgb(97,154,176)"></stop>
+<stop offset="44%" stop-color="rgb(94,152,174)"></stop>
+<stop offset="45%" stop-color="rgb(92,149,173)"></stop>
+<stop offset="46%" stop-color="rgb(89,147,172)"></stop>
+<stop offset="47%" stop-color="rgb(87,144,171)"></stop>
+<stop offset="48%" stop-color="rgb(84,141,169)"></stop>
+<stop offset="49%" stop-color="rgb(82,139,168)"></stop>
+<stop offset="50%" stop-color="rgb(79,136,167)"></stop>
+<stop offset="51%" stop-color="rgb(85,137,164)"></stop>
+<stop offset="52%" stop-color="rgb(92,139,162)"></stop>
+<stop offset="53%" stop-color="rgb(98,140,159)"></stop>
+<stop offset="54%" stop-color="rgb(105,142,157)"></stop>
+<stop offset="55.00000000000001%" stop-color="rgb(111,143,154)"></stop>
+<stop offset="56.00000000000001%" stop-color="rgb(118,145,151)"></stop>
+<stop offset="56.99999999999999%" stop-color="rgb(124,146,149)"></stop>
+<stop offset="57.99999999999999%" stop-color="rgb(131,148,146)"></stop>
+<stop offset="59%" stop-color="rgb(137,149,144)"></stop>
+<stop offset="60%" stop-color="rgb(143,151,141)"></stop>
+<stop offset="61%" stop-color="rgb(150,152,138)"></stop>
+<stop offset="62%" stop-color="rgb(156,154,136)"></stop>
+<stop offset="63%" stop-color="rgb(163,155,133)"></stop>
+<stop offset="64%" stop-color="rgb(169,157,131)"></stop>
+<stop offset="65%" stop-color="rgb(176,158,128)"></stop>
+<stop offset="66%" stop-color="rgb(182,160,125)"></stop>
+<stop offset="67%" stop-color="rgb(188,161,123)"></stop>
+<stop offset="68%" stop-color="rgb(195,163,120)"></stop>
+<stop offset="69%" stop-color="rgb(201,164,118)"></stop>
+<stop offset="70%" stop-color="rgb(208,166,115)"></stop>
+<stop offset="71%" stop-color="rgb(214,167,112)"></stop>
+<stop offset="72%" stop-color="rgb(221,169,110)"></stop>
+<stop offset="73%" stop-color="rgb(227,170,107)"></stop>
+<stop offset="74%" stop-color="rgb(234,172,105)"></stop>
+<stop offset="75%" stop-color="rgb(240,173,102)"></stop>
+<stop offset="76%" stop-color="rgb(239,170,101)"></stop>
+<stop offset="77%" stop-color="rgb(237,167,101)"></stop>
+<stop offset="78%" stop-color="rgb(236,163,100)"></stop>
+<stop offset="79%" stop-color="rgb(235,160,100)"></stop>
+<stop offset="80%" stop-color="rgb(233,157,99)"></stop>
+<stop offset="81%" stop-color="rgb(232,154,98)"></stop>
+<stop offset="82%" stop-color="rgb(231,150,98)"></stop>
+<stop offset="83%" stop-color="rgb(229,147,97)"></stop>
+<stop offset="84%" stop-color="rgb(228,144,97)"></stop>
+<stop offset="85%" stop-color="rgb(227,141,96)"></stop>
+<stop offset="86%" stop-color="rgb(225,137,95)"></stop>
+<stop offset="87%" stop-color="rgb(224,134,95)"></stop>
+<stop offset="88%" stop-color="rgb(223,131,94)"></stop>
+<stop offset="89%" stop-color="rgb(222,128,94)"></stop>
+<stop offset="90%" stop-color="rgb(220,124,93)"></stop>
+<stop offset="91%" stop-color="rgb(219,121,92)"></stop>
+<stop offset="92%" stop-color="rgb(218,118,92)"></stop>
+<stop offset="93%" stop-color="rgb(216,115,91)"></stop>
+<stop offset="94%" stop-color="rgb(215,111,91)"></stop>
+<stop offset="95%" stop-color="rgb(214,108,90)"></stop>
+<stop offset="96%" stop-color="rgb(212,105,89)"></stop>
+<stop offset="97%" stop-color="rgb(211,102,89)"></stop>
+<stop offset="98%" stop-color="rgb(210,98,88)"></stop>
+<stop offset="99%" stop-color="rgb(208,95,88)"></stop>
+<stop offset="100%" stop-color="rgb(207,92,87)"></stop>
+</linearGradient>
+</defs>
 <style>
 .zr0-cls-0:hover {
 pointer-events:none;
+}
+.zr0-cls-1:hover {
+cursor:pointer;
+fill:rgba(0,0,0,1);
+}
+.zr0-cls-2:hover {
+cursor:pointer;
+fill:[object Object];
+}
+.zr0-cls-3:hover {
+cursor:pointer;
+fill:[object Object];
 }
 
 

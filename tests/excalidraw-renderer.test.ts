@@ -19,8 +19,8 @@ describe('Excalidraw renderer integration', () => {
     const checked = await checkMarkdown(markdown, { sourceFile: 'example.md' });
 
     expect(compiled.html).toContain('class="bp-diagram bp-diagram--excalidraw"');
-    expect(compiled.html).toContain('data-element-id="client"');
-    expect(compiled.html).toContain('data-element-id="api"');
+    expect(compiled.html).toContain('data-element-id="plan-card"');
+    expect(compiled.html).toContain('data-element-id="launch-card"');
     expect(compiled.warnings).toEqual([]);
     expect(compiled.errors).toEqual([]);
     expect(checked).toMatchObject({ warnings: [], errors: [] });

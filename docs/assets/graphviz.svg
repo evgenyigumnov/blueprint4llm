@@ -1,51 +1,254 @@
-<svg width="192" height="450.667" viewBox="0.00 0.00 144.00 338.00" xmlns="http://www.w3.org/2000/svg">
-<g id="bp-diagram-001-graph0" class="graph" transform="scale(1 1) rotate(0) translate(18 320.4)">
-<title>OrderFlow</title>
-<!-- customer -->
+<svg width="653.333" height="1262.667" viewBox="0.00 0.00 490.00 947.00" xmlns="http://www.w3.org/2000/svg">
+<g id="bp-diagram-001-graph0" class="graph" transform="scale(1 1) rotate(0) translate(18 929.1)">
+<title>EventLineage</title>
+<g id="bp-diagram-001-clust1" class="cluster">
+<title>cluster_sources</title>
+<path fill="#f8fafc" stroke="#cbd5e1" d="M20,-789.46C20,-789.46 300,-789.46 300,-789.46 306,-789.46 312,-795.46 312,-801.46 312,-801.46 312,-891.1 312,-891.1 312,-897.1 306,-903.1 300,-903.1 300,-903.1 20,-903.1 20,-903.1 14,-903.1 8,-897.1 8,-891.1 8,-891.1 8,-801.46 8,-801.46 8,-795.46 14,-789.46 20,-789.46"></path>
+<text xml:space="preserve" text-anchor="middle" x="160" y="-886.5" font-family="Times,serif" font-size="14.00">1 · Producers</text>
+</g>
+<g id="bp-diagram-001-clust2" class="cluster">
+<title>cluster_ingest</title>
+<path fill="#eff6ff" stroke="#93c5fd" d="M91,-353.2C91,-353.2 222,-353.2 222,-353.2 228,-353.2 234,-359.2 234,-365.2 234,-365.2 234,-750.66 234,-750.66 234,-756.66 228,-762.66 222,-762.66 222,-762.66 91,-762.66 91,-762.66 85,-762.66 79,-756.66 79,-750.66 79,-750.66 79,-365.2 79,-365.2 79,-359.2 85,-353.2 91,-353.2"></path>
+<text xml:space="preserve" text-anchor="middle" x="156.5" y="-746.06" font-family="Times,serif" font-size="14.00">2 · Ingestion and quality</text>
+</g>
+<g id="bp-diagram-001-clust3" class="cluster">
+<title>cluster_stream</title>
+<path fill="#f0fdf4" stroke="#86efac" d="M254,-215.2C254,-215.2 434,-215.2 434,-215.2 440,-215.2 446,-221.2 446,-227.2 446,-227.2 446,-449.22 446,-449.22 446,-455.22 440,-461.22 434,-461.22 434,-461.22 254,-461.22 254,-461.22 248,-461.22 242,-455.22 242,-449.22 242,-449.22 242,-227.2 242,-227.2 242,-221.2 248,-215.2 254,-215.2"></path>
+<text xml:space="preserve" text-anchor="middle" x="344" y="-444.62" font-family="Times,serif" font-size="14.00">3 · Stream processing</text>
+</g>
+<g id="bp-diagram-001-clust4" class="cluster">
+<title>cluster_products</title>
+<path fill="#f5f3ff" stroke="#c4b5fd" d="M125,-8C125,-8 433,-8 433,-8 439,-8 445,-14 445,-20 445,-20 445,-176.4 445,-176.4 445,-182.4 439,-188.4 433,-188.4 433,-188.4 125,-188.4 125,-188.4 119,-188.4 113,-182.4 113,-176.4 113,-176.4 113,-20 113,-20 113,-14 119,-8 125,-8"></path>
+<text xml:space="preserve" text-anchor="middle" x="279" y="-171.8" font-family="Times,serif" font-size="14.00">4 · Storage and consumers</text>
+</g>
+<!-- browser -->
 <g id="bp-diagram-001-node1" class="node">
-<title>customer</title>
-<path fill="#eff6ff" stroke="black" d="M63.3,-302.4C63.3,-302.4 16.86,-302.4 16.86,-302.4 10.86,-302.4 4.86,-296.4 4.86,-290.4 4.86,-290.4 4.86,-278.4 4.86,-278.4 4.86,-272.4 10.86,-266.4 16.86,-266.4 16.86,-266.4 63.3,-266.4 63.3,-266.4 69.3,-266.4 75.3,-272.4 75.3,-278.4 75.3,-278.4 75.3,-290.4 75.3,-290.4 75.3,-296.4 69.3,-302.4 63.3,-302.4"></path>
-<text xml:space="preserve" text-anchor="middle" x="40.08" y="-280.2" font-family="Times,serif" font-size="14.00">Customer</text>
+<title>browser</title>
+<path fill="#e0f2fe" stroke="#64748b" d="M27.96,-797.96C27.96,-797.96 74.04,-797.96 74.04,-797.96 80.04,-797.96 86.04,-803.96 86.04,-809.96 86.04,-809.96 86.04,-833 86.04,-833 86.04,-839 80.04,-845 74.04,-845 74.04,-845 27.96,-845 27.96,-845 21.96,-845 15.96,-839 15.96,-833 15.96,-833 15.96,-809.96 15.96,-809.96 15.96,-803.96 21.96,-797.96 27.96,-797.96"></path>
+<text xml:space="preserve" text-anchor="middle" x="51" y="-830.24" font-family="Arial" font-size="10.00">Web events</text>
+<polyline fill="none" stroke="#64748b" points="15.96,-821.48 86.04,-821.48"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="51" y="-806.72" font-family="Arial" font-size="10.00">Mobile SDK</text>
 </g>
-<!-- web -->
-<g id="bp-diagram-001-node2" class="node">
-<title>web</title>
-<path fill="#eff6ff" stroke="black" d="M61.15,-213.6C61.15,-213.6 19.01,-213.6 19.01,-213.6 13.01,-213.6 7.01,-207.6 7.01,-201.6 7.01,-201.6 7.01,-189.6 7.01,-189.6 7.01,-183.6 13.01,-177.6 19.01,-177.6 19.01,-177.6 61.15,-177.6 61.15,-177.6 67.15,-177.6 73.15,-183.6 73.15,-189.6 73.15,-189.6 73.15,-201.6 73.15,-201.6 73.15,-207.6 67.15,-213.6 61.15,-213.6"></path>
-<text xml:space="preserve" text-anchor="middle" x="40.08" y="-191.4" font-family="Times,serif" font-size="14.00">Web app</text>
-</g>
-<!-- customer&#45;&gt;web -->
-<g id="bp-diagram-001-edge1" class="edge">
-<title>customer->web</title>
-<path fill="none" stroke="black" d="M40.08,-266.25C40.08,-254.56 40.08,-238.79 40.08,-225.22"></path>
-<polygon fill="black" stroke="black" points="43.58,-225.52 40.08,-215.52 36.58,-225.52 43.58,-225.52"></polygon>
-<text xml:space="preserve" text-anchor="middle" x="74.09" y="-235.8" font-family="Times,serif" font-size="14.00">places order</text>
-</g>
-<!-- api -->
-<g id="bp-diagram-001-node3" class="node">
-<title>api</title>
-<path fill="#eff6ff" stroke="black" d="M68.16,-124.8C68.16,-124.8 12,-124.8 12,-124.8 6,-124.8 0,-118.8 0,-112.8 0,-112.8 0,-100.8 0,-100.8 0,-94.8 6,-88.8 12,-88.8 12,-88.8 68.16,-88.8 68.16,-88.8 74.16,-88.8 80.16,-94.8 80.16,-100.8 80.16,-100.8 80.16,-112.8 80.16,-112.8 80.16,-118.8 74.16,-124.8 68.16,-124.8"></path>
-<text xml:space="preserve" text-anchor="middle" x="40.08" y="-102.6" font-family="Times,serif" font-size="14.00">Orders API</text>
-</g>
-<!-- web&#45;&gt;api -->
-<g id="bp-diagram-001-edge2" class="edge">
-<title>web->api</title>
-<path fill="none" stroke="black" d="M40.08,-177.45C40.08,-165.76 40.08,-149.99 40.08,-136.42"></path>
-<polygon fill="black" stroke="black" points="43.58,-136.72 40.08,-126.72 36.58,-136.72 43.58,-136.72"></polygon>
-<text xml:space="preserve" text-anchor="middle" x="61.47" y="-147" font-family="Times,serif" font-size="14.00">HTTPS</text>
-</g>
-<!-- database -->
+<!-- gateway -->
 <g id="bp-diagram-001-node4" class="node">
-<title>database</title>
-<path fill="#eff6ff" stroke="black" d="M78.6,-32.73C78.6,-34.53 61.33,-36 40.08,-36 18.82,-36 1.56,-34.53 1.56,-32.73 1.56,-32.73 1.56,-3.27 1.56,-3.27 1.56,-1.47 18.82,0 40.08,0 61.33,0 78.6,-1.47 78.6,-3.27 78.6,-3.27 78.6,-32.73 78.6,-32.73"></path>
-<path fill="none" stroke="black" d="M78.6,-32.73C78.6,-30.92 61.33,-29.45 40.08,-29.45 18.82,-29.45 1.56,-30.92 1.56,-32.73"></path>
-<text xml:space="preserve" text-anchor="middle" x="40.08" y="-13.8" font-family="Times,serif" font-size="14.00">Orders DB</text>
+<title>gateway</title>
+<path fill="#f8fafc" stroke="#64748b" d="M171.37,-705.06C171.37,-705.06 108.63,-705.06 108.63,-705.06 102.63,-705.06 96.63,-699.06 96.63,-693.06 96.63,-693.06 96.63,-681.06 96.63,-681.06 96.63,-675.06 102.63,-669.06 108.63,-669.06 108.63,-669.06 171.37,-669.06 171.37,-669.06 177.37,-669.06 183.37,-675.06 183.37,-681.06 183.37,-681.06 183.37,-693.06 183.37,-693.06 183.37,-699.06 177.37,-705.06 171.37,-705.06"></path>
+<text xml:space="preserve" text-anchor="middle" x="140" y="-690.06" font-family="Arial" font-size="10.00">API gateway</text>
+<text xml:space="preserve" text-anchor="middle" x="140" y="-678.06" font-family="Arial" font-size="10.00">Auth · rate limit</text>
 </g>
-<!-- api&#45;&gt;database -->
+<!-- browser&#45;&gt;gateway -->
+<g id="bp-diagram-001-edge1" class="edge">
+<title>browser:web->gateway</title>
+<path fill="none" stroke="#64748b" d="M87.04,-833.24C102.95,-833.24 93.05,-811.74 86.04,-797.46 81.09,-787.38 71.3,-791.6 66.5,-781.46 64.44,-777.12 64.79,-775.15 66.5,-770.66 75.56,-746.85 94.98,-725.53 111.58,-710.52"></path>
+<polygon fill="#64748b" stroke="#64748b" points="112.76,-712.74 116.41,-706.28 109.53,-709.06 112.76,-712.74"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="81.25" y="-773.36" font-family="Arial" font-size="9.00">HTTPS</text>
+</g>
+<!-- browser&#45;&gt;gateway -->
+<g id="bp-diagram-001-edge2" class="edge">
+<title>browser:mobile->gateway</title>
+<path fill="none" stroke="#64748b" d="M87.04,-809.72C88.35,-809.72 114.36,-748.71 129.43,-713.1"></path>
+<polygon fill="#64748b" stroke="#64748b" points="131.59,-714.29 132.06,-706.88 127.08,-712.38 131.59,-714.29"></polygon>
+</g>
+<!-- partner -->
+<g id="bp-diagram-001-node2" class="node">
+<title>partner</title>
+<path fill="#e0f2fe" stroke="#64748b" d="M193.94,-839.48C193.94,-839.48 120.06,-839.48 120.06,-839.48 114.06,-839.48 108.06,-833.48 108.06,-827.48 108.06,-827.48 108.06,-815.48 108.06,-815.48 108.06,-809.48 114.06,-803.48 120.06,-803.48 120.06,-803.48 193.94,-803.48 193.94,-803.48 199.94,-803.48 205.94,-809.48 205.94,-815.48 205.94,-815.48 205.94,-827.48 205.94,-827.48 205.94,-833.48 199.94,-839.48 193.94,-839.48"></path>
+<text xml:space="preserve" text-anchor="middle" x="157" y="-818.48" font-family="Arial" font-size="10.00">Partner webhooks</text>
+</g>
+<!-- partner&#45;&gt;gateway -->
 <g id="bp-diagram-001-edge3" class="edge">
-<title>api->database</title>
-<path fill="none" stroke="black" d="M40.08,-88.65C40.08,-76.96 40.08,-61.19 40.08,-47.62"></path>
-<polygon fill="black" stroke="black" points="43.58,-47.92 40.08,-37.92 36.58,-47.92 43.58,-47.92"></polygon>
-<text xml:space="preserve" text-anchor="middle" x="71.76" y="-58.2" font-family="Times,serif" font-size="14.00">saves order</text>
+<title>partner->gateway</title>
+<path fill="none" stroke="#64748b" d="M154.78,-803.17C151.85,-780.37 146.68,-740.09 143.3,-713.73"></path>
+<polygon fill="#64748b" stroke="#64748b" points="145.74,-713.51 142.42,-706.88 140.88,-714.13 145.74,-713.51"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="178.74" y="-773.36" font-family="Arial" font-size="9.00">signed POST</text>
+</g>
+<!-- device -->
+<g id="bp-diagram-001-node3" class="node">
+<title>device</title>
+<path fill="#e0f2fe" stroke="#64748b" d="M291.81,-839.48C291.81,-839.48 240.19,-839.48 240.19,-839.48 234.19,-839.48 228.19,-833.48 228.19,-827.48 228.19,-827.48 228.19,-815.48 228.19,-815.48 228.19,-809.48 234.19,-803.48 240.19,-803.48 240.19,-803.48 291.81,-803.48 291.81,-803.48 297.81,-803.48 303.81,-809.48 303.81,-815.48 303.81,-815.48 303.81,-827.48 303.81,-827.48 303.81,-833.48 297.81,-839.48 291.81,-839.48"></path>
+<text xml:space="preserve" text-anchor="middle" x="266" y="-818.48" font-family="Arial" font-size="10.00">IoT telemetry</text>
+</g>
+<!-- decode -->
+<g id="bp-diagram-001-node5" class="node">
+<title>decode</title>
+<path fill="#f8fafc" stroke="#64748b" d="M213.67,-636.06C213.67,-636.06 120.33,-636.06 120.33,-636.06 114.33,-636.06 108.33,-630.06 108.33,-624.06 108.33,-624.06 108.33,-612.06 108.33,-612.06 108.33,-606.06 114.33,-600.06 120.33,-600.06 120.33,-600.06 213.67,-600.06 213.67,-600.06 219.67,-600.06 225.67,-606.06 225.67,-612.06 225.67,-612.06 225.67,-624.06 225.67,-624.06 225.67,-630.06 219.67,-636.06 213.67,-636.06"></path>
+<text xml:space="preserve" text-anchor="middle" x="167" y="-615.06" font-family="Arial" font-size="10.00">Decode and normalize</text>
+</g>
+<!-- device&#45;&gt;decode -->
+<g id="bp-diagram-001-edge4" class="edge">
+<title>device->decode</title>
+<path fill="none" stroke="#64748b" d="M258.08,-803.08C245.12,-774.77 218.36,-717.08 194,-669.06 189.76,-660.71 184.95,-651.67 180.58,-643.61"></path>
+<polygon fill="#64748b" stroke="#64748b" points="182.95,-642.83 177.44,-637.86 178.65,-645.18 182.95,-642.83"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="251.62" y="-684.36" font-family="Arial" font-size="9.00">MQTT</text>
+</g>
+<!-- gateway&#45;&gt;decode -->
+<g id="bp-diagram-001-edge5" class="edge">
+<title>gateway->decode</title>
+<path fill="none" stroke="#64748b" d="M146.95,-668.81C149.95,-661.36 153.52,-652.5 156.81,-644.34"></path>
+<polygon fill="#64748b" stroke="#64748b" points="159.07,-645.3 159.41,-637.89 154.52,-643.47 159.07,-645.3"></polygon>
+</g>
+<!-- schema -->
+<g id="bp-diagram-001-node6" class="node">
+<title>schema</title>
+<polygon fill="#fef3c7" stroke="#64748b" points="170,-567.06 116.04,-531.54 170,-496.02 223.96,-531.54 170,-567.06"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="170" y="-534.54" font-family="Arial" font-size="10.00">Schema</text>
+<text xml:space="preserve" text-anchor="middle" x="170" y="-522.54" font-family="Arial" font-size="10.00">valid?</text>
+</g>
+<!-- decode&#45;&gt;schema -->
+<g id="bp-diagram-001-edge6" class="edge">
+<title>decode->schema</title>
+<path fill="none" stroke="#64748b" d="M167.61,-599.96C167.86,-592.72 168.18,-583.93 168.49,-575.13"></path>
+<polygon fill="#64748b" stroke="#64748b" points="170.93,-575.33 168.73,-568.24 166.04,-575.15 170.93,-575.33"></polygon>
+</g>
+<!-- quarantine -->
+<g id="bp-diagram-001-node7" class="node">
+<title>quarantine</title>
+<path fill="#fee2e2" stroke="#64748b" d="M216.99,-405.6C216.99,-408.05 195.93,-410.04 170,-410.04 144.07,-410.04 123.01,-408.05 123.01,-405.6 123.01,-405.6 123.01,-365.64 123.01,-365.64 123.01,-363.19 144.07,-361.2 170,-361.2 195.93,-361.2 216.99,-363.19 216.99,-365.64 216.99,-365.64 216.99,-405.6 216.99,-405.6"></path>
+<path fill="none" stroke="#64748b" d="M216.99,-405.6C216.99,-403.15 195.93,-401.16 170,-401.16 144.07,-401.16 123.01,-403.15 123.01,-405.6"></path>
+<text xml:space="preserve" text-anchor="middle" x="170" y="-388.62" font-family="Arial" font-size="10.00">Quarantine</text>
+<text xml:space="preserve" text-anchor="middle" x="170" y="-376.62" font-family="Arial" font-size="10.00">with error context</text>
+</g>
+<!-- schema&#45;&gt;quarantine -->
+<g id="bp-diagram-001-edge8" class="edge">
+<title>schema->quarantine</title>
+<path fill="none" stroke="#dc2626" d="M170,-495.7C170,-472.24 170,-441.54 170,-418.68"></path>
+<polygon fill="#dc2626" stroke="#dc2626" points="172.45,-418.85 170,-411.85 167.55,-418.85 172.45,-418.85"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="175.01" y="-471.92" font-family="Arial" font-size="9.00" fill="#b91c1c">no</text>
+</g>
+<!-- enrich -->
+<g id="bp-diagram-001-node8" class="node">
+<title>enrich</title>
+<path fill="#f8fafc" stroke="#64748b" d="M322,-403.62C322,-403.62 262,-403.62 262,-403.62 256,-403.62 250,-397.62 250,-391.62 250,-391.62 250,-379.62 250,-379.62 250,-373.62 256,-367.62 262,-367.62 262,-367.62 322,-367.62 322,-367.62 328,-367.62 334,-373.62 334,-379.62 334,-379.62 334,-391.62 334,-391.62 334,-397.62 328,-403.62 322,-403.62"></path>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-388.62" font-family="Arial" font-size="10.00">Enrich account</text>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-376.62" font-family="Arial" font-size="10.00">and geography</text>
+</g>
+<!-- schema&#45;&gt;enrich -->
+<g id="bp-diagram-001-edge7" class="edge">
+<title>schema->enrich</title>
+<path fill="none" stroke="#64748b" d="M218.34,-527.51C251.2,-522.64 292.47,-510.39 314,-480.02 328.35,-459.77 318.55,-431.46 307.85,-411.33"></path>
+<polygon fill="#64748b" stroke="#64748b" points="310.06,-410.27 304.49,-405.37 305.79,-412.67 310.06,-410.27"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="325.61" y="-471.92" font-family="Arial" font-size="9.00">yes</text>
+</g>
+<!-- replay -->
+<g id="bp-diagram-001-node11" class="node">
+<title>replay</title>
+<polygon fill="#fef3c7" stroke="#64748b" points="437.6,-403.62 356.4,-403.62 356.4,-399.62 352.4,-399.62 352.4,-395.62 356.4,-395.62 356.4,-375.62 352.4,-375.62 352.4,-371.62 356.4,-371.62 356.4,-367.62 437.6,-367.62 437.6,-403.62"></polygon>
+<polyline fill="none" stroke="#64748b" points="356.4,-399.62 360.4,-399.62 360.4,-395.62 356.4,-395.62"></polyline>
+<polyline fill="none" stroke="#64748b" points="356.4,-375.62 360.4,-375.62 360.4,-371.62 356.4,-371.62"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="397" y="-382.62" font-family="Arial" font-size="10.00">Replay worker</text>
+</g>
+<!-- quarantine&#45;&gt;replay -->
+<g id="bp-diagram-001-edge16" class="edge">
+<title>quarantine->replay</title>
+<path fill="none" stroke="#64748b" stroke-dasharray="5 2" d="M185.02,-410.46C196.8,-427.35 214.88,-448.32 237,-457.99 280.98,-477.21 302.29,-479.89 345,-457.99 363.98,-448.26 377.6,-428.01 386.13,-411.41"></path>
+<polygon fill="#64748b" stroke="#64748b" points="388.17,-412.81 389.03,-405.44 383.76,-410.67 388.17,-412.81"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="276" y="-471.92" font-family="Arial" font-size="9.00">operator approves</text>
+</g>
+<!-- dedupe -->
+<g id="bp-diagram-001-node9" class="node">
+<title>dedupe</title>
+<path fill="#f8fafc" stroke="#64748b" d="M316.71,-328.2C316.71,-328.2 267.29,-328.2 267.29,-328.2 261.29,-328.2 255.29,-322.2 255.29,-316.2 255.29,-316.2 255.29,-304.2 255.29,-304.2 255.29,-298.2 261.29,-292.2 267.29,-292.2 267.29,-292.2 316.71,-292.2 316.71,-292.2 322.71,-292.2 328.71,-298.2 328.71,-304.2 328.71,-304.2 328.71,-316.2 328.71,-316.2 328.71,-322.2 322.71,-328.2 316.71,-328.2"></path>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-313.2" font-family="Arial" font-size="10.00">Deduplicate</text>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-301.2" font-family="Arial" font-size="10.00">by event key</text>
+</g>
+<!-- enrich&#45;&gt;dedupe -->
+<g id="bp-diagram-001-edge9" class="edge">
+<title>enrich->dedupe</title>
+<path fill="none" stroke="#64748b" d="M292,-367.22C292,-358.17 292,-346.93 292,-336.89"></path>
+<polygon fill="#64748b" stroke="#64748b" points="294.45,-336.99 292,-329.99 289.55,-336.99 294.45,-336.99"></polygon>
+</g>
+<!-- score -->
+<g id="bp-diagram-001-node10" class="node">
+<title>score</title>
+<path fill="#f8fafc" stroke="#64748b" d="M321.16,-259.2C321.16,-259.2 262.84,-259.2 262.84,-259.2 256.84,-259.2 250.84,-253.2 250.84,-247.2 250.84,-247.2 250.84,-235.2 250.84,-235.2 250.84,-229.2 256.84,-223.2 262.84,-223.2 262.84,-223.2 321.16,-223.2 321.16,-223.2 327.16,-223.2 333.16,-229.2 333.16,-235.2 333.16,-235.2 333.16,-247.2 333.16,-247.2 333.16,-253.2 327.16,-259.2 321.16,-259.2"></path>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-244.2" font-family="Arial" font-size="10.00">Score rules</text>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-232.2" font-family="Arial" font-size="10.00">and anomalies</text>
+</g>
+<!-- dedupe&#45;&gt;score -->
+<g id="bp-diagram-001-edge10" class="edge">
+<title>dedupe->score</title>
+<path fill="none" stroke="#64748b" d="M292,-291.95C292,-284.66 292,-276.01 292,-267.99"></path>
+<polygon fill="#64748b" stroke="#64748b" points="294.45,-268.14 292,-261.14 289.55,-268.14 294.45,-268.14"></polygon>
+</g>
+<!-- hot -->
+<g id="bp-diagram-001-node12" class="node">
+<title>hot</title>
+<path fill="#ede9fe" stroke="#64748b" d="M213.43,-127.53C213.43,-129.33 192.62,-130.8 167,-130.8 141.38,-130.8 120.57,-129.33 120.57,-127.53 120.57,-127.53 120.57,-98.07 120.57,-98.07 120.57,-96.27 141.38,-94.8 167,-94.8 192.62,-94.8 213.43,-96.27 213.43,-98.07 213.43,-98.07 213.43,-127.53 213.43,-127.53"></path>
+<path fill="none" stroke="#64748b" d="M213.43,-127.53C213.43,-125.72 192.62,-124.25 167,-124.25 141.38,-124.25 120.57,-125.72 120.57,-127.53"></path>
+<text xml:space="preserve" text-anchor="middle" x="167" y="-109.8" font-family="Arial" font-size="10.00">Hot metrics store</text>
+</g>
+<!-- score&#45;&gt;hot -->
+<g id="bp-diagram-001-edge11" class="edge">
+<title>score->hot</title>
+<path fill="none" stroke="#64748b" d="M258.25,-222.79C250.86,-218.22 243.34,-212.95 236.97,-207.2 214.46,-186.89 194.36,-158.42 181.55,-138.26"></path>
+<polygon fill="#64748b" stroke="#64748b" points="183.75,-137.16 177.96,-132.52 179.59,-139.76 183.75,-137.16"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="261.99" y="-199.1" font-family="Arial" font-size="9.00">latest values</text>
+</g>
+<!-- lake -->
+<g id="bp-diagram-001-node13" class="node">
+<title>lake</title>
+<path fill="#ede9fe" stroke="#64748b" d="M348.16,-127.53C348.16,-129.33 322.99,-130.8 292,-130.8 261.01,-130.8 235.84,-129.33 235.84,-127.53 235.84,-127.53 235.84,-98.07 235.84,-98.07 235.84,-96.27 261.01,-94.8 292,-94.8 322.99,-94.8 348.16,-96.27 348.16,-98.07 348.16,-98.07 348.16,-127.53 348.16,-127.53"></path>
+<path fill="none" stroke="#64748b" d="M348.16,-127.53C348.16,-125.72 322.99,-124.25 292,-124.25 261.01,-124.25 235.84,-125.72 235.84,-127.53"></path>
+<text xml:space="preserve" text-anchor="middle" x="292" y="-109.8" font-family="Arial" font-size="10.00">Immutable event lake</text>
+</g>
+<!-- score&#45;&gt;lake -->
+<g id="bp-diagram-001-edge12" class="edge">
+<title>score->lake</title>
+<path fill="none" stroke="#64748b" d="M292,-222.89C292,-201.24 292,-163.99 292,-139.13"></path>
+<polygon fill="#64748b" stroke="#64748b" points="294.45,-139.41 292,-132.41 289.55,-139.41 294.45,-139.41"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="316.52" y="-199.1" font-family="Arial" font-size="9.00">append only</text>
+</g>
+<!-- alerts -->
+<g id="bp-diagram-001-node15" class="node">
+<title>alerts</title>
+<polygon fill="#f8fafc" stroke="#64748b" points="437.37,-130.8 370.63,-130.8 370.63,-126.8 366.63,-126.8 366.63,-122.8 370.63,-122.8 370.63,-102.8 366.63,-102.8 366.63,-98.8 370.63,-98.8 370.63,-94.8 437.37,-94.8 437.37,-130.8"></polygon>
+<polyline fill="none" stroke="#64748b" points="370.63,-126.8 374.63,-126.8 374.63,-122.8 370.63,-122.8"></polyline>
+<polyline fill="none" stroke="#64748b" points="370.63,-102.8 374.63,-102.8 374.63,-98.8 370.63,-98.8"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="404" y="-109.8" font-family="Arial" font-size="10.00">Alert router</text>
+</g>
+<!-- score&#45;&gt;alerts -->
+<g id="bp-diagram-001-edge14" class="edge">
+<title>score->alerts</title>
+<path fill="none" stroke="#64748b" d="M325.55,-222.71C332.71,-218.17 339.93,-212.94 346,-207.2 366.7,-187.64 382.97,-159.16 392.94,-138.79"></path>
+<polygon fill="#64748b" stroke="#64748b" points="395.13,-139.89 395.93,-132.52 390.71,-137.79 395.13,-139.89"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="377.26" y="-199.1" font-family="Arial" font-size="9.00">rule match</text>
+</g>
+<!-- replay&#45;&gt;decode -->
+<g id="bp-diagram-001-edge17" class="edge">
+<title>replay->decode</title>
+<path fill="none" stroke="#64748b" stroke-dasharray="5 2" d="M388.19,-403.88C377.73,-423.48 359.03,-455.86 338,-480.02 297.02,-527.1 238.33,-570.12 201.47,-594.95"></path>
+<polygon fill="#64748b" stroke="#64748b" points="200.12,-592.9 195.65,-598.83 202.84,-596.98 200.12,-592.9"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="342.12" y="-528.84" font-family="Arial" font-size="9.00">reprocess</text>
+</g>
+<!-- dashboard -->
+<g id="bp-diagram-001-node14" class="node">
+<title>dashboard</title>
+<polygon fill="#f8fafc" stroke="#64748b" points="237.12,-52 120.88,-52 120.88,-48 116.88,-48 116.88,-44 120.88,-44 120.88,-24 116.88,-24 116.88,-20 120.88,-20 120.88,-16 237.12,-16 237.12,-52"></polygon>
+<polyline fill="none" stroke="#64748b" points="120.88,-48 124.88,-48 124.88,-44 120.88,-44"></polyline>
+<polyline fill="none" stroke="#64748b" points="120.88,-24 124.88,-24 124.88,-20 120.88,-20"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="179" y="-31" font-family="Arial" font-size="10.00">Operations dashboard</text>
+</g>
+<!-- hot&#45;&gt;dashboard -->
+<g id="bp-diagram-001-edge13" class="edge">
+<title>hot->dashboard</title>
+<path fill="none" stroke="#64748b" d="M169.72,-94.37C171.29,-84.36 173.28,-71.6 175.02,-60.47"></path>
+<polygon fill="#64748b" stroke="#64748b" points="177.39,-61.15 176.05,-53.85 172.55,-60.39 177.39,-61.15"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="199.61" y="-70.7" font-family="Arial" font-size="9.00">&#x3C; 1 s queries</text>
+</g>
+<!-- warehouse -->
+<g id="bp-diagram-001-node16" class="node">
+<title>warehouse</title>
+<polygon fill="#f8fafc" stroke="#64748b" points="366.66,-52 259.34,-52 259.34,-48 255.34,-48 255.34,-44 259.34,-44 259.34,-24 255.34,-24 255.34,-20 259.34,-20 259.34,-16 366.66,-16 366.66,-52"></polygon>
+<polyline fill="none" stroke="#64748b" points="259.34,-48 263.34,-48 263.34,-44 259.34,-44"></polyline>
+<polyline fill="none" stroke="#64748b" points="259.34,-24 263.34,-24 263.34,-20 259.34,-20"></polyline>
+<text xml:space="preserve" text-anchor="middle" x="313" y="-31" font-family="Arial" font-size="10.00">Daily warehouse job</text>
+</g>
+<!-- lake&#45;&gt;warehouse -->
+<g id="bp-diagram-001-edge15" class="edge">
+<title>lake->warehouse</title>
+<path fill="none" stroke="#64748b" d="M296.77,-94.37C299.5,-84.36 302.99,-71.6 306.03,-60.47"></path>
+<polygon fill="#64748b" stroke="#64748b" points="308.37,-61.22 307.85,-53.82 303.64,-59.92 308.37,-61.22"></polygon>
+<text xml:space="preserve" text-anchor="middle" x="335.52" y="-70.7" font-family="Arial" font-size="9.00">hourly partitions</text>
 </g>
 </g>
 </svg>

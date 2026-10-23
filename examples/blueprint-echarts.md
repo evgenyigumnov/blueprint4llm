@@ -113,29 +113,40 @@ series, a mixed bar and line chart, and a local tabular dataset.
 }
 ```
 
-## Тепловая карта по дням и часам
+## P95 latency по дням и окнам нагрузки
 
 ```echarts width=800 height=450
 {
-  "title": { "text": "Среднее время ответа, мс" },
-  "grid": { "left": 72, "right": 30, "top": 58, "bottom": 48 },
-  "xAxis": { "type": "category", "data": ["Пн", "Вт", "Ср", "Чт", "Пт"] },
-  "yAxis": { "type": "category", "data": ["Утро", "День", "Вечер"] },
+  "title": { "text": "API latency by day and traffic window", "subtext": "p95 response time · milliseconds" },
+  "textStyle": { "fontFamily": "Arial" },
+  "grid": { "left": 86, "right": 34, "top": 78, "bottom": 56 },
+  "xAxis": { "type": "category", "data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+  "yAxis": { "type": "category", "data": ["00–04", "04–08", "08–12", "12–16", "16–20", "20–24"] },
   "visualMap": {
-    "min": 40,
-    "max": 240,
+    "min": 50,
+    "max": 280,
     "dimension": 2,
     "orient": "horizontal",
     "left": "center",
-    "bottom": 4,
-    "inRange": { "color": ["#e0f3f8", "#91bfdb", "#4575b4", "#d73027"] }
+    "bottom": 8,
+    "text": ["Slow", "Fast"],
+    "inRange": { "color": ["#d9f0ee", "#8fcac6", "#4f88a7", "#f0ad66", "#cf5c57"] }
   },
   "series": [
     {
       "type": "heatmap",
-      "name": "Время ответа",
-      "label": { "show": true },
-      "data": [[0, 0, 65], [1, 0, 80], [2, 0, 92], [3, 0, 78], [4, 0, 70], [0, 1, 110], [1, 1, 145], [2, 1, 160], [3, 1, 132], [4, 1, 118], [0, 2, 180], [1, 2, 205], [2, 2, 230], [3, 2, 195], [4, 2, 170]]
+      "name": "p95 latency",
+      "label": { "show": true, "fontSize": 10, "color": "#17324d" },
+      "data": [
+        [0, 0, 62], [1, 0, 58], [2, 0, 60], [3, 0, 57], [4, 0, 65], [5, 0, 72], [6, 0, 68],
+        [0, 1, 78], [1, 1, 75], [2, 1, 81], [3, 1, 74], [4, 1, 92], [5, 1, 86], [6, 1, 79],
+        [0, 2, 154], [1, 2, 166], [2, 2, 172], [3, 2, 184], [4, 2, 205], [5, 2, 126], [6, 2, 118],
+        [0, 3, 178], [1, 3, 192], [2, 3, 208], [3, 3, 214], [4, 3, 246], [5, 3, 142], [6, 3, 130],
+        [0, 4, 221], [1, 4, 234], [2, 4, 268], [3, 4, 255], [4, 4, 279], [5, 4, 164], [6, 4, 151],
+        [0, 5, 130], [1, 5, 142], [2, 5, 149], [3, 5, 158], [4, 5, 171], [5, 5, 106], [6, 5, 98]
+      ],
+      "itemStyle": { "borderWidth": 2, "borderColor": "#ffffff" },
+      "emphasis": { "disabled": true }
     }
   ]
 }
