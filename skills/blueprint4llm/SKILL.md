@@ -1,12 +1,12 @@
 ---
 name: blueprint4llm
-description: Create or revise visual software plans in Markdown with supported blueprint4llm formats, validate them, visually inspect every diagram and UI prototype, and render the plan. Use when a user requests a development plan, architecture diagram, UI prototype, or rendered blueprint.
+description: Create or revise visual software plans in Markdown with supported blueprint4llm formats, validate them, and visually inspect every diagram and UI prototype. Offer HTML or PDF export when the plan is complete. Use when a user requests a development plan, architecture diagram, UI prototype, or rendered blueprint.
 license: MIT
 ---
 
-# Create and render a blueprint
+# Create and review a blueprint
 
-Use this skill to create or revise a technical plan that people can review as a visual document. `blueprint4llm` renders Markdown; it does not generate plans or call an LLM.
+Use this skill to create or revise a technical plan that people can review as a visual document. `blueprint4llm` validates and renders Markdown; it does not generate plans or call an LLM. Keep Markdown as the source of truth. HTML and PDF exports are optional and require the user's choice.
 
 Rendering requires the blueprint4llm CLI, Node.js >=22.13.0, npm, and Puppeteer's Chrome. Visual review requires an image viewing tool or a browser tool that can show screenshots.
 
@@ -25,7 +25,7 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
 4. Make the plan visual first. Prefer diagrams for architecture and flows, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
 5. Put each UI screen or separately illustrated state in its own fenced block. For GUI plans, check that the prototypes show the main user task and relevant feedback before rendering. Use only syntax supported by the selected renderer.
-6. Check that the CLI is available with `blueprint4llm --version`. If it is missing, continue editing the Markdown, but tell the user that validation and rendering need the CLI. Give the install command `npm install --global blueprint4llm`. Do not install it globally without the user's request.
+6. Check that the CLI is available with `blueprint4llm --version`. If the command is missing, install it globally with `npm install --global blueprint4llm`, then check `blueprint4llm --version` again. If installation fails, tell the user that validation and rendering need the CLI and report the installation error.
 7. Validate the Markdown after edits:
 
    ```bash
@@ -36,15 +36,12 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 
 8. Visually inspect every diagram and UI prototype as described in [Visual review](#visual-review). Do this for every new or edited visual plan, including Markdown-only output. A successful `--check` does not prove that content fits or is readable. Fix failed blocks and inspect them again before continuing.
 
-9. For a new visual plan, create a companion HTML file after visual review unless the user asks for Markdown only. Use a user-provided output path when available; otherwise use the Markdown path with an `.html` extension. Do not overwrite an existing output file; choose a new name or ask the user.
+9. Do not export the complete plan to HTML or PDF by default. If the user requested an export, use their output path when provided; otherwise use the Markdown path with the selected extension. Do not overwrite an existing file; choose a new filename and report it.
 
-   ```bash
-   blueprint4llm ./plan.md --out=./plan.html
-   ```
-
-10. Export PDF only when requested:
+10. Export only the format the user requests:
 
     ```bash
+    blueprint4llm ./plan.md --out=./plan.html
     blueprint4llm ./plan.md --out=./plan.pdf --format=pdf
     ```
 
@@ -92,10 +89,15 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 | Mermaid      | `mermaid`             | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
 | PlantUML     | `plantuml`            | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
 | draw.io JSON | `drawio` or `draw.io` | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
+| OpenAPI      | `openapi`             | Use for an embedded OpenAPI 3.1.1 contract. The local renderer shows operations and schemas in a static SVG; it supports local JSON Pointer references and warns about fields outside its displayed subset.                      |
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid; a flow with UML activity semantics or a UML model is usually PlantUML. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
 draw.io JSON is a project-specific subset. Read the [draw.io renderer documentation](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/README.md#drawio-diagrams) before authoring it.
+
+OpenAPI supports only version 3.1.1 and local `#/...` references. It does not fetch external
+resources or validate the full OpenAPI specification. See the [OpenAPI contract example](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/examples/blueprint-openapi.md)
+and the renderer limits in the README before using less common OpenAPI fields.
 
 ### UI prototypes
 
@@ -119,6 +121,7 @@ When prose is needed, follow ASD-STE100 (STE) principles: use short, clear sente
 ## Output
 
 - Keep the Markdown file as the source of truth.
-- Report the paths of the Markdown and generated files.
+- Report the path of the Markdown file and any files the user requested you to generate.
 - State how many visual blocks you inspected and whether any visual defects remain. Report inspection limits explicitly.
 - Mention validation warnings. Do not claim the plan is implemented or verified in code unless you checked the project.
+- If the user did not request an export, end by offering to create an HTML or PDF version. Do not create one until the user chooses a format.
