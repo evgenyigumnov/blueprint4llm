@@ -56,32 +56,35 @@ describe('Balsamiq renderer integration', () => {
 
   it('returns check-mode diagnostics at the block for an unknown typeID', async () => {
     const invalid = mockupJson.replace('"typeID":"Title"', '"typeID":"WebView"');
-    await expect(
-      checkMarkdown(`# Broken\n\n\`\`\`balsamiq\n${invalid}\n\`\`\``, {
-        sourceFile: 'invalid-balsamiq.md',
-      }),
-    ).rejects.toMatchObject({
-      name: 'DiagnosticError',
+    const result = await checkMarkdown(`# Broken\n\n\`\`\`balsamiq\n${invalid}\n\`\`\``, {
       sourceFile: 'invalid-balsamiq.md',
-      line: 4,
-      message: expect.stringContaining(
-        'balsamiq render failed: Balsamiq control "heading" has an unsupported typeID "WebView"',
-      ),
     });
+
+    expect(result.diagnostics).toMatchObject([
+      {
+        code: 'diagram.render',
+        sourceFile: 'invalid-balsamiq.md',
+        line: 4,
+        message: expect.stringContaining(
+          'balsamiq render failed: Balsamiq control "heading" has an unsupported typeID "WebView"',
+        ),
+      },
+    ]);
   });
 
   it('maps JSON parser line and column to the Markdown source', async () => {
     const markdown = '# Broken\n\n```balsamiq\n{\n  "mockup": }\n```';
 
-    await expect(
-      checkMarkdown(markdown, { sourceFile: 'syntax-error-balsamiq.md' }),
-    ).rejects.toMatchObject({
-      name: 'DiagnosticError',
-      sourceFile: 'syntax-error-balsamiq.md',
-      line: 5,
-      column: 13,
-      message: expect.stringContaining('invalid Balsamiq JSON'),
-    });
+    const result = await checkMarkdown(markdown, { sourceFile: 'syntax-error-balsamiq.md' });
+
+    expect(result.diagnostics).toMatchObject([
+      {
+        sourceFile: 'syntax-error-balsamiq.md',
+        line: 5,
+        column: 13,
+        message: expect.stringContaining('balsamiq render failed: invalid Balsamiq JSON'),
+      },
+    ]);
   });
 
   it('does not use the network and reuses the normal diagram cache', async () => {

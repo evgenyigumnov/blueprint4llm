@@ -57,6 +57,10 @@ const BASE_CSS = `:root {
   --bp-page-bg: #f6f8fa;
   --bp-accent: #0a5bd3;
   --bp-code-bg: #f6f8fa;
+  --bp-diagnostic-error: #b42318;
+  --bp-diagnostic-warning: #7a4b00;
+  --bp-diagnostic-error-bg: #fff4f2;
+  --bp-diagnostic-warning-bg: #fff8e6;
 }
 
 * {
@@ -206,6 +210,13 @@ pre.shiki span {
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
+:root[data-bp-theme='dark'] {
+  --bp-diagnostic-error: #ff7b72;
+  --bp-diagnostic-warning: #e3b341;
+  --bp-diagnostic-error-bg: #2d1618;
+  --bp-diagnostic-warning-bg: #2b2416;
+}
+
 .bp-table {
   margin: 1em 0;
   overflow-x: auto;
@@ -256,6 +267,73 @@ li > input[type='checkbox'] {
   width: auto;
   height: auto;
   margin: 0;
+}
+
+.bp-diagnostics-summary,
+.bp-diagnostic {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  color: var(--bp-text);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-inline-start-width: 4px;
+  border-radius: 6px;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.bp-diagnostics-summary {
+  font-weight: 650;
+}
+
+.bp-diagnostic {
+  white-space: normal;
+}
+
+.bp-diagnostics-summary--error,
+.bp-diagnostic--error {
+  border-inline-start-color: var(--bp-diagnostic-error);
+}
+
+.bp-diagnostics-summary--warning,
+.bp-diagnostic--warning {
+  border-inline-start-color: var(--bp-diagnostic-warning);
+}
+
+.bp-diagnostic--error {
+  background: var(--bp-diagnostic-error-bg);
+}
+
+.bp-diagnostic--warning {
+  background: var(--bp-diagnostic-warning-bg);
+}
+
+.bp-diagnostic__title {
+  margin: 0 0 0.25rem;
+  color: var(--bp-text);
+  font-size: 1rem;
+}
+
+.bp-diagnostic__location {
+  margin: 0 0 0.5rem;
+  color: var(--bp-muted);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.bp-diagnostic__message {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+  page-break-inside: auto;
 }
 
 @media screen and (max-width: 640px) {
@@ -322,6 +400,10 @@ li > input[type='checkbox'] {
 
   .bp-diagram > svg {
     max-width: 100% !important;
+  }
+
+  .bp-diagnostic__message {
+    overflow: visible;
   }
 
   table {

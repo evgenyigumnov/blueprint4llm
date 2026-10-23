@@ -1,3 +1,5 @@
+import type { BlueprintDiagnostic } from './diagnostics.js';
+
 /** Structured compile/build error with optional source position. */
 export interface DiagnosticLocation {
   sourceFile?: string;
@@ -31,6 +33,27 @@ export class DiagnosticError extends Error {
     parts.push(this.message);
     return parts.join(': ');
   }
+}
+
+/** Context used to turn a structured error into a serializable diagnostic record. */
+export type BlueprintDiagnosticContext = Pick<
+  BlueprintDiagnostic,
+  'severity' | 'code' | 'scope' | 'sourceFile'
+> &
+  Partial<Pick<BlueprintDiagnostic, 'diagramId' | 'renderer'>>;
+
+/** Creates a diagnostic record from an error without parsing its formatted message. */
+export function diagnosticFromError(
+  error: DiagnosticError,
+  context: BlueprintDiagnosticContext,
+): BlueprintDiagnostic {
+  return {
+    ...context,
+    sourceFile: error.sourceFile ?? context.sourceFile,
+    ...(error.line === undefined ? {} : { line: error.line }),
+    ...(error.column === undefined ? {} : { column: error.column }),
+    message: error.message,
+  };
 }
 
 /** Normalizes an unknown thrown value into a `DiagnosticError`. */

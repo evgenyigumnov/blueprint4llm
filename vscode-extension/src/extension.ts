@@ -27,6 +27,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<{
       sourceFile: options.sourceFile,
       diagramCache: options.diagramCache as InstanceType<typeof blueprint.DiagramRenderCache>,
       signal: options.signal,
+      includeDiagnosticsSummary: vscode.workspace
+        .getConfiguration('blueprint4llm.preview')
+        .get<boolean>('includeDiagnosticsSummary', false),
     });
   const output = vscode.window.createOutputChannel('Blueprint4llm');
   output.appendLine(`Extension host Node.js ${process.versions.node}`);
@@ -47,6 +50,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<{
     controller,
     vscode.workspace.onDidChangeTextDocument((event) => {
       controller.documentChanged(toPreviewDocument(event.document));
+    }),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (!event.affectsConfiguration('blueprint4llm.preview.includeDiagnosticsSummary')) {
+        return;
+      }
+      for (const document of vscode.workspace.textDocuments) {
+        controller.documentChanged(toPreviewDocument(document));
+      }
     }),
     vscode.commands.registerCommand(OPEN_PREVIEW_COMMAND, async () => {
       const activeDocument = vscode.window.activeTextEditor?.document;
@@ -164,7 +175,11 @@ function createPreviewPanel(
     },
   );
 
-  return new VSCodePreviewPanel(panel, assetRoot, output);
+  return new VSCodePreviewPanel(panel, assetRoot, output, () =>
+    vscode.workspace
+      .getConfiguration('blueprint4llm.preview')
+      .get<boolean>('includeDiagnosticsSummary', false),
+  );
 }
 
 class VSCodePreviewPanel implements PreviewPanel {
@@ -175,6 +190,7 @@ class VSCodePreviewPanel implements PreviewPanel {
     private readonly panel: vscode.WebviewPanel,
     private readonly assetRoot: string,
     private readonly output: vscode.OutputChannel,
+    private readonly includeDiagnosticsSummary: () => boolean,
   ) {}
 
   reveal(): void {
@@ -219,7 +235,11 @@ class VSCodePreviewPanel implements PreviewPanel {
     if (this.closed) {
       return;
     }
-    this.panel.webview.html = createDiagnosticHtml(diagnostic, this.panel.webview.cspSource);
+    this.panel.webview.html = createDiagnosticHtml(
+      diagnostic,
+      this.panel.webview.cspSource,
+      this.includeDiagnosticsSummary(),
+    );
     const previousAssetDirectory = this.currentAssetDirectory;
     this.currentAssetDirectory = undefined;
     if (previousAssetDirectory !== undefined) {

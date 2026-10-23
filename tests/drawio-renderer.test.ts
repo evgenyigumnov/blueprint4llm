@@ -55,17 +55,19 @@ describe('draw.io renderer integration', () => {
   });
 
   it('reports invalid draw.io input at the fenced block in check mode', async () => {
-    await expect(
-      checkMarkdown('# Draw.io\n\n```drawio\nnot json\n```', {
-        sourceFile: 'invalid-drawio.md',
-      }),
-    ).rejects.toMatchObject({
-      name: 'DiagnosticError',
+    const result = await checkMarkdown('# Draw.io\n\n```drawio\nnot json\n```', {
       sourceFile: 'invalid-drawio.md',
-      line: 3,
-      column: 1,
-      message: expect.stringContaining('drawio render failed: invalid draw.io JSON'),
     });
+
+    expect(result.diagnostics).toMatchObject([
+      {
+        code: 'diagram.render',
+        sourceFile: 'invalid-drawio.md',
+        line: 3,
+        column: 1,
+        message: expect.stringContaining('drawio render failed: invalid draw.io JSON'),
+      },
+    ]);
   });
 
   it('caches repeated renders and keeps direction metadata in the cache key', async () => {

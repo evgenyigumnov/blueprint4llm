@@ -13,7 +13,7 @@ function markDiagramContainers(node: Root | Element): void {
       continue;
     }
 
-    if (child.tagName === 'pre' && containsOnlyDiagram(child)) {
+    if (child.tagName === 'pre' && containsOnlyRenderedBlock(child)) {
       const className = child.properties.className;
       const classes = Array.isArray(className) ? className : [];
       if (!classes.includes('bp-diagram-container')) {
@@ -26,7 +26,7 @@ function markDiagramContainers(node: Root | Element): void {
   }
 }
 
-function containsOnlyDiagram(pre: Element): boolean {
+function containsOnlyRenderedBlock(pre: Element): boolean {
   const content = pre.children.filter(
     (child) => child.type !== 'text' || child.value.trim().length > 0,
   );
@@ -34,11 +34,16 @@ function containsOnlyDiagram(pre: Element): boolean {
     return false;
   }
 
-  const figure = content[0];
-  return figure?.type === 'element' && figure.tagName === 'figure' && hasDiagramClass(figure);
+  const rendered = content[0];
+  return rendered?.type === 'element' && hasRenderedBlockClass(rendered);
 }
 
-function hasDiagramClass(element: Element): boolean {
+function hasRenderedBlockClass(element: Element): boolean {
   const className = element.properties.className;
-  return Array.isArray(className) && className.includes('bp-diagram');
+  return (
+    Array.isArray(className) &&
+    (className.includes('bp-diagram') ||
+      className.includes('bp-diagram-with-diagnostics') ||
+      className.includes('bp-diagnostic-container'))
+  );
 }

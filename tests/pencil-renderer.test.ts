@@ -164,21 +164,22 @@ describe('Pencil renderer', () => {
     expect(compiled.html).toContain('clip-path="url(#bp-diagram-002-pencil-clip-1)"');
     expect(compiled.html).not.toMatch(/language-(pencil|pen)/);
     expect(compiled.errors).toEqual([]);
-    expect(checked).toEqual({ warnings: [], errors: [] });
+    expect(checked).toEqual({ warnings: [], errors: [], diagnostics: [] });
   });
 
   it('maps JSONC errors to the Markdown file and source line', async () => {
     const fence = '```';
     const markdown = `# Pencil\n\n${fence}pencil\n{\n  "version": "2.21",\n  "children": [{"id":"box","type":"rectangle","opacity":2}]\n}\n${fence}`;
 
-    await expect(
-      checkMarkdown(markdown, { sourceFile: 'invalid-pencil.md' }),
-    ).rejects.toMatchObject({
-      name: 'DiagnosticError',
-      sourceFile: 'invalid-pencil.md',
-      line: 6,
-      message: expect.stringContaining('pencil render failed: Pencil node "box" opacity'),
-    });
+    const result = await checkMarkdown(markdown, { sourceFile: 'invalid-pencil.md' });
+
+    expect(result.diagnostics).toMatchObject([
+      {
+        sourceFile: 'invalid-pencil.md',
+        line: 6,
+        message: expect.stringContaining('pencil render failed: Pencil node "box" opacity'),
+      },
+    ]);
   });
 
   it.each([

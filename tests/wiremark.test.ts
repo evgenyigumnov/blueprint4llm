@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
 import { compileMarkdown } from '../src/compiler.js';
-import { DiagnosticError } from '../src/errors.js';
 import { wiremarkRenderer } from '../src/renderers/wiremark.js';
 
 const wireframe = `Wireframe #login mobile
@@ -70,14 +69,22 @@ ${wireframe}
   });
 
   it('reports renderer errors at the failing line inside the Markdown fence', async () => {
-    const markdown = '# Heading\n\n```wiremark\nWireframe mobile\n  UnknownComponent\n```';
-
-    await expect(compileMarkdown(markdown, { sourceFile: 'broken.md' })).rejects.toMatchObject({
-      name: 'DiagnosticError',
+    const markdown =
+      '# Heading\n\n```wiremark\nWireframe mobile\n  UnknownComponent\n```\n\nText after the error.';
+    const compiled = await compileMarkdown(markdown, {
       sourceFile: 'broken.md',
-      line: 5,
-      column: 1,
-      message: 'wiremark render failed: unknown component "UnknownComponent"',
-    } satisfies Partial<DiagnosticError>);
+      includeDiagnosticsSummary: true,
+    });
+
+    expect(compiled.diagnostics).toMatchObject([
+      {
+        sourceFile: 'broken.md',
+        line: 5,
+        column: 1,
+        message: 'wiremark render failed: unknown component "UnknownComponent"',
+      },
+    ]);
+    expect(compiled.html).toContain('Text after the error.');
+    expect(compiled.html).toContain('Document check: 1 errors · 0 warnings');
   });
 });

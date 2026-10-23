@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { Element, Root } from 'hast';
 
 import {
+  checkMarkdown,
   compileMarkdown,
   detectLanguage,
   findFirstH1Text,
@@ -16,6 +17,86 @@ import {
 import { DiagnosticError } from '../src/errors.js';
 
 describe('compileMarkdown', () => {
+  it('keeps the document order and reports every independent diagram failure', async () => {
+    const drawio = JSON.stringify({
+      version: '26.0',
+      pages: [
+        {
+          id: 'page-1',
+          name: 'Orders',
+          cells: [
+            { id: 'layer', type: 'layer' },
+            { id: 'api', type: 'node', parent: 'layer', label: 'API' },
+            { id: 'queue', type: 'node', parent: 'layer', label: 'Queue' },
+            { id: 'send', type: 'edge', parent: 'layer', source: 'api', target: 'queue' },
+          ],
+        },
+      ],
+    });
+    const markdown = [
+      '# Orders',
+      '',
+      'Text before the first failure.',
+      '',
+      '```wiremark',
+      'Wireframe mobile',
+      '  UnknownFirst',
+      '```',
+      '',
+      'Text between failures.',
+      '',
+      '```drawio',
+      drawio,
+      '```',
+      '',
+      'Text before the second failure.',
+      '',
+      '```wireframe',
+      'Wireframe mobile',
+      '  UnknownSecond',
+      '```',
+      '',
+      'Text after the last failure.',
+    ].join('\n');
+
+    const compiled = await compileMarkdown(markdown, {
+      sourceFile: 'orders.md',
+      includeDiagnosticsSummary: true,
+    });
+    const checked = await checkMarkdown(markdown, { sourceFile: 'orders.md' });
+
+    expect(compiled.diagnostics).toMatchObject([
+      {
+        severity: 'error',
+        code: 'diagram.render',
+        sourceFile: 'orders.md',
+        line: 7,
+        diagramId: 'bp-diagram-001',
+        renderer: 'wiremark',
+      },
+      {
+        severity: 'error',
+        code: 'diagram.render',
+        sourceFile: 'orders.md',
+        line: 20,
+        diagramId: 'bp-diagram-003',
+        renderer: 'wiremark',
+      },
+    ]);
+    expect(checked.diagnostics).toEqual(compiled.diagnostics);
+    expect(checked).not.toHaveProperty('html');
+    expect(compiled.html).toContain('Document check: 2 errors · 0 warnings');
+    expect(compiled.html).toContain('Text before the first failure.');
+    expect(compiled.html).toContain('Text between failures.');
+    expect(compiled.html).toContain('Text before the second failure.');
+    expect(compiled.html).toContain('Text after the last failure.');
+    expect(compiled.html).toContain('UnknownFirst');
+    expect(compiled.html).toContain('UnknownSecond');
+    expect(compiled.html).toContain('bp-diagram--drawio');
+    expect(compiled.html.match(/<svg\b/g)).toHaveLength(1);
+    expect(compiled.html.match(/class="bp-diagnostic bp-diagnostic--error"/g)).toHaveLength(2);
+  });
+
   it('compiles PlantUML through the shared validated SVG diagram pipeline', async () => {
     const compiled = await compileMarkdown(
       '# PlantUML\n\n```plantuml\n@startuml\nAlice -> Bob: Привет\n@enduml\n```',
@@ -41,6 +122,19 @@ describe('compileMarkdown', () => {
     expect(compiled.html).toContain('Syntax Error?');
     expect(compiled.errors).toEqual([
       expect.stringMatching(/^invalid-plantuml\.md:5:1: plantuml error: Syntax Error\?/),
+    ]);
+    expect(compiled.diagnostics).toEqual([
+      expect.objectContaining({
+        severity: 'error',
+        code: 'diagram.render',
+        scope: 'diagram',
+        sourceFile: 'invalid-plantuml.md',
+        line: 5,
+        column: 1,
+        diagramId: 'bp-diagram-001',
+        renderer: 'plantuml',
+        message: expect.stringContaining('Syntax Error?'),
+      }),
     ]);
   }, 60_000);
 
@@ -147,6 +241,19 @@ fn main() { println!("<ok>"); }
     expect(compiled.html).not.toContain('<script');
     expect(compiled.assets).toEqual([]);
     expect(compiled.warnings).toEqual([]);
+  });
+
+  it('omits the document summary by default and includes it when requested', async () => {
+    const defaultResult = await compileMarkdown('# No summary by default', {
+      sourceFile: 'summary.md',
+    });
+    const optedInResult = await compileMarkdown('# Include the summary', {
+      sourceFile: 'summary.md',
+      includeDiagnosticsSummary: true,
+    });
+
+    expect(defaultResult.html).not.toContain('Document check:');
+    expect(optedInResult.html).toContain('Document check: 0 errors · 0 warnings');
   });
 
   it('highlights JSON and TypeScript fences while preserving their source text', async () => {

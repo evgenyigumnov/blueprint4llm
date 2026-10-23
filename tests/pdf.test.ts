@@ -121,6 +121,49 @@ ${longContent}`;
     }
   }, 120_000);
 
+  it('continues long inline diagnostics across PDF pages without clipping later text', async () => {
+    const longComponentName = `DiagnosticStart${'x'.repeat(24_000)}DiagnosticEnd`;
+    const markdown = [
+      '# Long diagnostic',
+      '',
+      'Text before the error.',
+      '',
+      '```wiremark',
+      'Wireframe mobile',
+      `  ${longComponentName}`,
+      '```',
+      '',
+      'Text after the error.',
+    ].join('\n');
+    const compiled = await compileMarkdown(markdown, { sourceFile: 'long-diagnostic.md' });
+    const pdf = await renderPdf(compiled);
+    const loadingTask = getDocument({ data: Uint8Array.from(pdf) });
+    const document = await loadingTask.promise;
+    const pages: string[] = [];
+
+    try {
+      for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
+        const page = await document.getPage(pageNumber);
+        const content = await page.getTextContent();
+        pages.push(
+          content.items
+            .map((item) => ('str' in item ? item.str : ''))
+            .filter(Boolean)
+            .join(' '),
+        );
+      }
+    } finally {
+      await loadingTask.destroy();
+    }
+
+    const fullText = pages.join('\n');
+    const compactText = fullText.replaceAll(/\s+/g, '').replaceAll(/\d+\/\d+/g, '');
+    expect(document.numPages).toBeGreaterThan(1);
+    expect(compactText).toContain('Textbeforetheerror.');
+    expect(compactText).toContain('Textaftertheerror.');
+    expect(compactText).toContain(longComponentName);
+  }, 60_000);
+
   it('prints Pencil SVG text in a PDF', async () => {
     const pencilJson = JSON.stringify({
       version: '2.21',

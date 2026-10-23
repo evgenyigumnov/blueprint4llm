@@ -11,7 +11,9 @@ import type { Nodes as MdastNode, Root as MdastRoot } from 'mdast';
 
 import { remarkLocalAssetsPlugin } from './assets.js';
 import type { LocalAsset } from './assets.js';
+import { rehypeDiagnosticSummaryPlugin } from './diagnostics-html.js';
 import { DiagnosticError, toDiagnosticError } from './errors.js';
+import type { BlueprintDiagnostic } from './diagnostics.js';
 import { remarkDiagramPlugin } from './plugins/remark-diagrams.js';
 import { rehypeDiagramContainersPlugin } from './plugins/rehype-diagram-containers.js';
 import { remarkSafeLinksPlugin } from './plugins/remark-safe-links.js';
@@ -50,6 +52,8 @@ export interface CompileOptions {
   sourceFile: string;
   /** Reject Markdown unless it contains exactly one supported diagram block. */
   requireSingleDiagram?: boolean;
+  /** Add the accessible error/warning count to the generated document. Disabled by default. */
+  includeDiagnosticsSummary?: boolean;
   /** Optional cache shared across successive live-preview builds. */
   diagramCache?: DiagramRenderCache;
   /** Figma personal access token for URL blocks. Overrides the environment and `.env` file. */
@@ -67,11 +71,15 @@ export interface CompiledBlueprint {
   warnings: string[];
   /** Non-fatal diagram diagnostics; callers can report these while using the compiled output. */
   errors?: string[];
+  /** Structured renderer diagnostics; absent on legacy compiler implementations. */
+  diagnostics?: BlueprintDiagnostic[];
 }
 
 export interface MarkdownCheckResult {
   warnings: string[];
   errors: string[];
+  /** Structured renderer diagnostics; absent on legacy compiler implementations. */
+  diagnostics?: BlueprintDiagnostic[];
 }
 
 /**
@@ -90,7 +98,9 @@ export async function compileMarkdown(
   let headingTitle: string | undefined;
   const warnings: string[] = [];
   const errors: string[] = [];
+  const diagnostics: BlueprintDiagnostic[] = [];
   const assets: LocalAsset[] = [];
+  const lang = detectLanguage(markdown);
   const collectTitle = () => (tree: MdastRoot) => {
     headingTitle = findFirstH1Text(tree);
   };
@@ -118,6 +128,8 @@ export async function compileMarkdown(
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      diagnostics,
+      language: lang,
       ...(options.requireSingleDiagram === undefined
         ? {}
         : { requireSingleDiagram: options.requireSingleDiagram }),
@@ -130,6 +142,11 @@ export async function compileMarkdown(
         // Raw HTML from untrusted Markdown is escaped, never executed (plan §8.3).
         html: (_h, node) => ({ type: 'text', value: node.value }),
       },
+    })
+    .use(rehypeDiagnosticSummaryPlugin, {
+      diagnostics,
+      language: lang,
+      enabled: options.includeDiagnosticsSummary === true,
     })
     .use(rehypeShikiWhenNeeded)
     .use(rehypeDiagramContainersPlugin)
@@ -149,11 +166,9 @@ export async function compileMarkdown(
 
   const fallbackTitle = path.basename(options.sourceFile, path.extname(options.sourceFile));
   const title = headingTitle || fallbackTitle || 'Blueprint';
-  const lang = detectLanguage(markdown);
-
   const html = renderHtmlPage({ lang, title, bodyHtml });
 
-  return { html, title, assets, warnings, errors };
+  return { html, title, assets, warnings, errors, diagnostics };
 }
 
 /** Checks Markdown, supported diagrams, and local image references without serializing HTML. */
@@ -166,6 +181,7 @@ export async function checkMarkdown(
 
   const warnings: string[] = [];
   const errors: string[] = [];
+  const diagnostics: BlueprintDiagnostic[] = [];
   const assets: LocalAsset[] = [];
   const processor = unified()
     .use(remarkParse)
@@ -189,6 +205,8 @@ export async function checkMarkdown(
       sourceFile: options.sourceFile,
       warnings,
       errors,
+      diagnostics,
+      language: detectLanguage(markdown),
       ...(options.requireSingleDiagram === undefined
         ? {}
         : { requireSingleDiagram: options.requireSingleDiagram }),
@@ -214,7 +232,7 @@ export async function checkMarkdown(
     });
   }
 
-  return { warnings, errors };
+  return { warnings, errors, diagnostics };
 }
 
 function assertMarkdownSize(markdown: string, sourceFile: string): void {

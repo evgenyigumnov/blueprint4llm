@@ -60,6 +60,8 @@ async function testLocalAssetsAndContentSecurityPolicy(temporaryRoot: string): P
   assert.match(result.html, /--bp-page-bg: var\(--vscode-editor-background/);
   assert.match(result.html, /--bp-accent: var\(--vscode-textLink-foreground/);
   assert.match(result.html, /--bp-code-bg: var\(--vscode-textCodeBlock-background/);
+  assert.match(result.html, /--bp-diagnostic-error: var\(--vscode-errorForeground/);
+  assert.match(result.html, /--bp-diagnostic-warning: var\(--vscode-editorWarning-foreground/);
   assert.match(result.html, /body\.vscode-light \{\s*color-scheme: light;/);
   assert.match(result.html, /body\.vscode-dark,[\s\S]*color-scheme: dark;/);
   assert.match(result.html, /filter: invert\(1\) hue-rotate\(180deg\)/);
@@ -84,18 +86,19 @@ async function testStaleRenderIsDiscarded(temporaryRoot: string): Promise<void> 
 }
 
 function testDiagnosticTextIsEscaped(): void {
-  const html = createDiagnosticHtml(
-    new PreviewDiagnosticError('<script>alert("x")</script>', {
-      sourceFile: '/docs/<bad>.md',
-      line: 4,
-    }),
-    'vscode-webview://test',
-  );
+  const diagnostic = new PreviewDiagnosticError('<script>alert("x")</script>', {
+    sourceFile: '/docs/<bad>.md',
+    line: 4,
+  });
+  const defaultHtml = createDiagnosticHtml(diagnostic, 'vscode-webview://test');
+  const html = createDiagnosticHtml(diagnostic, 'vscode-webview://test', true);
 
+  assert.doesNotMatch(defaultHtml, /Document check:/);
   assert.match(html, /script-src &#39;none&#39;/);
   assert.match(html, /&lt;script&gt;alert\(&quot;x&quot;\)&lt;\/script&gt;/);
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /&lt;bad&gt;\.md:4:1/);
+  assert.match(html, /Document check: 1 error · 0 warnings/);
   assert.match(html, /body\.vscode-high-contrast/);
   assert.match(html, /var\(--vscode-editor-foreground/);
 }

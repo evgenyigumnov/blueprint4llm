@@ -23,6 +23,7 @@ export async function runPreviewControllerTests(): Promise<void> {
   await testDocumentIsolationAndCloseCleanup();
   await testPanelCloseAbortsBuild();
   await testNonfatalDiagnosticsAreLogged();
+  await testStructuredDiagnosticsAreLoggedOnce();
   await testCompilationDiagnostics();
 }
 
@@ -85,14 +86,16 @@ async function testOpenApiEditRefreshesPreview(): Promise<void> {
   controller.open(document);
   scheduler.flush();
   await settle();
-  assert.match(panel.renderedHtml[0] ?? '', /GET \/orders/);
+  assert.match(panel.renderedHtml[0] ?? '', /<tspan[^>]*>GET<\/tspan>/);
+  assert.match(panel.renderedHtml[0] ?? '', /<tspan[^>]*>\/orders<\/tspan>/);
 
   document.edit(openApiMarkdown('/orders/v2'));
   controller.documentChanged(document);
   scheduler.flush();
   await settle();
 
-  assert.match(panel.renderedHtml[1] ?? '', /GET \/orders\/v2/);
+  assert.match(panel.renderedHtml[1] ?? '', /<tspan[^>]*>GET<\/tspan>/);
+  assert.match(panel.renderedHtml[1] ?? '', /<tspan[^>]*>\/orders\/v2<\/tspan>/);
   assert.equal(panel.renderedHtml.length, 2);
   controller.dispose();
 }
@@ -289,6 +292,47 @@ async function testNonfatalDiagnosticsAreLogged(): Promise<void> {
   assert.deepEqual(messages, [
     '/docs/warning.md: warning: diagram fallback used',
     '/docs/warning.md: error: unsupported diagram option',
+  ]);
+  controller.dispose();
+}
+
+async function testStructuredDiagnosticsAreLoggedOnce(): Promise<void> {
+  const scheduler = new FakeScheduler();
+  const panel = new FakePanel();
+  const messages: string[] = [];
+  const controller = new PreviewController({
+    createPanel: () => panel,
+    createCache: createEmptyCache,
+    output: (message) => messages.push(message),
+    scheduler,
+    compiler: async () => ({
+      ...compiled('# Partial document'),
+      warnings: ['legacy warning should not be duplicated'],
+      errors: ['legacy error should not be duplicated'],
+      diagnostics: [
+        {
+          severity: 'error' as const,
+          code: 'diagram.render' as const,
+          scope: 'diagram' as const,
+          sourceFile: '/docs/partial.md',
+          line: 12,
+          column: 4,
+          diagramId: 'bp-diagram-001',
+          renderer: 'wiremark',
+          message: 'unknown component',
+        },
+      ],
+    }),
+  });
+
+  controller.open(new FakeDocument('file:///docs/partial.md', '/docs/partial.md', '# Partial'));
+  scheduler.flush();
+  await settle();
+
+  assert.deepEqual(panel.renderedTitles, ['# Partial document']);
+  assert.deepEqual(messages, [
+    'blueprint4llm: /docs/partial.md:12:4: wiremark error: unknown component',
+    'blueprint4llm: 1 error(s), 0 warning(s)',
   ]);
   controller.dispose();
 }

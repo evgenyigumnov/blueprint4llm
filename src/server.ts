@@ -8,6 +8,7 @@ import type { FSWatcher } from 'chokidar';
 
 import { compileMarkdown } from './compiler.js';
 import type { CompiledBlueprint } from './compiler.js';
+import { formatDiagnostic, summarizeDiagnostics } from './diagnostics.js';
 import { toDiagnosticError } from './errors.js';
 import { renderPdf } from './pdf.js';
 import { DiagramRenderCache } from './renderers/cache.js';
@@ -20,6 +21,7 @@ const DEFAULT_DEBOUNCE_MS = 200;
 export interface PreviewServerOptions {
   input: string;
   port: number;
+  includeDiagnosticsSummary?: boolean;
   debounceMs?: number;
   out?: (text: string) => void;
   err?: (text: string) => void;
@@ -48,6 +50,7 @@ export async function startPreviewServer(
     compiled: undefined,
     version: undefined,
     diagnostic: undefined,
+    includeDiagnosticsSummary: options.includeDiagnosticsSummary === true,
     dirty: true,
     building: false,
   };
@@ -94,6 +97,7 @@ export async function startPreviewServer(
         diagramCache,
         watchPaths: discoveredPaths,
         signal: controller.signal,
+        includeDiagnosticsSummary: options.includeDiagnosticsSummary === true,
       });
       if (closed || buildRevision !== revision || controller.signal.aborted) {
         if (!closed) {
@@ -111,11 +115,28 @@ export async function startPreviewServer(
       state.version = compiledVersion(compiled);
       state.diagnostic = undefined;
       state.dirty = false;
-      for (const warning of compiled.warnings) {
-        logError(`blueprint4llm: warning: ${warning}\n`);
-      }
-      for (const error of compiled.errors ?? []) {
-        logError(`blueprint4llm: error: ${error}\n`);
+      if (compiled.diagnostics !== undefined) {
+        for (const diagnostic of compiled.diagnostics) {
+          logError(`blueprint4llm: ${formatDiagnostic(diagnostic)}\n`);
+        }
+        const summary = summarizeDiagnostics(compiled.diagnostics);
+        logError(
+          `blueprint4llm: summary: ${summary.errors} error(s), ${summary.warnings} warning(s)\n`,
+        );
+      } else {
+        for (const warning of compiled.warnings) {
+          logError(`blueprint4llm: warning: ${warning}\n`);
+        }
+        for (const error of compiled.errors ?? []) {
+          logError(`blueprint4llm: error: ${error}\n`);
+        }
+        const summary = {
+          errors: compiled.errors?.length ?? 0,
+          warnings: compiled.warnings.length,
+        };
+        logError(
+          `blueprint4llm: summary: ${summary.errors} error(s), ${summary.warnings} warning(s)\n`,
+        );
       }
     } catch (error) {
       if (closed || buildRevision !== revision || controller.signal.aborted) {
@@ -129,6 +150,7 @@ export async function startPreviewServer(
       state.diagnostic = diagnostic.format();
       state.dirty = false;
       logError(`blueprint4llm: ${diagnostic.format()}\n`);
+      logError('blueprint4llm: summary: 1 error(s), 0 warning(s)\n');
     } finally {
       if (buildRevision === revision) {
         state.building = false;

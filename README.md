@@ -102,20 +102,50 @@ the page. One OpenAPI block is not split across PDF pages.
 
 ## Commands
 
-| Task            | Command                                                 |
-| --------------- | ------------------------------------------------------- |
-| Live preview    | `blueprint4llm plan.md --serve --port=8080`             |
-| Validate for CI | `blueprint4llm plan.md --check`                         |
-| Export HTML     | `blueprint4llm plan.md --out=plan.html`                 |
-| Export PDF      | `blueprint4llm plan.md --out=plan.pdf --format=pdf`     |
-| Export SVG      | `blueprint4llm plan.md --out=visual.svg --format=svg`   |
-| Export PNG      | `blueprint4llm plan.md --out=visual.png --format=png`   |
-| Export JPEG     | `blueprint4llm plan.md --out=visual.jpeg --format=jpeg` |
+| Task                 | Command                                                                |
+| -------------------- | ---------------------------------------------------------------------- |
+| Live preview         | `blueprint4llm plan.md --serve --port=8080`                            |
+| Validate for CI      | `blueprint4llm plan.md --check`                                        |
+| Validate with report | `blueprint4llm plan.md --check --report-json=diagnostics.json`         |
+| Export with report   | `blueprint4llm plan.md --out=plan.html --report-json=diagnostics.json` |
+| Export HTML          | `blueprint4llm plan.md --out=plan.html`                                |
+| Export with counts   | `blueprint4llm plan.md --out=plan.html --diagnostics-summary`          |
+| Export PDF           | `blueprint4llm plan.md --out=plan.pdf --format=pdf`                    |
+| Export SVG           | `blueprint4llm plan.md --out=visual.svg --format=svg`                  |
+| Export PNG           | `blueprint4llm plan.md --out=visual.png --format=png`                  |
+| Export JPEG          | `blueprint4llm plan.md --out=visual.jpeg --format=jpeg`                |
 
 Image exports require **exactly one supported visual block**; the quick start example qualifies.
 `--out` creates parent directories. Each invocation produces one format; HTML is the default.
-`--check` validates Markdown, diagrams, and local images without writing output. Errors exit with
-code `1`; warnings go to stderr. In live preview, fixing the source clears the diagnostic page.
+`--check` validates Markdown, diagrams, and local images without writing HTML or assets. The optional
+`--report-json=<file>` writes a UTF-8 JSON report atomically. It works with `--check` and one-shot
+exports. The report path must differ from the input and output paths, including symlink aliases.
+`--report-json` cannot be used with `--serve`.
+
+Generated documents omit the overall error and warning count by default. Add
+`--diagnostics-summary` to HTML or PDF exports and live previews to include it. A failed diagram
+still shows its full message at its position; the other Markdown and valid diagrams remain available.
+HTML and PDF exports are saved even when a diagram has an error, then the command exits with code
+`1`. SVG, PNG, and JPEG exports do not replace an existing file when their diagram has an error.
+Warnings alone exit with code `0`. Invalid arguments, including report path conflicts, exit with
+code `2`.
+
+The report has `schemaVersion: 1`, a `status` of `ok` or `error`, summary counts, and ordered
+diagnostics. Each diagnostic includes `severity`, a stable `code`, `scope`, source path, optional
+Markdown coordinates and diagram identity, and the full message. Codes are `diagram.render`,
+`diagram.limit`, `diagram.svg`, `renderer.warning`, `document.read`, `document.compile`,
+`output.render`, and `output.write`. The optional `outputs` object lists files that the invocation
+actually saved. For example, `--check` reports have no `outputs` field.
+
+Fatal document or export failures stop that operation. If a JSON report was requested, it includes a
+document or output diagnostic when the report can still be written. An unwritable report is reported
+on stderr and exits with code `1`; any HTML or PDF already saved remains available. See
+[`examples/blueprint-diagnostics.md`](examples/blueprint-diagnostics.md) for a document with two
+independent diagram errors and a valid diagram between them.
+
+In live preview, failed diagrams stay inline and the PDF uses that same compiled document. The
+overall count is opt-in through `--diagnostics-summary`. Fixing the source removes the diagnostics on
+the next build. A fatal document error still shows a diagnostic page until the source is fixed.
 
 ## Output and limits
 
@@ -151,6 +181,7 @@ import { compileMarkdown, writeBlueprintOutput } from 'blueprint4llm';
 
 const compiled = await compileMarkdown('# Plan\n\nReady for review.', {
   sourceFile: './plan.md',
+  includeDiagnosticsSummary: true,
 });
 
 await writeBlueprintOutput('./plan.html', {
@@ -159,12 +190,18 @@ await writeBlueprintOutput('./plan.html', {
 });
 ```
 
-| Export                                        | Purpose                                                               |
-| --------------------------------------------- | --------------------------------------------------------------------- |
-| `compileMarkdown(markdown, options)`          | Returns `html`, `title`, `assets`, `warnings`, and optional `errors`. |
-| `renderPdf(compiled, { signal }?)`            | Generates PDF bytes; pass them as `pdf` to `writeBlueprintOutput()`.  |
-| `writeBlueprintOutput(path, options)`         | Writes HTML and/or PDF with assets; returns absolute output paths.    |
-| `startPreviewServer({ input, port, signal })` | Returns `url`, `port`, and an asynchronous `close()` method.          |
+| Export                                        | Purpose                                                                                      |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `compileMarkdown(markdown, options)`          | Returns `html`, `title`, `assets`, legacy `warnings`/`errors`, and structured `diagnostics`. |
+| `renderPdf(compiled, { signal }?)`            | Generates PDF bytes; pass them as `pdf` to `writeBlueprintOutput()`.                         |
+| `writeBlueprintOutput(path, options)`         | Writes HTML and/or PDF with assets; returns absolute output paths.                           |
+| `startPreviewServer({ input, port, signal })` | Returns `url`, `port`, and an asynchronous `close()` method.                                 |
+
+`warnings` and `errors` remain formatted string arrays for existing consumers. `diagnostics` adds
+structured records; it is optional in the public result types so older compiler implementations can
+continue to provide only the string arrays. The built-in compiler always returns `diagnostics`.
+Set `includeDiagnosticsSummary: true` in `CompileOptions` to add an accessible count to generated
+HTML. It is disabled by default. `startPreviewServer()` accepts the same option.
 
 ## Development
 

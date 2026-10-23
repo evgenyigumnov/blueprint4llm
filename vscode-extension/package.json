@@ -78,6 +78,11 @@
           "minimum": 0,
           "maximum": 2000,
           "description": "Delay in milliseconds before rebuilding the Blueprint preview after an edit."
+        },
+        "blueprint4llm.preview.includeDiagnosticsSummary": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show the error and warning count at the top of generated Blueprint documents."
         }
       }
     }

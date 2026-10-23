@@ -22,6 +22,7 @@ describe('HTML template', () => {
     expect(html).toContain('@media screen and (max-width: 640px)');
     expect(html).toContain('overflow-x: auto');
     expect(html).toMatch(/\.bp-diagram > svg \{[^}]*margin: 0;/);
+    expect(html).toMatch(/\.bp-diagnostic \{[^}]*white-space: normal;/);
     expect(html).not.toContain('<script');
     expect(html).not.toContain('<link');
     expect(html).not.toContain('cdn.');

@@ -105,7 +105,7 @@ describe('CLI main', () => {
 
     expect(await main([input, '--check'], captured.io)).toBe(EXIT_OK);
     expect(captured.stdout.join('')).toBe(`${input}: OK\n`);
-    expect(captured.stderr.join('')).toBe('');
+    expect(captured.stderr.join('')).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect((await readdir(root)).sort()).toEqual(['pencil.md']);
   });
 
@@ -138,7 +138,7 @@ describe('CLI main', () => {
 
     expect(await main([input, '--check'], captured.io)).toBe(EXIT_OK);
     expect(captured.stdout.join('')).toBe(`${input}: OK\n`);
-    expect(captured.stderr.join('')).toBe('');
+    expect(captured.stderr.join('')).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect((await readdir(root)).sort()).toEqual(['balsamiq.md']);
   });
 
@@ -306,7 +306,7 @@ describe('CLI main', () => {
       expect(handler).toBeDefined();
       (handler as (() => void) | undefined)?.();
       expect(await running).toBe(EXIT_OK);
-      expect(captured.stderr.join('')).toBe('');
+      expect(captured.stderr.join('')).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     } finally {
       const handler = process
         .listeners('SIGTERM')
@@ -362,7 +362,7 @@ describe('CLI main', () => {
     const captured = captureIo();
 
     expect(await main([input, '--out', output], captured.io)).toBe(EXIT_FAILURE);
-    expect(captured.stderr.join('')).toContain(`${input}: source Markdown is too large`);
+    expect(captured.stderr.join('')).toContain(`${input}: error: source Markdown is too large`);
     await expect(readFile(output)).rejects.toMatchObject({
       code: 'ENOENT',
     });

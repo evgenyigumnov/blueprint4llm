@@ -94,7 +94,28 @@ export async function run(): Promise<void> {
     { sourceFile: '/tmp/blueprint4llm-openapi-host-smoke.md' },
   );
   assert.match(openapi.html, /class="bp-diagram bp-diagram--openapi"/);
-  assert.match(openapi.html, /GET \/orders/);
+  assert.match(openapi.html, /<tspan[^>]*>GET<\/tspan>/);
+  assert.match(openapi.html, /<tspan[^>]*>\/orders<\/tspan>/);
+  assert.doesNotMatch(openapi.html, /Document check:/);
+
+  const previewSettings = vscode.workspace.getConfiguration('blueprint4llm.preview');
+  await previewSettings.update(
+    'includeDiagnosticsSummary',
+    true,
+    vscode.ConfigurationTarget.Global,
+  );
+  try {
+    const summary = await extension.exports.compileMarkdown('# Summary setting check', {
+      sourceFile: '/tmp/blueprint4llm-summary-host-smoke.md',
+    });
+    assert.match(summary.html, /Document check: 0 errors · 0 warnings/);
+  } finally {
+    await previewSettings.update(
+      'includeDiagnosticsSummary',
+      false,
+      vscode.ConfigurationTarget.Global,
+    );
+  }
 
   const [major, minor] = hostNodeVersion.split('.').map(Number);
   assert.ok(

@@ -22,20 +22,26 @@ describe('diagram input limits', () => {
     });
   });
 
-  it('rejects an oversized Wiremark block before calling its renderer', async () => {
+  it('reports an oversized Wiremark block and keeps the rest of the document', async () => {
     const source = 'x'.repeat(MAX_DIAGRAM_SOURCE_BYTES + 1);
+    const compiled = await compileMarkdown(
+      'Before.\n\n```wiremark\n' + source + '\n```\n\nAfter.',
+      { sourceFile: 'large-diagram.md' },
+    );
 
-    await expect(
-      compileMarkdown('```wiremark\n' + source + '\n```', {
+    expect(compiled.diagnostics).toEqual([
+      expect.objectContaining({
+        severity: 'error',
+        code: 'diagram.limit',
         sourceFile: 'large-diagram.md',
+        line: 3,
+        message: expect.stringContaining(
+          `diagram block is too large: ${MAX_DIAGRAM_SOURCE_BYTES + 1} bytes`,
+        ),
       }),
-    ).rejects.toMatchObject({
-      name: 'DiagnosticError',
-      sourceFile: 'large-diagram.md',
-      line: 1,
-      message: expect.stringContaining(
-        `diagram block is too large: ${MAX_DIAGRAM_SOURCE_BYTES + 1} bytes`,
-      ),
-    });
+    ]);
+    expect(compiled.html).toContain('Before.');
+    expect(compiled.html).toContain('After.');
+    expect(compiled.html).toContain('diagram block is too large');
   });
 });

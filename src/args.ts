@@ -5,9 +5,16 @@ export type OutputFormat = 'html' | 'pdf' | 'svg' | 'png' | 'jpeg';
 export type CliInvocation =
   | { kind: 'help' }
   | { kind: 'version' }
-  | { kind: 'check'; input: string }
-  | { kind: 'build'; input: string; outputFile: string; format: OutputFormat }
-  | { kind: 'serve'; input: string; port: number };
+  | { kind: 'check'; input: string; reportJson?: string }
+  | {
+      kind: 'build';
+      input: string;
+      outputFile: string;
+      format: OutputFormat;
+      reportJson?: string;
+      includeDiagnosticsSummary?: boolean;
+    }
+  | { kind: 'serve'; input: string; port: number; includeDiagnosticsSummary?: boolean };
 
 /** Wrong combination of arguments: usage is shown, process exits with code 2. */
 export class UsageError extends Error {
@@ -24,6 +31,9 @@ export const USAGE = `Usage:
   blueprint4llm <input.md> --out=<file> [--format=html|pdf|svg|png|jpeg]
   blueprint4llm <input.md> --serve [--port=<1..65535>]
   blueprint4llm <input.md> --check
+  blueprint4llm <input.md> --check --report-json=<file>
+  blueprint4llm <input.md> --out=<file> [--format=html|pdf|svg|png|jpeg] [--report-json=<file>] [--diagnostics-summary]
+  blueprint4llm <input.md> --serve [--port=<1..65535>] [--diagnostics-summary]
   blueprint4llm --help
   blueprint4llm --version
 
@@ -34,6 +44,8 @@ Options:
   --serve              run a local preview server with live reload (no --out)
   --port <port>        server port 1..65535, default: ${DEFAULT_PORT}; only with --serve
   --check              validate Markdown, diagrams, and local images without writing output
+  --report-json <file> write diagnostics and saved output paths as JSON; with --check or --out
+  --diagnostics-summary include an error/warning count in the generated document (default: off)
   -h, --help           display help
   -V, --version        display version`;
 
@@ -59,6 +71,8 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
     .option('--serve', 'run a local preview server with live reload')
     .option('--port <port>', `server port 1..65535 (default: ${DEFAULT_PORT})`, parsePort)
     .option('--check', 'validate Markdown, diagrams, and local images without writing output')
+    .option('--report-json <file>', 'write a JSON diagnostics report')
+    .option('--diagnostics-summary', 'include an error/warning count in the generated document')
     .showHelpAfterError(false)
     .showSuggestionAfterError(true)
     .configureOutput({ writeOut: () => undefined, writeErr: () => undefined })
@@ -85,6 +99,8 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
     serve?: boolean;
     port?: number;
     check?: boolean;
+    reportJson?: string;
+    diagnosticsSummary?: boolean;
   }>();
   const args = program.processedArgs as [string | undefined];
   const input = args[0];
@@ -97,6 +113,8 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
   const portSpecified = wasProvided(program, 'port');
   const formatSpecified = wasProvided(program, 'format');
   const checkSpecified = wasProvided(program, 'check');
+  const reportJsonSpecified = wasProvided(program, 'reportJson');
+  const diagnosticsSummarySpecified = wasProvided(program, 'diagnosticsSummary');
 
   if (checkSpecified && outSpecified) {
     throw new UsageError('--out and --check are mutually exclusive');
@@ -110,6 +128,9 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
   if (checkSpecified && portSpecified) {
     throw new UsageError('--port cannot be used with --check');
   }
+  if (checkSpecified && diagnosticsSummarySpecified) {
+    throw new UsageError('--diagnostics-summary cannot be used with --check');
+  }
 
   if (options.serve === true && outSpecified) {
     throw new UsageError('--out and --serve are mutually exclusive');
@@ -120,17 +141,43 @@ export function parseCliArgs(argv: readonly string[]): CliInvocation {
   if (serveSpecified && formatSpecified) {
     throw new UsageError('--format cannot be used with --serve (PDF is served at /document.pdf)');
   }
+  if (serveSpecified && reportJsonSpecified) {
+    throw new UsageError('--report-json cannot be used with --serve');
+  }
+  if (
+    formatSpecified &&
+    ['svg', 'png', 'jpeg'].includes(options.format) &&
+    diagnosticsSummarySpecified
+  ) {
+    throw new UsageError('--diagnostics-summary can only be used with html or pdf output');
+  }
   if (!serveSpecified && portSpecified) {
     throw new UsageError('--port requires --serve');
   }
 
   if (serveSpecified) {
-    return { kind: 'serve', input, port: options.port ?? DEFAULT_PORT };
+    return {
+      kind: 'serve',
+      input,
+      port: options.port ?? DEFAULT_PORT,
+      ...(options.diagnosticsSummary === true ? { includeDiagnosticsSummary: true } : {}),
+    };
   }
   if (checkSpecified) {
-    return { kind: 'check', input };
+    return {
+      kind: 'check',
+      input,
+      ...(options.reportJson === undefined ? {} : { reportJson: options.reportJson }),
+    };
   }
-  return { kind: 'build', input, outputFile: options.out ?? '', format: options.format };
+  return {
+    kind: 'build',
+    input,
+    outputFile: options.out ?? '',
+    format: options.format,
+    ...(options.reportJson === undefined ? {} : { reportJson: options.reportJson }),
+    ...(options.diagnosticsSummary === true ? { includeDiagnosticsSummary: true } : {}),
+  };
 }
 
 function wasProvided(program: Command, name: string): boolean {

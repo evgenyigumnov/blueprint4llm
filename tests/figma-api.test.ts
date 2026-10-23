@@ -95,7 +95,7 @@ describe('Figma API renderer', () => {
       figmaAccessToken: 'check-token',
     });
 
-    expect(result).toEqual({ warnings: [], errors: [] });
+    expect(result).toEqual({ warnings: [], errors: [], diagnostics: [] });
     expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get('X-Figma-Token')).toBe(
       'check-token',
     );
@@ -440,16 +440,18 @@ describe('Figma API renderer', () => {
         .fn<typeof fetch>()
         .mockResolvedValueOnce(new Response('private response body', { status: 429 })),
     );
-    await expect(
-      checkMarkdown(apiMarkdown, {
-        sourceFile: 'remote-design.md',
-        figmaAccessToken: 'private-token',
-      }),
-    ).rejects.toMatchObject({
+    const apiResult = await checkMarkdown(apiMarkdown, {
       sourceFile: 'remote-design.md',
-      line: 3,
-      message: expect.stringContaining('Figma API rate limit exceeded (HTTP 429)'),
+      figmaAccessToken: 'private-token',
     });
+    expect(apiResult.diagnostics).toMatchObject([
+      {
+        sourceFile: 'remote-design.md',
+        line: 3,
+        message: expect.stringContaining('Figma API rate limit exceeded (HTTP 429)'),
+      },
+    ]);
+    expect(JSON.stringify(apiResult.diagnostics)).not.toContain('private-token');
 
     vi.stubGlobal(
       'fetch',
@@ -462,35 +464,35 @@ describe('Figma API renderer', () => {
           new Response('<svg><script>private JSON and token</script></svg>', { status: 200 }),
         ),
     );
-    await expect(
-      compileMarkdown(apiMarkdown, {
-        sourceFile: 'remote-design.md',
-        figmaAccessToken: 'private-token',
-      }),
-    ).rejects.toMatchObject({
+    const svgResult = await compileMarkdown(apiMarkdown, {
       sourceFile: 'remote-design.md',
-      line: 3,
-      message: expect.stringContaining('forbidden <script>'),
+      figmaAccessToken: 'private-token',
     });
+    expect(svgResult.diagnostics).toMatchObject([
+      {
+        code: 'diagram.svg',
+        sourceFile: 'remote-design.md',
+        line: 3,
+        message: expect.stringContaining('forbidden <script>'),
+      },
+    ]);
+    expect(svgResult.html).not.toContain('<script>private JSON and token</script>');
   });
 
   it('reports invalid Figma links at the Markdown line without echoing the URL', async () => {
     const privateUrl =
       'https://attacker.example/private?node-id=1-2&t=FIGMA_TEMPORARY_LINK_MUST_NOT_APPEAR';
-    let diagnostic: unknown;
-    try {
-      await checkMarkdown(['# Invalid link', '', '```figma', privateUrl, '```'].join('\n'), {
-        sourceFile: 'invalid-link.md',
-      });
-    } catch (error) {
-      diagnostic = error;
-    }
+    const result = await checkMarkdown(
+      ['# Invalid link', '', '```figma', privateUrl, '```'].join('\n'),
+      { sourceFile: 'invalid-link.md' },
+    );
+    const diagnostic = result.diagnostics?.[0];
 
     expect(diagnostic).toMatchObject({
       sourceFile: 'invalid-link.md',
       line: 3,
       message: expect.stringContaining('host must be figma.com or www.figma.com'),
     });
-    expect(String(diagnostic)).not.toContain('FIGMA_TEMPORARY_LINK_MUST_NOT_APPEAR');
+    expect(JSON.stringify(diagnostic)).not.toContain('FIGMA_TEMPORARY_LINK_MUST_NOT_APPEAR');
   });
 });

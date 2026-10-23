@@ -63,8 +63,15 @@ export async function createPreviewHtml(
 }
 
 /** Produces an escaped compile-error page that preserves the preview panel. */
-export function createDiagnosticHtml(diagnostic: PreviewDiagnostic, cspSource: string): string {
+export function createDiagnosticHtml(
+  diagnostic: PreviewDiagnostic,
+  cspSource: string,
+  includeDiagnosticsSummary = false,
+): string {
   const csp = `default-src 'none'; style-src 'unsafe-inline'; img-src ${cspSource} data:; script-src 'none'; connect-src 'none';`;
+  const summary = includeDiagnosticsSummary
+    ? '<section class="bp-diagnostics-summary" role="status" aria-live="polite" aria-atomic="true">Document check: 1 error · 0 warnings</section>'
+    : '';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -75,12 +82,14 @@ export function createDiagnosticHtml(diagnostic: PreviewDiagnostic, cspSource: s
 <style>
 body { margin: 0; min-height: 100vh; padding: 2rem; color: var(--vscode-editor-foreground, var(--vscode-foreground, #1f2328)); background: var(--vscode-editor-background, #fff); font: 14px/1.6 var(--vscode-font-family, system-ui, sans-serif); }
 h1 { font-size: 1.25rem; }
-pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--vscode-errorForeground, #b42318); border: 1px solid var(--vscode-contrastBorder, var(--vscode-editorWidget-border, currentColor)); padding: 1rem; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--vscode-editor-foreground, #1f2328); background: var(--vscode-editor-background, #fff); border: 1px solid var(--vscode-contrastBorder, var(--vscode-editorWidget-border, currentColor)); padding: 1rem; }
+.bp-diagnostics-summary { padding: .75rem 1rem; border: 2px solid var(--vscode-errorForeground, #b42318); border-inline-start-width: 6px; font-weight: 600; }
 body.vscode-high-contrast { border: 1px solid var(--vscode-contrastBorder, currentColor); }
 </style>
 </head>
 <body>
 <main>
+${summary}
 <h1>Не удалось построить предпросмотр</h1>
 <pre>${escapeHtml(diagnostic.format())}</pre>
 <p>Исправьте документ. Предпросмотр обновится после следующего изменения.</p>
@@ -100,6 +109,10 @@ body.vscode-high-contrast {
   --bp-page-bg: var(--vscode-editor-background, #f6f8fa);
   --bp-accent: var(--vscode-textLink-foreground, #0a5bd3);
   --bp-code-bg: var(--vscode-textCodeBlock-background, var(--vscode-editor-background, #f6f8fa));
+  --bp-diagnostic-error: var(--vscode-errorForeground, #b42318);
+  --bp-diagnostic-warning: var(--vscode-editorWarning-foreground, var(--vscode-editor-foreground, #7a4b00));
+  --bp-diagnostic-error-bg: var(--vscode-editor-background, #ffffff);
+  --bp-diagnostic-warning-bg: var(--vscode-editor-background, #ffffff);
   font-family: var(--vscode-font-family, system-ui, sans-serif);
 }
 

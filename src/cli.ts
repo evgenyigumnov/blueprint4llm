@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, realpathSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { parseCliArgs, UsageError, USAGE } from './args.js';
@@ -8,7 +9,15 @@ import type { CliInvocation } from './args.js';
 import { writeBlueprintOutput, writeSingleOutput } from './build.js';
 import { checkMarkdown, compileMarkdown } from './compiler.js';
 import type { CompiledBlueprint } from './compiler.js';
-import { toDiagnosticError } from './errors.js';
+import { formatDiagnostic, summarizeDiagnostics } from './diagnostics.js';
+import type { BlueprintDiagnostic } from './diagnostics.js';
+import {
+  assertReportPathAvailable,
+  createDiagnosticReport,
+  diagnosticForError,
+  ReportPathConflictError,
+  serializeDiagnosticReport,
+} from './diagnostic-report.js';
 import { renderDiagramImage } from './image-export.js';
 import { renderPdf } from './pdf.js';
 import { startPreviewServer } from './server.js';
@@ -43,6 +52,26 @@ export async function main(argv: readonly string[], io: CliIo = DEFAULT_IO): Pro
     throw error;
   }
 
+  if (invocation.kind !== 'serve' && invocation.kind !== 'help' && invocation.kind !== 'version') {
+    const reportJson = invocation.reportJson;
+    if (reportJson !== undefined) {
+      try {
+        await assertReportPathAvailable(
+          reportJson,
+          invocation.input,
+          invocation.kind === 'build' ? invocation.outputFile : undefined,
+        );
+      } catch (error) {
+        const message =
+          error instanceof ReportPathConflictError
+            ? error.message
+            : `cannot validate --report-json path ${reportJson}: ${errorMessage(error)}`;
+        io.err(`blueprint4llm: ${message}\n\n${USAGE}\n`);
+        return EXIT_USAGE;
+      }
+    }
+  }
+
   switch (invocation.kind) {
     case 'help':
       io.out(`${USAGE}\n`);
@@ -63,35 +92,57 @@ async function runCheck(
   invocation: Extract<CliInvocation, { kind: 'check' }>,
   io: CliIo,
 ): Promise<number> {
+  const sourceFile = path.resolve(invocation.input);
+  let diagnostics: BlueprintDiagnostic[];
+  let result: Awaited<ReturnType<typeof checkMarkdown>>;
   let markdown: string;
   try {
     markdown = await readFile(invocation.input, 'utf8');
   } catch (error) {
-    io.err(`blueprint4llm: cannot read ${invocation.input}: ${errorMessage(error)}\n`);
-    return EXIT_FAILURE;
+    const diagnostic = diagnosticForError(
+      new Error(`cannot read ${invocation.input}: ${errorMessage(error)}`),
+      sourceFile,
+      'document.read',
+      'document',
+    );
+    diagnostics = [diagnostic];
+    return finishCheck(invocation, diagnostics, io);
   }
 
-  let result: Awaited<ReturnType<typeof checkMarkdown>>;
   try {
-    result = await checkMarkdown(markdown, { sourceFile: invocation.input });
+    result = await checkMarkdown(markdown, { sourceFile });
   } catch (error) {
-    const diagnostic = toDiagnosticError(error, 'Markdown check failed', {
-      sourceFile: invocation.input,
-    });
-    io.err(`blueprint4llm: ${diagnostic.format()}\n`);
-    return EXIT_FAILURE;
+    diagnostics = [diagnosticForError(error, sourceFile, 'document.compile', 'document')];
+    return finishCheck(invocation, diagnostics, io);
   }
 
-  for (const warning of result.warnings) {
-    io.err(`blueprint4llm: warning: ${warning}\n`);
+  diagnostics = compilationDiagnostics(result, sourceFile);
+  return finishCheck(
+    invocation,
+    diagnostics,
+    io,
+    result.diagnostics === undefined ? result : undefined,
+  );
+}
+
+async function finishCheck(
+  invocation: Extract<CliInvocation, { kind: 'check' }>,
+  diagnostics: BlueprintDiagnostic[],
+  io: CliIo,
+  legacy?: { warnings: string[]; errors: string[] },
+): Promise<number> {
+  const reportFailure = await writeReportIfRequested(
+    invocation.reportJson,
+    invocation.input,
+    diagnostics,
+  );
+  if (reportFailure !== undefined) {
+    diagnostics.push(reportFailure);
   }
-  for (const error of result.errors) {
-    io.err(`blueprint4llm: error: ${error}\n`);
-  }
-  if (result.errors.length > 0) {
+  printDiagnostics(diagnostics, io, legacy);
+  if (summarizeDiagnostics(diagnostics).errors > 0) {
     return EXIT_FAILURE;
   }
-
   io.out(`${invocation.input}: OK\n`);
   return EXIT_OK;
 }
@@ -117,6 +168,7 @@ async function runServe(
     preview = await startPreviewServer({
       input: invocation.input,
       port: invocation.port,
+      includeDiagnosticsSummary: invocation.includeDiagnosticsSummary === true,
       out: io.out,
       err: io.err,
       signal: controller.signal,
@@ -154,57 +206,90 @@ async function runBuild(
   invocation: Extract<CliInvocation, { kind: 'build' }>,
   io: CliIo,
 ): Promise<number> {
+  const sourceFile = path.resolve(invocation.input);
+  const diagnostics: BlueprintDiagnostic[] = [];
+  const outputs: Partial<Record<'html' | 'pdf' | 'svg' | 'png' | 'jpeg', string>> = {};
+  const stdout: string[] = [];
+  let legacy: { warnings: string[]; errors: string[] } | undefined;
   let markdown: string;
   try {
     markdown = await readFile(invocation.input, 'utf8');
   } catch (error) {
-    io.err(`blueprint4llm: cannot read ${invocation.input}: ${errorMessage(error)}\n`);
-    return EXIT_FAILURE;
+    diagnostics.push(
+      diagnosticForError(
+        new Error(`cannot read ${invocation.input}: ${errorMessage(error)}`),
+        sourceFile,
+        'document.read',
+        'document',
+      ),
+    );
+    return finishBuild(invocation, diagnostics, outputs, stdout, io);
   }
 
   let compiled: CompiledBlueprint;
   try {
     compiled = await compileMarkdown(markdown, {
-      sourceFile: invocation.input,
+      sourceFile,
+      includeDiagnosticsSummary: invocation.includeDiagnosticsSummary === true,
       ...(invocation.format === 'svg' || invocation.format === 'png' || invocation.format === 'jpeg'
         ? { requireSingleDiagram: true }
         : {}),
     });
   } catch (error) {
-    const diagnostic = toDiagnosticError(error, 'render failed', {
-      sourceFile: invocation.input,
-    });
-    io.err(`blueprint4llm: ${diagnostic.format()}\n`);
-    return EXIT_FAILURE;
+    diagnostics.push(diagnosticForError(error, sourceFile, 'document.compile', 'document'));
+    return finishBuild(invocation, diagnostics, outputs, stdout, io);
   }
 
-  for (const warning of compiled.warnings) {
-    io.err(`blueprint4llm: warning: ${warning}\n`);
+  if (invocation.reportJson !== undefined && invocation.format === 'html') {
+    const assetDirectory = path.join(path.dirname(path.resolve(invocation.outputFile)), 'assets');
+    const assetPaths = compiled.assets.map((asset) => path.join(assetDirectory, asset.outputName));
+    try {
+      await assertReportPathAvailable(invocation.reportJson, sourceFile, invocation.outputFile, [
+        assetDirectory,
+        ...assetPaths,
+      ]);
+    } catch (error) {
+      const message =
+        error instanceof ReportPathConflictError
+          ? error.message
+          : `cannot validate --report-json path ${invocation.reportJson}: ${errorMessage(error)}`;
+      io.err(`blueprint4llm: ${message}\n\n${USAGE}\n`);
+      return EXIT_USAGE;
+    }
   }
-  for (const error of compiled.errors ?? []) {
-    io.err(`blueprint4llm: error: ${error}\n`);
+
+  diagnostics.push(...compilationDiagnostics(compiled, sourceFile));
+  if (compiled.diagnostics === undefined) {
+    legacy = { warnings: compiled.warnings, errors: compiled.errors ?? [] };
   }
 
   if (invocation.format === 'svg' || invocation.format === 'png' || invocation.format === 'jpeg') {
+    if (summarizeDiagnostics(diagnostics).errors > 0) {
+      return finishBuild(invocation, diagnostics, outputs, stdout, io, legacy);
+    }
     let output: string | Uint8Array;
     try {
       output = await renderDiagramImage(compiled.html, invocation.format);
     } catch (error) {
-      const diagnostic = toDiagnosticError(error, 'diagram image render failed', {
-        sourceFile: invocation.input,
-      });
-      io.err(`blueprint4llm: ${diagnostic.format()}\n`);
-      return EXIT_FAILURE;
+      diagnostics.push(diagnosticForError(error, sourceFile, 'output.render', 'output'));
+      return finishBuild(invocation, diagnostics, outputs, stdout, io, legacy);
     }
 
     try {
       const outputPath = await writeSingleOutput(invocation.outputFile, output);
-      io.out(`${outputPath}\n`);
-      return EXIT_OK;
+      outputs[invocation.format] = outputPath;
+      stdout.push(outputPath);
     } catch (error) {
-      io.err(`blueprint4llm: cannot write output: ${errorMessage(error)}\n`);
-      return EXIT_FAILURE;
+      diagnostics.push(
+        diagnosticForError(
+          new Error(`cannot write output: ${errorMessage(error)}`),
+          sourceFile,
+          'output.write',
+          'output',
+        ),
+      );
     }
+    return finishBuild(invocation, diagnostics, outputs, stdout, io, legacy);
   }
 
   let pdf: Uint8Array | undefined;
@@ -212,29 +297,127 @@ async function runBuild(
     try {
       pdf = await renderPdf(compiled);
     } catch (error) {
-      const diagnostic = toDiagnosticError(error, 'PDF render failed', {
-        sourceFile: invocation.input,
-      });
-      io.err(`blueprint4llm: ${diagnostic.format()}\n`);
-      return EXIT_FAILURE;
+      diagnostics.push(diagnosticForError(error, sourceFile, 'output.render', 'output'));
+      return finishBuild(invocation, diagnostics, outputs, stdout, io, legacy);
     }
   }
 
   try {
-    const outputs = await writeBlueprintOutput(invocation.outputFile, {
+    const savedPaths = await writeBlueprintOutput(invocation.outputFile, {
       ...(invocation.format === 'pdf' ? {} : { html: compiled.html, assets: compiled.assets }),
       ...(pdf === undefined ? {} : { pdf }),
     });
-    if (outputs.htmlPath !== undefined) {
-      io.out(`${outputs.htmlPath}\n`);
+    if (savedPaths.htmlPath !== undefined) {
+      outputs.html = savedPaths.htmlPath;
+      stdout.push(savedPaths.htmlPath);
     }
-    if (outputs.pdfPath !== undefined) {
-      io.out(`${outputs.pdfPath}\n`);
+    if (savedPaths.pdfPath !== undefined) {
+      outputs.pdf = savedPaths.pdfPath;
+      stdout.push(savedPaths.pdfPath);
     }
-    return EXIT_OK;
   } catch (error) {
-    io.err(`blueprint4llm: cannot write output: ${errorMessage(error)}\n`);
-    return EXIT_FAILURE;
+    diagnostics.push(
+      diagnosticForError(
+        new Error(`cannot write output: ${errorMessage(error)}`),
+        sourceFile,
+        'output.write',
+        'output',
+      ),
+    );
+  }
+  return finishBuild(invocation, diagnostics, outputs, stdout, io, legacy);
+}
+
+async function finishBuild(
+  invocation: Extract<CliInvocation, { kind: 'build' }>,
+  diagnostics: BlueprintDiagnostic[],
+  outputs: Partial<Record<'html' | 'pdf' | 'svg' | 'png' | 'jpeg', string>>,
+  stdout: readonly string[],
+  io: CliIo,
+  legacy?: { warnings: string[]; errors: string[] },
+): Promise<number> {
+  for (const line of stdout) {
+    io.out(`${line}\n`);
+  }
+  const reportFailure = await writeReportIfRequested(
+    invocation.reportJson,
+    invocation.input,
+    diagnostics,
+    outputs,
+  );
+  if (reportFailure !== undefined) {
+    diagnostics.push(reportFailure);
+  }
+  printDiagnostics(diagnostics, io, legacy);
+  return summarizeDiagnostics(diagnostics).errors > 0 ? EXIT_FAILURE : EXIT_OK;
+}
+
+function compilationDiagnostics(
+  result: Pick<CompiledBlueprint, 'warnings' | 'errors' | 'diagnostics'>,
+  sourceFile: string,
+): BlueprintDiagnostic[] {
+  if (result.diagnostics !== undefined) {
+    return result.diagnostics.map((diagnostic) => ({ ...diagnostic }));
+  }
+  return [
+    ...result.warnings.map((message): BlueprintDiagnostic => ({
+      severity: 'warning',
+      code: 'renderer.warning',
+      scope: 'diagram',
+      sourceFile,
+      message,
+    })),
+    ...(result.errors ?? []).map((message): BlueprintDiagnostic => ({
+      severity: 'error',
+      code: 'diagram.render',
+      scope: 'diagram',
+      sourceFile,
+      message,
+    })),
+  ];
+}
+
+function printDiagnostics(
+  diagnostics: readonly BlueprintDiagnostic[],
+  io: CliIo,
+  legacy?: { warnings: string[]; errors: string[] },
+): void {
+  const legacyCount = legacy === undefined ? 0 : legacy.warnings.length + legacy.errors.length;
+  if (legacy !== undefined) {
+    for (const warning of legacy.warnings) {
+      io.err(`blueprint4llm: warning: ${warning}\n`);
+    }
+    for (const error of legacy.errors) {
+      io.err(`blueprint4llm: error: ${error}\n`);
+    }
+  }
+  for (const diagnostic of diagnostics.slice(legacyCount)) {
+    io.err(`blueprint4llm: ${formatDiagnostic(diagnostic)}\n`);
+  }
+  const summary = summarizeDiagnostics(diagnostics);
+  io.err(`blueprint4llm: summary: ${summary.errors} error(s), ${summary.warnings} warning(s)\n`);
+}
+
+async function writeReportIfRequested(
+  reportPath: string | undefined,
+  sourceFile: string,
+  diagnostics: readonly BlueprintDiagnostic[],
+  outputs: Partial<Record<'html' | 'pdf' | 'svg' | 'png' | 'jpeg', string>> = {},
+): Promise<BlueprintDiagnostic | undefined> {
+  if (reportPath === undefined) {
+    return undefined;
+  }
+  try {
+    const report = createDiagnosticReport(sourceFile, diagnostics, outputs);
+    await writeSingleOutput(reportPath, serializeDiagnosticReport(report));
+    return undefined;
+  } catch (error) {
+    return diagnosticForError(
+      new Error(`cannot write JSON report ${reportPath}: ${errorMessage(error)}`),
+      sourceFile,
+      'output.write',
+      'output',
+    );
   }
 }
 

@@ -172,7 +172,7 @@ describe('Figma JSON validation and frame selection', () => {
       vi.unstubAllGlobals();
     }
 
-    expect(result).toEqual({ warnings: [], errors: [] });
+    expect(result).toEqual({ warnings: [], errors: [], diagnostics: [] });
     expect(fetch).not.toHaveBeenCalled();
   });
 
@@ -182,21 +182,17 @@ describe('Figma JSON validation and frame selection', () => {
       privateSourceValue: 'JSON_SOURCE_MUST_NOT_APPEAR',
     });
 
-    let diagnostic: unknown;
-    try {
-      await checkMarkdown(['# Document', '', '```figma', response, '```'].join('\n'), {
-        sourceFile: 'bad-figma.md',
-      });
-    } catch (error) {
-      diagnostic = error;
-    }
+    const result = await checkMarkdown(['# Document', '', '```figma', response, '```'].join('\n'), {
+      sourceFile: 'bad-figma.md',
+    });
+    const diagnostic = result.diagnostics?.[0];
 
     expect(diagnostic).toMatchObject({
       sourceFile: 'bad-figma.md',
       line: 3,
       message: expect.stringContaining('no top-level frame'),
     });
-    expect(String(diagnostic)).not.toContain('JSON_SOURCE_MUST_NOT_APPEAR');
+    expect(JSON.stringify(diagnostic)).not.toContain('JSON_SOURCE_MUST_NOT_APPEAR');
   });
 
   it('allows Figma JSON up to its format limit through the shared diagram pipeline', async () => {
@@ -369,11 +365,11 @@ describe('Figma JSON validation and frame selection', () => {
     const unsupportedNode = makeFrame('12:34', 'Profile', undefined, [
       { id: '12:90', name: 'Boolean icon', type: 'BOOLEAN_OPERATION' },
     ]);
-    await expect(
-      compileMarkdown(`\`\`\`figma\n${makeResponse([unsupportedNode])}\n\`\`\``, {
-        sourceFile: 'unsupported.md',
-      }),
-    ).rejects.toThrow(
+    const unsupportedNodeResult = await compileMarkdown(
+      `\`\`\`figma\n${makeResponse([unsupportedNode])}\n\`\`\``,
+      { sourceFile: 'unsupported.md' },
+    );
+    expect(unsupportedNodeResult.diagnostics?.[0]?.message).toContain(
       'unsupported Figma node type "BOOLEAN_OPERATION" at node "12:90" ("Boolean icon")',
     );
 
@@ -386,11 +382,11 @@ describe('Figma JSON validation and frame selection', () => {
         fills: [{ type: 'GRADIENT_LINEAR', visible: true }],
       },
     ]);
-    await expect(
-      compileMarkdown(`\`\`\`figma\n${makeResponse([unsupportedPaint])}\n\`\`\``, {
-        sourceFile: 'unsupported-paint.md',
-      }),
-    ).rejects.toThrow(
+    const unsupportedPaintResult = await compileMarkdown(
+      `\`\`\`figma\n${makeResponse([unsupportedPaint])}\n\`\`\``,
+      { sourceFile: 'unsupported-paint.md' },
+    );
+    expect(unsupportedPaintResult.diagnostics?.[0]?.message).toContain(
       'unsupported Figma paint type "GRADIENT_LINEAR" at node "12:91" ("Gradient button")',
     );
   });
@@ -405,11 +401,11 @@ describe('Figma JSON validation and frame selection', () => {
         fills: [solid(0, 0, 0)],
       },
     ]);
-    await expect(
-      compileMarkdown(`\`\`\`figma\n${makeResponse([noGeometry])}\n\`\`\``, {
-        sourceFile: 'vector.md',
-      }),
-    ).rejects.toThrow(
+    const missingPathResult = await compileMarkdown(
+      `\`\`\`figma\n${makeResponse([noGeometry])}\n\`\`\``,
+      { sourceFile: 'vector.md' },
+    );
+    expect(missingPathResult.diagnostics?.[0]?.message).toContain(
       'Figma vector "12:92" ("Missing path") has no fillGeometry; request geometry=paths',
     );
 
@@ -423,11 +419,12 @@ describe('Figma JSON validation and frame selection', () => {
         fills: [solid(0, 0, 0)],
       },
     ]);
-    await expect(
-      compileMarkdown(`\`\`\`figma\n${makeResponse([badPath])}\n\`\`\``, {
-        sourceFile: 'bad-vector.md',
-      }),
-    ).rejects.toThrow('Figma node "12:93" ("Broken path") has invalid path 1 in fillGeometry');
+    const badPathResult = await compileMarkdown(`\`\`\`figma\n${makeResponse([badPath])}\n\`\`\``, {
+      sourceFile: 'bad-vector.md',
+    });
+    expect(badPathResult.diagnostics?.[0]?.message).toContain(
+      'Figma node "12:93" ("Broken path") has invalid path 1 in fillGeometry',
+    );
   });
 });
 

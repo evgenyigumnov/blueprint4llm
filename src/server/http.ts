@@ -8,6 +8,7 @@ export interface PreviewHttpState {
   compiled: CompiledBlueprint | undefined;
   version: string | undefined;
   diagnostic: string | undefined;
+  includeDiagnosticsSummary: boolean;
   dirty: boolean;
   building: boolean;
 }
@@ -58,7 +59,15 @@ export function createPreviewHttpServer(
 
     if (pathname === '/') {
       if (state.diagnostic !== undefined) {
-        sendHtml(response, 200, createDiagnosticHtml(state.diagnostic, state.version ?? ''));
+        sendHtml(
+          response,
+          200,
+          createDiagnosticHtml(
+            state.diagnostic,
+            state.version ?? '',
+            state.includeDiagnosticsSummary,
+          ),
+        );
       } else if (state.compiled !== undefined) {
         sendHtml(response, 200, createPreviewHtml(state.compiled, state.version ?? ''));
       } else {

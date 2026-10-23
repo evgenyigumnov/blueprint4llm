@@ -5,7 +5,6 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { compileMarkdown } from '../src/compiler.js';
-import { DiagnosticError } from '../src/errors.js';
 import {
   isMermaidCliAvailable,
   MAX_MERMAID_SOURCE_BYTES,
@@ -130,15 +129,29 @@ describe('Mermaid renderer', () => {
   }, 60_000);
 
   it('reports an invalid Mermaid block at its failing source line', async () => {
-    const markdown = '# Broken\n\n```mermaid\nflowchart LR\n  A -->\n```';
-
-    await expect(compileMarkdown(markdown, { sourceFile: 'broken.md' })).rejects.toMatchObject({
-      name: 'DiagnosticError',
+    const markdown =
+      '# Broken\n\n```mermaid\nflowchart LR\n  A -->\n```\n\nText after the failure.';
+    const compiled = await compileMarkdown(markdown, {
       sourceFile: 'broken.md',
-      line: 5,
-      column: 1,
-      message: expect.stringContaining('mermaid render failed'),
-    } satisfies Partial<DiagnosticError>);
+      includeDiagnosticsSummary: true,
+    });
+
+    expect(compiled.diagnostics).toEqual([
+      expect.objectContaining({
+        severity: 'error',
+        code: 'diagram.render',
+        sourceFile: 'broken.md',
+        line: 5,
+        column: 1,
+        diagramId: 'bp-diagram-001',
+        renderer: 'mermaid',
+        message: expect.stringContaining('mermaid render failed'),
+      }),
+    ]);
+    expect(compiled.html).toContain('Document check: 1 errors · 0 warnings');
+    expect(compiled.html).toContain('mermaid render failed');
+    expect(compiled.html).toContain('Text after the failure.');
+    expect(compiled.html).toContain('class="bp-diagnostic-container"');
   }, 60_000);
 
   it('leaves unknown fenced languages as ordinary code and enforces a diagram size limit', async () => {

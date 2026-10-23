@@ -92,7 +92,8 @@ export async function run() {
     sourceFile: '/tmp/blueprint4llm-packaged-openapi.md',
   });
   assert.ok(openapi.html.includes('class="bp-diagram bp-diagram--openapi"'));
-  assert.ok(openapi.html.includes('GET /orders'));
+  assert.ok(openapi.html.includes('>GET</tspan>'));
+  assert.ok(openapi.html.includes('>/orders</tspan>'));
   assert.equal(api.getPreviewCount(), 0);
   console.log('Packaged extension loaded the runtime and compiled Markdown');
 }
@@ -120,12 +121,14 @@ export async function run() {
   const previousPuppeteerCache = process.env.PUPPETEER_CACHE_DIR;
   process.env.PUPPETEER_CACHE_DIR = path.join(temporaryDirectory, 'empty-chrome-cache');
   try {
-    await assert.rejects(
-      compileMarkdown('# Missing Chrome check\n\n```mermaid\nflowchart LR\n  A --> B\n```', {
+    const missingChrome = await compileMarkdown(
+      '# Missing Chrome check\n\n```mermaid\nflowchart LR\n  A --> B\n```',
+      {
         sourceFile: path.join(temporaryDirectory, 'missing-chrome.md'),
-      }),
-      /npx puppeteer browsers install chrome/,
+      },
     );
+    assert.match(missingChrome.errors.join('\n'), /npx puppeteer browsers install chrome/);
+    assert.doesNotMatch(missingChrome.html, /<svg\b/);
   } finally {
     if (previousPuppeteerCache === undefined) {
       delete process.env.PUPPETEER_CACHE_DIR;

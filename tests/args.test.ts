@@ -36,8 +36,36 @@ describe('parseCliArgs', () => {
     expect(parseCliArgs(['input.md', '--serve', '--port', '1'])).toMatchObject({ port: 1 });
   });
 
+  it('enables generated document summaries only when requested', () => {
+    expect(parseCliArgs(['input.md', '--out', 'out.html', '--diagnostics-summary'])).toEqual({
+      kind: 'build',
+      input: 'input.md',
+      outputFile: 'out.html',
+      format: 'html',
+      includeDiagnosticsSummary: true,
+    });
+    expect(parseCliArgs(['input.md', '--serve', '--diagnostics-summary'])).toMatchObject({
+      kind: 'serve',
+      includeDiagnosticsSummary: true,
+    });
+  });
+
   it('parses check mode without an output path', () => {
     expect(parseCliArgs(['input.md', '--check'])).toEqual({ kind: 'check', input: 'input.md' });
+    expect(parseCliArgs(['input.md', '--check', '--report-json=report.json'])).toEqual({
+      kind: 'check',
+      input: 'input.md',
+      reportJson: 'report.json',
+    });
+    expect(parseCliArgs(['input.md', '--out', 'out.html', '--report-json', 'report.json'])).toEqual(
+      {
+        kind: 'build',
+        input: 'input.md',
+        outputFile: 'out.html',
+        format: 'html',
+        reportJson: 'report.json',
+      },
+    );
   });
 
   it('handles help and version without requiring an input file', () => {
@@ -53,8 +81,11 @@ describe('parseCliArgs', () => {
       ['input.md', '--check', '--serve'],
       ['input.md', '--check', '--format', 'html'],
       ['input.md', '--check', '--port', '8080'],
+      ['input.md', '--check', '--diagnostics-summary'],
+      ['input.md', '--out', 'out.svg', '--format', 'svg', '--diagnostics-summary'],
       ['input.md', '--out', 'out', '--serve'],
       ['input.md', '--serve', '--format', 'html'],
+      ['input.md', '--serve', '--report-json', 'report.json'],
       ['input.md', '--out', 'out', '--port', '8080'],
       ['input.md', '--out', 'out', '--format', 'xml'],
       ['input.md', '--out', 'out', '--format', 'both'],

@@ -140,6 +140,7 @@ describe('preview server', () => {
     const firstPreview = await (await fetch(server.url)).text();
     expect(firstPreview).toContain('bp-diagram--pencil');
     expect(firstPreview).toContain('Before update');
+    expect(firstPreview).not.toContain('Document check:');
 
     const events = await connectEvents(server.url);
     const reload = waitForReload(events.reader);
@@ -151,6 +152,52 @@ describe('preview server', () => {
     expect(updatedPreview).toContain('bp-diagram--pencil');
     expect(updatedPreview).toContain('After update');
     expect(updatedPreview).not.toContain('Before update');
+  }, 15_000);
+
+  it('serves a partial diagnostic document and gives PDF the same current version', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'diagnostics.md');
+    await writeFile(
+      input,
+      '# Orders\n\nText before.\n\n```wiremark\nWireframe mobile\n  UnknownControl\n```\n\nText after.',
+    );
+    const renderedPdfInputs: string[] = [];
+    const server = await startPreviewServer({
+      input,
+      port: 0,
+      includeDiagnosticsSummary: true,
+      renderPdf: async (compiled) => {
+        renderedPdfInputs.push(compiled.html);
+        return Buffer.from('%PDF-diagnostics');
+      },
+    });
+    servers.push(server);
+
+    const failedHtml = await (await fetch(server.url)).text();
+    expect(failedHtml).toContain('Document check: 1 errors · 0 warnings');
+    expect(failedHtml).toContain('unknown component');
+    expect(failedHtml).toContain('Text before.');
+    expect(failedHtml).toContain('Text after.');
+    expect((await fetch(new URL('/document.pdf', server.url))).status).toBe(200);
+    expect(renderedPdfInputs[0]).toContain('Document check: 1 errors · 0 warnings');
+    expect(renderedPdfInputs[0]).toContain('unknown component');
+
+    const events = await connectEvents(server.url);
+    const reload = waitForReload(events.reader);
+    await writeFile(
+      input,
+      '# Orders\n\n```wiremark\nWireframe #order-form\n  Stack column\n    Typography h4 "Ready"\n```\n\nRecovered text.',
+    );
+    await reload;
+    await events.close();
+
+    const fixedHtml = await (await fetch(server.url)).text();
+    expect(fixedHtml).toContain('Document check: 0 errors · 0 warnings');
+    expect(fixedHtml).toContain('Recovered text.');
+    expect(fixedHtml).not.toContain('unknown component');
+    expect((await fetch(new URL('/document.pdf', server.url))).status).toBe(200);
+    expect(renderedPdfInputs.at(-1)).toContain('Document check: 0 errors · 0 warnings');
+    expect(renderedPdfInputs.at(-1)).not.toContain('unknown component');
   }, 15_000);
 
   it('shows escaped diagnostics, rejects stale PDF, and recovers when a missing image appears', async () => {

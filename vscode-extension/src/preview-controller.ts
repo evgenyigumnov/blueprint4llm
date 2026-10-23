@@ -1,4 +1,5 @@
 import type { CompiledBlueprint } from 'blueprint4llm';
+import { formatDiagnostic, summarizeDiagnostics } from 'blueprint4llm';
 
 export interface PreviewDocument {
   uri: string;
@@ -213,11 +214,21 @@ export class PreviewController {
         return;
       }
 
-      for (const warning of compiled.warnings) {
-        this.options.output(`${document.fileName}: warning: ${warning}`);
-      }
-      for (const error of compiled.errors ?? []) {
-        this.options.output(`${document.fileName}: error: ${error}`);
+      if (compiled.diagnostics !== undefined) {
+        for (const diagnostic of compiled.diagnostics) {
+          this.options.output(`blueprint4llm: ${formatDiagnostic(diagnostic)}`);
+        }
+        const summary = summarizeDiagnostics(compiled.diagnostics);
+        this.options.output(
+          `blueprint4llm: ${summary.errors} error(s), ${summary.warnings} warning(s)`,
+        );
+      } else {
+        for (const warning of compiled.warnings) {
+          this.options.output(`${document.fileName}: warning: ${warning}`);
+        }
+        for (const error of compiled.errors ?? []) {
+          this.options.output(`${document.fileName}: error: ${error}`);
+        }
       }
 
       await session.panel.render(compiled, isCurrent, generation);

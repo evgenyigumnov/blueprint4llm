@@ -46,7 +46,7 @@ describe('built CLI integration', () => {
     const svgRun = await runCli([input, '--out', svgPath, '--format', 'svg']);
     expect(svgRun.code).toBe(0);
     expect(svgRun.stdout).toBe(`${svgPath}\n`);
-    expect(svgRun.stderr).toBe('');
+    expect(svgRun.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect(await readFile(svgPath, 'utf8')).toContain('<svg');
     expect(await readFile(svgPath, 'utf8')).not.toContain('<html');
 
@@ -54,7 +54,7 @@ describe('built CLI integration', () => {
     const pngRun = await runCli([input, '--out', pngPath, '--format', 'png']);
     expect(pngRun.code).toBe(0);
     expect(pngRun.stdout).toBe(`${pngPath}\n`);
-    expect(pngRun.stderr).toBe('');
+    expect(pngRun.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect((await readFile(pngPath)).subarray(0, 8)).toEqual(
       Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
     );
@@ -63,7 +63,7 @@ describe('built CLI integration', () => {
     const jpegRun = await runCli([input, '--out', jpegPath, '--format', 'jpeg']);
     expect(jpegRun.code).toBe(0);
     expect(jpegRun.stdout).toBe(`${jpegPath}\n`);
-    expect(jpegRun.stderr).toBe('');
+    expect(jpegRun.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect((await readFile(jpegPath)).subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
   }, 120_000);
 
@@ -120,7 +120,7 @@ describe('built CLI integration', () => {
       }
       const result = await server.result;
       expect(result.code).toBe(0);
-      expect(result.stderr).toBe('');
+      expect(result.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     }
   }, 120_000);
 });

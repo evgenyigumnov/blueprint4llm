@@ -34,6 +34,7 @@ describe('OpenAPI renderer integration', () => {
     expect(await checkMarkdown(markdown, { sourceFile: 'orders.md' })).toEqual({
       warnings: [],
       errors: [],
+      diagnostics: [],
     });
   });
 
@@ -92,15 +93,23 @@ describe('OpenAPI renderer integration', () => {
       '      responses: { default: { description: ok, content: { application/json: { schema: { $ref: "#/missing" } } } } }',
       '```',
     ].join('\n');
-    await expect(compileMarkdown(markdown, { sourceFile: 'broken.md' })).rejects.toMatchObject({
-      name: 'DiagnosticError',
+    const compiled = await compileMarkdown(markdown, {
       sourceFile: 'broken.md',
-      line: 9,
-      column: expect.any(Number),
+      includeDiagnosticsSummary: true,
     });
-    await expect(compileMarkdown(markdown, { sourceFile: 'broken.md' })).rejects.toThrow(
-      'unresolved $ref: #/missing (#/paths/~1x/get/responses/default/content/application~1json/schema/$ref)',
-    );
+
+    expect(compiled.diagnostics).toMatchObject([
+      {
+        sourceFile: 'broken.md',
+        line: 9,
+        column: expect.any(Number),
+        message: expect.stringContaining(
+          'unresolved $ref: #/missing (#/paths/~1x/get/responses/default/content/application~1json/schema/$ref)',
+        ),
+      },
+    ]);
+    expect(compiled.html).toContain('Document check: 1 errors · 0 warnings');
+    expect(compiled.html).toContain('unresolved $ref: #/missing');
   });
 
   it('checks AbortSignal before parsing source', async () => {
