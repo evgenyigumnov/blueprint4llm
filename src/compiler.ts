@@ -26,8 +26,13 @@ import { pencilRenderer } from './renderers/pencil.js';
 import { balsamiqRenderer } from './renderers/balsamiq.js';
 import { openapiRenderer } from './renderers/openapi.js';
 import { vegaLiteRenderer } from './renderers/vega-lite.js';
+import { echartsRenderer } from './renderers/echarts.js';
+import { d2Renderer } from './renderers/d2.js';
+import { excalidrawRenderer } from './renderers/excalidraw.js';
+import { graphvizRenderer } from './renderers/graphviz.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { resolveFigmaAccessToken } from './renderers/figma-token.js';
+import { getNotoSansFontCss } from './noto-fonts.js';
 import { renderHtmlPage } from './template.js';
 
 export type { LocalAsset } from './assets.js';
@@ -125,7 +130,11 @@ export async function compileMarkdown(
         pencilRenderer,
         balsamiqRenderer,
         openapiRenderer,
+        echartsRenderer,
+        d2Renderer,
+        excalidrawRenderer,
         vegaLiteRenderer,
+        graphvizRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,
@@ -168,7 +177,15 @@ export async function compileMarkdown(
 
   const fallbackTitle = path.basename(options.sourceFile, path.extname(options.sourceFile));
   const title = headingTitle || fallbackTitle || 'Blueprint';
-  const html = renderHtmlPage({ lang, title, bodyHtml });
+  const notoSansFontCss = bodyHtml.includes('bp-diagram--d2')
+    ? await getNotoSansFontCss()
+    : undefined;
+  const html = renderHtmlPage({
+    lang,
+    title,
+    bodyHtml,
+    ...(notoSansFontCss === undefined ? {} : { extraCss: notoSansFontCss }),
+  });
 
   return { html, title, assets, warnings, errors, diagnostics };
 }
@@ -203,7 +220,11 @@ export async function checkMarkdown(
         pencilRenderer,
         balsamiqRenderer,
         openapiRenderer,
+        echartsRenderer,
+        d2Renderer,
+        excalidrawRenderer,
         vegaLiteRenderer,
+        graphvizRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,

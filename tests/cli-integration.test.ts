@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import type { ChildProcessByStdio } from 'node:child_process';
 import { createServer } from 'node:net';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import type { Readable } from 'node:stream';
@@ -65,6 +65,72 @@ describe('built CLI integration', () => {
     expect(jpegRun.stdout).toBe(`${jpegPath}\n`);
     expect(jpegRun.stderr).toBe('blueprint4llm: summary: 0 error(s), 0 warning(s)\n');
     expect((await readFile(jpegPath)).subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+  }, 120_000);
+
+  it('exports a Graphviz fence as SVG, PNG, and JPEG', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'graphviz.md');
+    await writeFile(
+      input,
+      '# Service flow\n\n```graphviz\ndigraph { Client -> API [label="Submit"]; API -> Store; }\n```',
+    );
+
+    for (const format of ['svg', 'png', 'jpeg'] as const) {
+      const output = path.join(root, `service.${format}`);
+      const result = await runCli([input, '--out', output, '--format', format]);
+      expect(result.code).toBe(0);
+      expect(result.stdout).toBe(`${output}\n`);
+      const bytes = await readFile(output);
+      if (format === 'svg') {
+        expect(bytes.toString('utf8')).toContain('<svg');
+        expect(bytes.toString('utf8')).toContain('Client');
+        expect(bytes.toString('utf8')).not.toContain('<html');
+      } else if (format === 'png') {
+        expect(bytes.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+      } else {
+        expect(bytes.subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+      }
+    }
+  }, 120_000);
+
+  it('checks an Excalidraw plan without writing files and exports SVG, PNG, and JPEG', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'excalidraw.md');
+    const example = await readFile(
+      new URL('../examples/blueprint-excalidraw.md', import.meta.url),
+      'utf8',
+    );
+    await writeFile(input, example);
+
+    const check = await runCli([input, '--check']);
+    expect(check.code).toBe(0);
+    expect(check.stderr).toContain('0 error(s), 0 warning(s)');
+    expect(await readdir(root)).toEqual(['excalidraw.md']);
+
+    for (const format of ['svg', 'png', 'jpeg'] as const) {
+      const output = path.join(root, `service.${format}`);
+      const result = await runCli([input, '--out', output, '--format', format]);
+      expect(result.code).toBe(0);
+      expect(result.stdout).toBe(`${output}\n`);
+      expect(result.stderr).toContain('0 error(s), 0 warning(s)');
+      const bytes = await readFile(output);
+      if (format === 'svg') {
+        expect(bytes.toString('utf8')).toContain('<svg');
+        expect(bytes.toString('utf8')).not.toContain('<html');
+      } else if (format === 'png') {
+        expect(bytes.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+      } else {
+        expect(bytes.subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+      }
+    }
+
+    await writeFile(
+      input,
+      '# Invalid version\n\n```excalidraw\n{"type":"excalidraw","version":3,"elements":[]}\n```',
+    );
+    const invalid = await runCli([input, '--check']);
+    expect(invalid.code).toBe(1);
+    expect(invalid.stderr).toContain('unsupported Excalidraw document version');
   }, 120_000);
 
   it('writes HTML and PDF exports through the executable', async () => {

@@ -1,0 +1,15 @@
+customers: Customers {
+  shape: sql_table
+  id: int {constraint: primary_key}
+  name: string
+  email: string {constraint: unique}
+}
+
+orders: Orders {
+  shape: sql_table
+  id: int {constraint: primary_key}
+  customer_id: int {constraint: foreign_key}
+  total: decimal
+}
+
+orders.customer_id -> customers.id

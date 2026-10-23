@@ -21,7 +21,10 @@ interface BrowserDocument {
     naturalHeight: number;
   }>;
   querySelectorAll(selector: string): ArrayLike<{
-    getBoundingClientRect(): { width: number; height: number };
+    classList: { contains(className: string): boolean };
+    querySelector(
+      selector: string,
+    ): { getBoundingClientRect(): { width: number; height: number } } | null;
   }>;
 }
 
@@ -100,9 +103,17 @@ export async function renderPdf(
 
     const dimensions = await page.evaluate(() => {
       const browserDocument = (globalThis as unknown as { document: BrowserDocument }).document;
-      return Array.from(browserDocument.querySelectorAll('.bp-diagram svg')).map((svg) => {
+      return Array.from(browserDocument.querySelectorAll('.bp-diagram')).flatMap((figure) => {
+        const svg = figure.querySelector('svg');
+        if (svg === null) return [];
         const bounds = svg.getBoundingClientRect();
-        return { width: bounds.width, height: bounds.height };
+        return [
+          {
+            width: bounds.width,
+            height: bounds.height,
+            isD2: figure.classList.contains('bp-diagram--d2'),
+          },
+        ];
       });
     });
     const invisibleDiagram = dimensions.find(({ width, height }) => width <= 0 || height <= 0);
@@ -110,7 +121,8 @@ export async function renderPdf(
       throw new Error('a rendered diagram has zero width or height in the print layout');
     }
 
-    const pdf = await page.pdf(PDF_OPTIONS);
+    const landscape = dimensions.some(({ width, height, isD2 }) => isD2 && width / height > 1.5);
+    const pdf = await page.pdf({ ...PDF_OPTIONS, landscape });
     if (blockedRequests.length > 0) {
       throw new Error(`PDF attempted a blocked network request to "${blockedRequests[0]}"`);
     }

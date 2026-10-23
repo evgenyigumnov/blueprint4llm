@@ -28,7 +28,7 @@ With a successful preview open, run **Blueprint: Export Preview as PDF**. The ex
 
 When one diagram has a renderer error, the preview keeps the rest of the document and valid diagrams, then places each full diagnostic beside its diagram. The overall error and warning count is hidden by default. Enable `blueprint4llm.preview.includeDiagnosticsSummary` to show it. The next successful edit removes resolved diagnostics. A document-level failure, such as a missing local image, still shows a diagnostic page. PDF export uses the exact current preview, including inline diagram diagnostics when present.
 
-Local images are copied into per-document Webview resource folders and removed when the panel closes. The Webview has scripts disabled and receives a restrictive Content Security Policy. Mermaid and Wiremark use the same compiler as the CLI.
+Local images are copied into per-document Webview resource folders and removed when the panel closes. The Webview has scripts disabled and receives a restrictive Content Security Policy. Mermaid, Graphviz, and Wiremark use the same compiler as the CLI. Graphviz `graphviz` and `dot` fences use the embedded WebAssembly engine in a worker, so they do not need a system `dot` installation; a newer edit cancels stale layout work.
 
 The preview follows VS Code light, dark, and high contrast themes. Text, links, code blocks, diagnostic cards, and borders use the active theme's Webview color variables; diagrams are adjusted for dark and high contrast backgrounds. Vega-Lite charts keep their data colors and use a light chart surface. Diagnostic severity is stated in text and remains distinguishable in high contrast mode.
 
@@ -50,7 +50,7 @@ npm run package
 
 `npm run test:host` starts an Extension Development Host at the minimum supported VS Code version. On headless Linux, run it under `xvfb-run -a`.
 
-`npm run test:package` builds a VSIX in a temporary directory, checks that the Vega browser bundles and schema are packaged, launches the unpacked package in the Extension Development Host, renders Mermaid and Vega-Lite through the packaged runtime, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
+`npm run test:package` builds a VSIX in a temporary directory, checks that the packaged Graphviz worker and Wasm dependency, Vega bundles, and schemas are present, launches the unpacked package in the Extension Development Host, renders Mermaid, Graphviz, Vega-Lite, ECharts, and D2 through the packaged runtime, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
 
 ## Installation
 

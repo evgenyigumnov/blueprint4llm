@@ -28,15 +28,41 @@ try {
   const packagedExtensionPath = path.join(unpackedPath, 'extension');
   const corePackagePath = path.join(packagedExtensionPath, 'node_modules', 'blueprint4llm');
   const packagedHostSmokePath = path.join(packagedExtensionPath, 'out', 'package-host-smoke.js');
-  const rendererPath = path.join(corePackagePath, 'dist', 'src', 'renderers', 'mermaid.js');
+  const rendererPath = path.join(corePackagePath, 'dist', 'renderers', 'mermaid.js');
+  const echartsWorkerPath = path.join(corePackagePath, 'dist', 'renderers', 'echarts-worker.js');
+  const graphvizWorkerPath = path.join(corePackagePath, 'dist', 'renderers', 'graphviz-worker.js');
   const rendererRequire = createRequire(rendererPath);
   const cliPackageEntry = rendererRequire.resolve('@mermaid-js/mermaid-cli');
   const cliPath = path.join(path.dirname(cliPackageEntry), 'cli.js');
   const puppeteerEntry = rendererRequire.resolve('puppeteer');
   const vegaSchema = rendererRequire.resolve('vega/vega-schema.json');
   const vegaLiteSchema = rendererRequire.resolve('vega-lite/vega-lite-schema.json');
+  const echartsCore = rendererRequire.resolve('echarts/core');
+  const graphvizPackageEntry = rendererRequire.resolve('@viz-js/viz');
+  const d2Entry = rendererRequire.resolve('@d2lang/d2');
+  const d2PackagePath = path.resolve(path.dirname(d2Entry), '..', '..');
 
   assert.equal(await pathExists(path.join(corePackagePath, 'dist', 'index.js')), true);
+  assert.equal(
+    await pathExists(graphvizWorkerPath),
+    true,
+    'the Graphviz worker must be included in the VSIX',
+  );
+  assert.equal(
+    await pathExists(graphvizPackageEntry),
+    true,
+    'the Graphviz Wasm package must be included in the VSIX',
+  );
+  assert.equal(
+    await pathExists(path.join(corePackagePath, 'THIRD-PARTY-NOTICES.md')),
+    true,
+    'the Graphviz notices must be included in the VSIX',
+  );
+  assert.equal(
+    await pathExists(echartsWorkerPath),
+    true,
+    'the ECharts worker must be included in the VSIX',
+  );
   assert.equal(
     await pathExists(path.join(packagedExtensionPath, 'node_modules', 'yaml', 'package.json')),
     true,
@@ -48,6 +74,26 @@ try {
   assert.equal(await pathExists(path.join(path.dirname(vegaLiteSchema), 'vega-lite.min.js')), true);
   assert.equal(await pathExists(vegaSchema), true);
   assert.equal(await pathExists(vegaLiteSchema), true);
+  assert.equal(
+    await pathExists(echartsCore),
+    true,
+    'the ECharts SSR runtime must be included in the VSIX',
+  );
+  for (const relativePath of [
+    'dist/node-esm/d2.wasm',
+    'dist/node-esm/worker.js',
+    'dist/node-esm/wasm_exec.js',
+    'dist/node-cjs/d2.wasm',
+    'dist/node-cjs/worker.js',
+    'LICENSE.txt',
+    'THIRD_PARTY_NOTICES.txt',
+  ]) {
+    assert.equal(
+      await pathExists(path.join(d2PackagePath, relativePath)),
+      true,
+      `D2 runtime file ${relativePath} must be included in the VSIX`,
+    );
+  }
   assert.equal(await pathExists(path.join(packagedExtensionPath, 'node_modules', 'vscode')), false);
   assert.match(
     await readFile(path.join(packagedExtensionPath, 'readme.md'), 'utf8'),
@@ -117,6 +163,44 @@ export async function run() {
   assert.ok(vegaLite.html.includes('class="bp-diagram bp-diagram--vega-lite"'));
   assert.ok(vegaLite.html.includes('Dev'));
   assert.ok(vegaLite.html.includes('Prod'));
+  const echarts = await api.compileMarkdown([
+    fence + 'echarts width=640 height=360',
+    JSON.stringify({
+      xAxis: { type: 'category', data: ['One', 'Two'] },
+      yAxis: { type: 'value' },
+      series: [{ type: 'bar', data: [4, 7] }],
+    }),
+    fence,
+  ].join(String.fromCharCode(10)), {
+    sourceFile: '/tmp/blueprint4llm-packaged-echarts.md',
+  });
+  assert.ok(echarts.html.includes('class="bp-diagram bp-diagram--echarts"'));
+  assert.ok(echarts.html.includes('<svg width="640" height="360"'));
+  assert.deepEqual(echarts.errors, []);
+  const graphviz = await api.compileMarkdown([
+    fence + 'graphviz',
+    'digraph { client -> api [label="Заказ"] }',
+    fence,
+  ].join(String.fromCharCode(10)), {
+    sourceFile: '/tmp/blueprint4llm-packaged-graphviz.md',
+  });
+  assert.ok(graphviz.html.includes('class="bp-diagram bp-diagram--graphviz"'));
+  assert.ok(graphviz.html.includes('Заказ'));
+  assert.deepEqual(graphviz.errors, []);
+  const d2 = await api.compileMarkdown([
+    fence + 'd2',
+    'direction: right',
+    'client: Клиент',
+    'service: API заказов',
+    'client -> service: создать заказ',
+    fence,
+  ].join(String.fromCharCode(10)), {
+    sourceFile: '/tmp/blueprint4llm-packaged-d2.md',
+  });
+  assert.ok(d2.html.includes('class="bp-diagram bp-diagram--d2"'));
+  assert.match(d2.html, /<svg[^>]*width="[0-9]+"[^>]*height="[0-9]+"/);
+  assert.ok(d2.html.includes('Клиент'));
+  assert.deepEqual(d2.errors, []);
   assert.equal(api.getPreviewCount(), 0);
   console.log('Packaged extension loaded the runtime and compiled Markdown');
 }
@@ -127,7 +211,13 @@ export async function run() {
     version: process.env.BLUEPRINT4LLM_VSCODE_TEST_VERSION ?? '1.101.0',
     extensionDevelopmentPath: packagedExtensionPath,
     extensionTestsPath: packagedHostSmokePath,
-    launchArgs: ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'],
+    launchArgs: [
+      '--disable-gpu',
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      `--user-data-dir=${path.join(temporaryDirectory, 'user-data')}`,
+      `--extensions-dir=${path.join(temporaryDirectory, 'extensions')}`,
+    ],
   });
 
   const { compileMarkdown } = await import(

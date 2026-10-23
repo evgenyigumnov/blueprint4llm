@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { renderDiagramImage } from '../src/image-export.js';
+import { compileMarkdown } from '../src/compiler.js';
 
 describe('renderDiagramImage', () => {
   it('returns one standalone SVG with explicit dimensions', async () => {
@@ -16,6 +17,46 @@ describe('renderDiagramImage', () => {
     expect(svg).toContain('<text x="8" y="24">Ready</text>');
     expect(svg).not.toContain('<html');
   });
+
+  it('exports one Excalidraw scene as standalone SVG, PNG, and JPEG', async () => {
+    const markdown = [
+      '# Export formats',
+      '',
+      '```excalidraw',
+      JSON.stringify({
+        type: 'excalidraw',
+        version: 2,
+        elements: [
+          {
+            id: 'api',
+            type: 'text',
+            x: 0,
+            y: 0,
+            width: 160,
+            height: 28,
+            text: 'Exported Excalidraw',
+            fontSize: 18,
+            fontFamily: 2,
+            strokeColor: '#1e1e1e',
+          },
+        ],
+      }),
+      '```',
+    ].join('\n');
+    const compiled = await compileMarkdown(markdown, { sourceFile: 'export.md' });
+    const svgResult = await renderDiagramImage(compiled.html, 'svg');
+    const png = await renderDiagramImage(compiled.html, 'png');
+    const jpeg = await renderDiagramImage(compiled.html, 'jpeg');
+    expect(typeof svgResult).toBe('string');
+    const svg = svgResult as string;
+
+    expect(svg).toContain('Exported Excalidraw');
+    expect(svg).not.toContain('<html');
+    expect(Buffer.from(png as Uint8Array).subarray(0, 8)).toEqual(
+      Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    );
+    expect(Buffer.from(jpeg as Uint8Array).subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+  }, 60_000);
 
   it('uses explicit SVG lengths and the viewBox ratio to set standalone dimensions', async () => {
     const html = pageWithDiagram(

@@ -1,0 +1,11 @@
+checkout: {
+  shape: sequence_diagram
+  browser: Browser
+  api: Orders API
+  worker: Worker
+
+  browser -> api: create order
+  api -> worker: validate order
+  worker -> api: accepted
+  api -> browser: confirmation
+}

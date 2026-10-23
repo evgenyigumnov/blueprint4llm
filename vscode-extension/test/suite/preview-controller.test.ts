@@ -20,6 +20,7 @@ export async function runPreviewControllerTests(): Promise<void> {
   await testCancelsAndIgnoresStaleBuilds();
   await testTracksCompilationShownInPreview();
   await testOpenApiEditRefreshesPreview();
+  await testExcalidrawEditRefreshesPreview();
   await testDocumentIsolationAndCloseCleanup();
   await testPanelCloseAbortsBuild();
   await testNonfatalDiagnosticsAreLogged();
@@ -85,18 +86,52 @@ async function testOpenApiEditRefreshesPreview(): Promise<void> {
 
   controller.open(document);
   scheduler.flush();
-  await settle();
+  await waitForPreview(panel, 1);
   assert.match(panel.renderedHtml[0] ?? '', /<tspan[^>]*>GET<\/tspan>/);
   assert.match(panel.renderedHtml[0] ?? '', /<tspan[^>]*>\/orders<\/tspan>/);
 
   document.edit(openApiMarkdown('/orders/v2'));
   controller.documentChanged(document);
   scheduler.flush();
-  await settle();
+  await waitForPreview(panel, 2);
 
   assert.match(panel.renderedHtml[1] ?? '', /<tspan[^>]*>GET<\/tspan>/);
   assert.match(panel.renderedHtml[1] ?? '', /<tspan[^>]*>\/orders\/v2<\/tspan>/);
   assert.equal(panel.renderedHtml.length, 2);
+  controller.dispose();
+}
+
+async function testExcalidrawEditRefreshesPreview(): Promise<void> {
+  const scheduler = new FakeScheduler();
+  const panel = new FakePanel();
+  const controller = new PreviewController({
+    createPanel: () => panel,
+    createCache: createEmptyCache,
+    output: () => {},
+    scheduler,
+    compiler: (markdown, options) =>
+      compileMarkdown(markdown, { sourceFile: options.sourceFile, signal: options.signal }),
+  });
+  const document = new FakeDocument(
+    'file:///docs/architecture.md',
+    '/docs/architecture.md',
+    excalidrawMarkdown('Before edit'),
+  );
+
+  controller.open(document);
+  scheduler.flush();
+  await waitForPreview(panel, 1);
+  assert.match(panel.renderedHtml[0] ?? '', /bp-diagram--excalidraw/);
+  assert.match(panel.renderedHtml[0] ?? '', /Before edit/);
+
+  document.edit(excalidrawMarkdown('After edit'));
+  controller.documentChanged(document);
+  scheduler.flush();
+  await waitForPreview(panel, 2);
+
+  assert.match(panel.renderedHtml[1] ?? '', /bp-diagram--excalidraw/);
+  assert.match(panel.renderedHtml[1] ?? '', /After edit/);
+  assert.doesNotMatch(panel.renderedHtml[1] ?? '', /Before edit/);
   controller.dispose();
 }
 
@@ -479,7 +514,39 @@ function openApiMarkdown(path: string): string {
   ].join('\n');
 }
 
+function excalidrawMarkdown(text: string): string {
+  const scene = JSON.stringify({
+    type: 'excalidraw',
+    version: 2,
+    elements: [
+      {
+        id: 'label',
+        type: 'text',
+        x: 0,
+        y: 0,
+        width: 180,
+        height: 30,
+        text,
+        fontSize: 18,
+        fontFamily: 2,
+        strokeColor: '#1e1e1e',
+      },
+    ],
+  });
+  return `# Preview\n\n\`\`\`excalidraw\n${scene}\n\`\`\``;
+}
+
 async function settle(): Promise<void> {
   await Promise.resolve();
   await new Promise<void>((resolve) => setTimeout(resolve, 0));
+}
+
+async function waitForPreview(panel: FakePanel, renderedCount: number): Promise<void> {
+  const deadline = Date.now() + 10_000;
+  while (panel.renderedHtml.length < renderedCount && panel.diagnostics.length === 0) {
+    if (Date.now() >= deadline) {
+      throw new Error(`timed out waiting for preview render ${renderedCount}`);
+    }
+    await new Promise<void>((resolve) => setTimeout(resolve, 10));
+  }
 }

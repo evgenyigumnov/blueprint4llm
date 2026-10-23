@@ -5,6 +5,7 @@ import { formatDiagnostic, type BlueprintDiagnostic, type DiagnosticCode } from 
 import { parseAndValidateSvg } from '../svg/parse-and-validate.js';
 import { scopeSvgIds } from '../svg/scope-ids.js';
 import type { DiagramRenderCache } from '../renderers/cache.js';
+import { scopeD2SvgStyles } from '../renderers/d2-svg.js';
 import type { DiagramRenderContext, DiagramRenderer } from '../renderers/types.js';
 import { createDiagnosticCard } from '../diagnostics-html.js';
 
@@ -112,6 +113,7 @@ export async function processDiagramBlock(
   try {
     svg = parseAndValidateSvg(result.svg);
     preserveIntrinsicSvgWidth(svg);
+    if (block.renderer.name === 'd2') scopeD2SvgStyles(svg, diagramId);
     scopeSvgIds(svg, diagramId);
   } catch (error) {
     throwIfAborted(options.signal);
@@ -215,7 +217,11 @@ function makeRenderDiagnostic(
   const location = readRendererLocation(error);
   const line = mapSourceLine(context.line, location.line, block.node.value);
   const column =
-    location.column ?? (location.line === undefined ? block.node.position?.start.column : 1);
+    location.column === undefined
+      ? location.line === undefined
+        ? block.node.position?.start.column
+        : 1
+      : location.column + Math.max((block.node.position?.start.column ?? 1) - 1, 0);
   const message =
     error instanceof Error ? stripLocalLine(error.message, location.line) : String(error);
   const wrapped = / render failed: /.test(message)

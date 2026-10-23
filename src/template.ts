@@ -18,6 +18,8 @@ export interface PageOptions {
   title: string;
   /** HTML fragment produced by the Markdown pipeline (already escaped by rehype). */
   bodyHtml: string;
+  /** Optional application-generated CSS placed in the document's style element. */
+  extraCss?: string;
   /** Extra HTML injected right before `</body>` (used by `--serve` live reload). */
   tailHtml?: string;
 }
@@ -36,6 +38,7 @@ export function renderHtmlPage(options: PageOptions): string {
 <title>${escapeHtml(options.title)}</title>
 <style>
 ${BASE_CSS}
+${escapeStyleContent(options.extraCss ?? '')}
 </style>
 </head>
 <body>
@@ -46,6 +49,10 @@ ${tail}
 </body>
 </html>
 `;
+}
+
+function escapeStyleContent(css: string): string {
+  return css.replaceAll('<', '\\3C ');
 }
 
 const BASE_CSS = `:root {

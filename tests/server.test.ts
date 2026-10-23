@@ -154,6 +154,30 @@ describe('preview server', () => {
     expect(updatedPreview).not.toContain('Before update');
   }, 15_000);
 
+  it('serves and rebuilds an inline Excalidraw preview after a scene edit', async () => {
+    const root = await createTemporaryDirectory();
+    const input = path.join(root, 'excalidraw.md');
+    await writeFile(input, excalidrawMarkdown('First scene'));
+    const server = await startPreviewServer({ input, port: 0 });
+    servers.push(server);
+
+    const firstPreview = await (await fetch(server.url)).text();
+    expect(firstPreview).toContain('bp-diagram--excalidraw');
+    expect(firstPreview).toContain('First scene');
+    expect(firstPreview).toContain(':not(.bp-diagram--excalidraw)>svg');
+
+    const events = await connectEvents(server.url);
+    const reload = waitForReload(events.reader);
+    await writeFile(input, excalidrawMarkdown('Updated scene'));
+    await reload;
+    await events.close();
+
+    const updatedPreview = await (await fetch(server.url)).text();
+    expect(updatedPreview).toContain('bp-diagram--excalidraw');
+    expect(updatedPreview).toContain('Updated scene');
+    expect(updatedPreview).not.toContain('First scene');
+  }, 15_000);
+
   it('serves a partial diagnostic document and gives PDF the same current version', async () => {
     const root = await createTemporaryDirectory();
     const input = path.join(root, 'diagnostics.md');
@@ -425,6 +449,30 @@ function pencilMarkdown(label: string): string {
     ],
   });
   return ['# Pencil preview', '', '```pencil', document, '```'].join('\n');
+}
+
+function excalidrawMarkdown(label: string): string {
+  const scene = JSON.stringify({
+    type: 'excalidraw',
+    version: 2,
+    elements: [
+      {
+        id: 'label',
+        type: 'text',
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 30,
+        text: label,
+        fontSize: 18,
+        fontFamily: 2,
+        strokeColor: '#1e1e1e',
+      },
+    ],
+    appState: { viewBackgroundColor: '#ffffff' },
+    files: {},
+  });
+  return `# Excalidraw preview\n\n\`\`\`excalidraw\n${scene}\n\`\`\`\n`;
 }
 
 async function connectEvents(

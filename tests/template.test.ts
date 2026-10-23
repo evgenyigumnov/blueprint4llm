@@ -37,4 +37,16 @@ describe('HTML template', () => {
     });
     expect(html.indexOf('<script>liveReload()</script>')).toBeLessThan(html.indexOf('</body>'));
   });
+
+  it('escapes a style end tag in application-generated CSS', () => {
+    const html = renderHtmlPage({
+      lang: 'en',
+      title: 'Document',
+      bodyHtml: '<p>Body</p>',
+      extraCss: '/* </style><script>bad()</script> */',
+    });
+    expect(html).toContain('\\3C /style>\\3C script>bad()\\3C /script>');
+    expect(html.match(/<\/style>/g)).toHaveLength(1);
+    expect(html).not.toContain('<script>bad()');
+  });
 });

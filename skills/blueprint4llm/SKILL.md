@@ -20,7 +20,7 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 
 ## Workflow
 
-1. Read the relevant `AGENTS.md`, `CLAUDE.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
+1. Read the relevant `README.md`. Use current source code and tests when the plan describes an existing project.
 2. Use the path requested by the user. If the user gives no path, follow the repository's plan convention or use `plan.md`.
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
 4. Make the plan visual first. Prefer diagrams for architecture and flows, charts for data patterns, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
@@ -84,26 +84,25 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 
 ### Diagrams
 
-| Format       | Fence                     | Best fit and trade-off                                                                                                                                                                                                           |
-| ------------ | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mermaid      | `mermaid`                 | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
-| draw.io JSON | `drawio` or `draw.io`     | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
-| PlantUML     | `plantuml`                | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
-| OpenAPI      | `openapi`                 | Use for an embedded OpenAPI 3.1.1 contract. The local renderer shows operations and schemas in a static SVG; it supports local JSON Pointer references and warns about fields outside its displayed subset.                      |
+| Format       | Fence                 | Best fit and trade-off                                                                                                                                                                                                           |
+| ------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D2           | `d2`                  | Use for D2 source that combines architecture containers, graph connections, SQL tables, UML classes, or sequence diagrams. The local WebAssembly renderer supports a static profile and two checked layout engines.              |
+| Mermaid      | `mermaid`             | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
+| Graphviz DOT | `graphviz` or `dot`   | Use for node and edge graphs, clusters, ports, record labels, and HTML-like labels. The renderer uses an embedded local WebAssembly build and a worker; it supports seven verified engines and one graph per block.              |
+| draw.io JSON | `drawio` or `draw.io` | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
+| Excalidraw   | `excalidraw`          | Use for an existing v2 scene when saved positions, rotations, groups, and ordinary arrows matter. It renders a static subset as SVG; unsupported elements stay visible as placeholders.                                          |
+| PlantUML     | `plantuml`            | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
+| OpenAPI      | `openapi`             | Use for an embedded OpenAPI 3.1.1 contract. The local renderer shows operations and schemas in a static SVG; it supports local JSON Pointer references and warns about fields outside its displayed subset.                      |
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. A flow with UML activity semantics or a UML model is usually PlantUML. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
-draw.io JSON is a project-specific subset. Read the [draw.io renderer documentation](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/README.md#drawio-diagrams) before authoring it.
-
-OpenAPI supports only version 3.1.1 and local `#/...` references. It does not fetch external
-resources or validate the full OpenAPI specification. See the [OpenAPI contract example](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/examples/blueprint-openapi.md)
-and the renderer limits in the README before using less common OpenAPI fields.
 
 ### Charts
 
-| Format    | Fence                     | Best fit and trade-off                                                                                                                                                                                      |
-| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Vega-Lite | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections. |
+| Format    | Fence                     | Best fit and trade-off                                                                                                                                                                                                                                                                                                                   |
+| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vega-Lite | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections.                                                                                                                                  |
+| ECharts   | `echarts`                 | Use for bar, line, pie, scatter, radar, heatmap, or gauge charts. The static SVG renderer accepts a strict local JSON profile, including mixed bar and line series, and disables animation and interaction. |
 
 Use charts when comparisons, trends, distributions, or relationships in the data are central to the plan. Prefer a table when exact values matter more than visual patterns. Keep chart data embedded in the specification.
 

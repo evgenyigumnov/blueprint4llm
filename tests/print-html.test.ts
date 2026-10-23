@@ -36,7 +36,7 @@ describe('print HTML preparation', () => {
 
     expect(html).toContain(`data:image/png;base64,${imageBytes.toString('base64')}`);
     expect(html).not.toContain('assets/');
-    expect(html).toContain("font-family: 'Blueprint Noto Sans'");
+    expect(html).toContain("font-family: 'Noto Sans'");
     expect(html).toContain('data:font/ttf;base64,');
     expect(html).toContain('max-height: 220mm');
     expect(html).toContain('table-layout: fixed');

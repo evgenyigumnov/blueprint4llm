@@ -134,12 +134,17 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-body.vscode-dark .bp-diagram:not(.bp-diagram--vega-lite) > svg,
-body.vscode-high-contrast .bp-diagram:not(.bp-diagram--vega-lite) > svg {
+body.vscode-dark .bp-diagram:not(.bp-diagram--vega-lite):not(.bp-diagram--echarts):not(.bp-diagram--d2):not(.bp-diagram--excalidraw) > svg,
+body.vscode-high-contrast .bp-diagram:not(.bp-diagram--vega-lite):not(.bp-diagram--echarts):not(.bp-diagram--d2):not(.bp-diagram--excalidraw) > svg {
   filter: invert(1) hue-rotate(180deg);
 }
 
 .bp-diagram--vega-lite {
+  background: #fff;
+}
+
+.bp-diagram--echarts,
+.bp-diagram--d2 {
   background: #fff;
 }
 `;

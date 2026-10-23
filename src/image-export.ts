@@ -6,6 +6,7 @@ import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
 
 import { withChromeSandboxFallback } from './chrome-sandbox.js';
+import { getNotoSansFontCss } from './noto-fonts.js';
 
 export type DiagramImageFormat = 'svg' | 'png' | 'jpeg';
 
@@ -24,7 +25,7 @@ export async function renderDiagramImage(
   compiledHtml: string,
   format: DiagramImageFormat,
 ): Promise<string | Uint8Array> {
-  const svg = extractSingleDiagramSvg(compiledHtml);
+  const { svg, usesNotoSans } = extractSingleDiagramSvg(compiledHtml);
   const dimensions = getSvgDimensions(svg);
   setSvgDimensions(svg, dimensions);
   const serializedSvg = serializeSvg(svg);
@@ -33,10 +34,10 @@ export async function renderDiagramImage(
     return serializedSvg;
   }
 
-  return renderRasterImage(serializedSvg, dimensions, format);
+  return renderRasterImage(serializedSvg, dimensions, format, usesNotoSans);
 }
 
-function extractSingleDiagramSvg(html: string): Element {
+function extractSingleDiagramSvg(html: string): { svg: Element; usesNotoSans: boolean } {
   const tree = fromHtml(html);
   const diagrams: Element[] = [];
   collectDiagramFigures(tree, diagrams);
@@ -53,7 +54,7 @@ function extractSingleDiagramSvg(html: string): Element {
   if (svg === undefined) {
     throw new Error('the rendered diagram does not contain an SVG element');
   }
-  return svg;
+  return { svg, usesNotoSans: hasClass(figure, 'bp-diagram--d2') };
 }
 
 function collectDiagramFigures(node: Root | Element, diagrams: Element[]): void {
@@ -180,6 +181,7 @@ async function renderRasterImage(
   svg: string,
   dimensions: SvgDimensions,
   format: Exclude<DiagramImageFormat, 'svg'>,
+  usesNotoSans: boolean,
 ): Promise<Uint8Array> {
   const scale = Math.min(
     1,
@@ -197,7 +199,8 @@ async function renderRasterImage(
     throw new Error('could not prepare the rendered SVG for raster export');
   }
   setSvgDimensions(rootSvg, { width, height });
-  const html = createRasterHtml(serializeSvg(rootSvg), width, height);
+  const fontCss = usesNotoSans ? await getNotoSansFontCss() : '';
+  const html = createRasterHtml(serializeSvg(rootSvg), width, height, fontCss);
 
   let browser: Browser | undefined;
   let page: Page | undefined;
@@ -231,10 +234,11 @@ async function renderRasterImage(
   }
 }
 
-function createRasterHtml(svg: string, width: number, height: number): string {
+function createRasterHtml(svg: string, width: number, height: number, fontCss: string): string {
   return `<!doctype html><html><head><meta charset="utf-8"><style>
+${fontCss}
 html, body { width: ${width}px; height: ${height}px; margin: 0; overflow: hidden; background: #fff; }
-body { color: #1f2328; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
+body { color: #1f2328; font-family: 'Noto Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
 svg { display: block; width: ${width}px; height: ${height}px; }
 </style></head><body>${svg}</body></html>`;
 }

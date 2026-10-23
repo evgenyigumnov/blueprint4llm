@@ -70,7 +70,9 @@ describe('Vega-Lite renderer integration', () => {
     expect(compiled.html).toContain('Prod');
     expect(compiled.html).toMatch(/<svg[^>]*width="\d+(?:\.\d+)?"[^>]*height="\d+(?:\.\d+)?"/);
     expect(preview).toContain('.bp-diagram--vega-lite{background:#fff}');
-    expect(preview).toContain('.bp-diagram:not(.bp-diagram--vega-lite)>svg');
+    expect(preview).toMatch(
+      /\.bp-diagram:not\([^)]*vega-lite\):not\([^)]*bp-diagram--echarts\)[^>]*>svg/,
+    );
   });
 
   it('supports both fence aliases through the compiler and checker while ordinary JSON stays code', async () => {

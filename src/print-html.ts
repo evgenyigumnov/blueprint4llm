@@ -1,15 +1,11 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-
 import { fromHtml } from 'hast-util-from-html';
 import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
 import type { Element, Root } from 'hast';
 
 import type { CompiledBlueprint } from './compiler.js';
+import { getNotoSansFontCss } from './noto-fonts.js';
 
-const FONT_URL = new URL('../fonts/NotoSans-Regular.ttf', import.meta.url);
-const FONT_BOLD_URL = new URL('../fonts/NotoSans-Bold.ttf', import.meta.url);
 const MAX_PDF_IMAGE_BYTES = 20 * 1024 * 1024;
 
 /**
@@ -26,13 +22,6 @@ export async function createPrintHtml(compiled: CompiledBlueprint): Promise<stri
     throw new Error('compiled HTML is missing its <head> element');
   }
 
-  const [regularFont, boldFont] = await Promise.all([
-    readFile(fileURLToPath(FONT_URL)),
-    readFile(fileURLToPath(FONT_BOLD_URL)),
-  ]);
-  if (regularFont.byteLength > MAX_PDF_IMAGE_BYTES || boldFont.byteLength > MAX_PDF_IMAGE_BYTES) {
-    throw new Error('the bundled PDF font exceeds the supported 20 MiB size limit');
-  }
   head.children.push({
     type: 'element',
     tagName: 'style',
@@ -40,7 +29,9 @@ export async function createPrintHtml(compiled: CompiledBlueprint): Promise<stri
     children: [
       {
         type: 'text',
-        value: createPrintStyles(regularFont.toString('base64'), boldFont.toString('base64')),
+        value: createPrintStyles(
+          compiled.html.includes('bp-diagram--d2') ? '' : await getNotoSansFontCss(),
+        ),
       },
     ],
   });
@@ -107,23 +98,12 @@ function visitElements(root: Root | Element, visit: (element: Element) => void):
   }
 }
 
-function createPrintStyles(regularFont: string, boldFont: string): string {
-  return `@font-face {
-  font-family: 'Blueprint Noto Sans';
-  src: url(data:font/ttf;base64,${regularFont}) format('truetype');
-  font-style: normal;
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'Blueprint Noto Sans';
-  src: url(data:font/ttf;base64,${boldFont}) format('truetype');
-  font-style: normal;
-  font-weight: 700;
-}
+function createPrintStyles(fontCss: string): string {
+  return `${fontCss}
 
 @media print {
-  body { font-family: 'Blueprint Noto Sans', sans-serif; }
-  svg text, svg tspan { font-family: 'Blueprint Noto Sans', sans-serif !important; }
+  body { font-family: 'Noto Sans', sans-serif; }
+  svg text, svg tspan { font-family: 'Noto Sans', sans-serif !important; }
   h1, h2, h3, h4, h5, h6 { break-after: avoid; page-break-after: avoid; }
   img, figure, .bp-diagram { max-width: 100%; break-inside: avoid; page-break-inside: avoid; }
   img { max-height: 220mm; object-fit: contain; }

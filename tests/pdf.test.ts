@@ -38,6 +38,24 @@ describe('PDF renderer', () => {
         },
       ],
     });
+    const excalidrawJson = JSON.stringify({
+      type: 'excalidraw',
+      version: 2,
+      elements: [
+        {
+          id: 'pdf-label',
+          type: 'text',
+          x: 0,
+          y: 0,
+          width: 180,
+          height: 28,
+          text: 'Excalidraw PDF label',
+          fontSize: 18,
+          fontFamily: 2,
+          strokeColor: '#1e1e1e',
+        },
+      ],
+    });
     const longContent = Array.from(
       { length: 100 },
       (_, index) =>
@@ -55,6 +73,10 @@ describe('PDF renderer', () => {
 ${drawioJson}
 \`\`\`
 
+\`\`\`excalidraw
+${excalidrawJson}
+\`\`\`
+
 \`\`\`mermaid
 flowchart LR
   A[Mermaid Start] --> B[Mermaid Finish]
@@ -69,6 +91,14 @@ ${wireframe}
 Browser -> API: PlantUML Start
 API --> Browser: PlantUML Finish
 @enduml
+\`\`\`
+
+\`\`\`graphviz
+digraph Order {
+  customer [label="Клиент"];
+  api [label="Graphviz API"];
+  customer -> api [label="Создать заказ"];
+}
 \`\`\`
 
 ${longContent}`;
@@ -111,15 +141,53 @@ ${longContent}`;
     expect(fullText).toMatch(/Mermaid\s+Finish/);
     expect(fullText).toMatch(/Drawio\s+Start/);
     expect(fullText).toMatch(/Drawio\s+Finish/);
+    expect(fullText).toContain('Excalidraw PDF label');
     expect(fullText).toContain('Routed');
     expect(fullText).toContain('Wiremark screen');
     expect(fullText).toContain('Email address');
     expect(fullText).toMatch(/PlantUML\s+Start/);
     expect(fullText).toMatch(/PlantUML\s+Finish/);
+    expect(fullText).toContain('Клиент');
+    expect(fullText).toMatch(/Graphviz\s+API/);
+    expect(fullText).toMatch(/Создать\s+заказ/);
     for (let pageNumber = 1; pageNumber <= pages.length; pageNumber += 1) {
       expect(pages[pageNumber - 1]).toMatch(new RegExp(`${pageNumber}\\s*[/|]\\s*${pages.length}`));
     }
   }, 120_000);
+
+  it('prints D2 Cyrillic labels as selectable text using the bundled font', async () => {
+    const fence = String.fromCharCode(96, 96, 96);
+    const markdown = [
+      '# D2 PDF',
+      '',
+      `${fence}d2`,
+      'direction: right',
+      'customer: Клиент D2',
+      'api: API D2',
+      'customer -> api: создать D2 заказ',
+      fence,
+    ].join('\n');
+    const compiled = await compileMarkdown(markdown, { sourceFile: 'd2-pdf.md' });
+    const pdf = await renderPdf(compiled);
+    const loadingTask = getDocument({ data: Uint8Array.from(pdf) });
+    const document = await loadingTask.promise;
+
+    try {
+      const page = await document.getPage(1);
+      const viewport = page.getViewport({ scale: 1 });
+      const content = await page.getTextContent();
+      const text = content.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .filter(Boolean)
+        .join(' ');
+      expect(text).toContain('Клиент D2');
+      expect(text).toContain('API D2');
+      expect(text).toMatch(/создать\s+D2\s+заказ/);
+      expect(viewport.width).toBeGreaterThan(viewport.height);
+    } finally {
+      await loadingTask.destroy();
+    }
+  }, 60_000);
 
   it('continues long inline diagnostics across PDF pages without clipping later text', async () => {
     const longComponentName = `DiagnosticStart${'x'.repeat(24_000)}DiagnosticEnd`;

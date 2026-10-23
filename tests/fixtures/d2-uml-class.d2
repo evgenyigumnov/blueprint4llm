@@ -1,0 +1,9 @@
+Order: {
+  shape: class
+  +id: string
+  +total: decimal
+  -recalculate(): decimal
+  +save(): void
+}
+
+Order -> Repository: persists through

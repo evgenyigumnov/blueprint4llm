@@ -1,0 +1,107 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "elements": [
+    {
+      "id": "image-one",
+      "type": "image",
+      "x": 12,
+      "y": 10,
+      "width": 72,
+      "height": 54,
+      "fileId": "file-one",
+      "strokeColor": "#334155",
+      "backgroundColor": "transparent",
+      "roughness": 0,
+      "fillStyle": "solid",
+      "groupIds": ["media"]
+    },
+    {
+      "id": "scribble-one",
+      "type": "freedraw",
+      "x": 110,
+      "y": 12,
+      "width": 60,
+      "height": 44,
+      "points": [
+        [0, 0],
+        [20, 28],
+        [60, 44]
+      ],
+      "strokeColor": "#334155",
+      "backgroundColor": "transparent",
+      "roughness": 0,
+      "groupIds": []
+    },
+    {
+      "id": "frame-one",
+      "type": "frame",
+      "x": 10,
+      "y": 92,
+      "width": 160,
+      "height": 90,
+      "strokeColor": "#64748b",
+      "backgroundColor": "transparent",
+      "roughness": 0,
+      "fillStyle": "solid",
+      "frameId": null,
+      "name": "No clipping"
+    },
+    {
+      "id": "elbow-one",
+      "type": "arrow",
+      "x": 200,
+      "y": 30,
+      "width": 80,
+      "height": 40,
+      "points": [
+        [0, 0],
+        [80, 0],
+        [80, 40]
+      ],
+      "elbowed": true,
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "strokeColor": "#334155",
+      "backgroundColor": "transparent",
+      "roughness": 0
+    },
+    {
+      "id": "style-fallback",
+      "type": "rectangle",
+      "x": 200,
+      "y": 110,
+      "width": 120,
+      "height": 60,
+      "roughness": 1,
+      "fillStyle": "hachure",
+      "roundness": { "type": 3 },
+      "strokeStyle": "dashed",
+      "link": "https://example.invalid/private?token=secret",
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#fef3c7"
+    },
+    {
+      "id": "dangling-arrow",
+      "type": "arrow",
+      "x": 340,
+      "y": 18,
+      "width": 70,
+      "height": 0,
+      "points": [
+        [0, 0],
+        [70, 0]
+      ],
+      "startArrowhead": "diamond",
+      "endArrowhead": "arrow",
+      "startBinding": { "elementId": "missing-target" },
+      "strokeColor": "#334155",
+      "backgroundColor": "transparent",
+      "roughness": 0
+    }
+  ],
+  "appState": { "viewBackgroundColor": "#fff" },
+  "files": {
+    "file-one": { "mimeType": "image/png", "dataURL": "data:image/png;base64,ignored" }
+  }
+}

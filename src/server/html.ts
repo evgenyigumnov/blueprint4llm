@@ -15,8 +15,10 @@ export function createPreviewHtml(compiled: CompiledBlueprint, version: string):
     '</body>',
     `<style>
 :root[data-bp-theme="dark"]{color-scheme:dark;--bp-text:#e6edf3;--bp-muted:#8b949e;--bp-border:#30363d;--bp-surface:#161b22;--bp-page-bg:#0d1117;--bp-accent:#58a6ff;--bp-code-bg:#21262d;--bp-diagnostic-error:#ff7b72;--bp-diagnostic-warning:#e3b341;--bp-diagnostic-error-bg:#2d1618;--bp-diagnostic-warning-bg:#2b2416}
-:root[data-bp-theme="dark"] .bp-diagram:not(.bp-diagram--vega-lite)>svg{filter:invert(1) hue-rotate(180deg)}
+:root[data-bp-theme="dark"] .bp-diagram:not(.bp-diagram--vega-lite):not(.bp-diagram--echarts):not(.bp-diagram--d2):not(.bp-diagram--excalidraw)>svg{filter:invert(1) hue-rotate(180deg)}
 .bp-diagram--vega-lite{background:#fff}
+.bp-diagram--echarts{background:#fff}
+.bp-diagram--d2{background:#fff}
 .bp-preview-tools{position:fixed;right:1rem;top:1rem;z-index:10;display:flex;gap:.5rem}
 .bp-preview-tools a,.bp-preview-tools button{display:inline-block;padding:.55rem .8rem;border:1px solid var(--bp-border);border-radius:6px;background:var(--bp-surface);color:var(--bp-accent);box-shadow:0 2px 8px #0002;font:inherit;cursor:pointer}
 .bp-preview-tools a:hover,.bp-preview-tools button:hover{text-decoration:underline}

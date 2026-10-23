@@ -65,7 +65,10 @@ async function testLocalAssetsAndContentSecurityPolicy(temporaryRoot: string): P
   assert.match(result.html, /body\.vscode-light \{\s*color-scheme: light;/);
   assert.match(result.html, /body\.vscode-dark,[\s\S]*color-scheme: dark;/);
   assert.match(result.html, /filter: invert\(1\) hue-rotate\(180deg\)/);
-  assert.match(result.html, /\.bp-diagram:not\(\.bp-diagram--vega-lite\) > svg/);
+  assert.match(
+    result.html,
+    /\.bp-diagram:not\(\.bp-diagram--vega-lite\):not\(\.bp-diagram--echarts\):not\(\.bp-diagram--d2\):not\(\.bp-diagram--excalidraw\) > svg/,
+  );
   assert.doesNotMatch(result.html, new RegExp(outputUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.equal(
     await readFile(path.join(result.assetDirectory, 'image.png'), 'utf8'),

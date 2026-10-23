@@ -1,6 +1,6 @@
 {
   "name": "blueprint4llm",
-  "version": "0.21.0",
+  "version": "0.22.1",
   "description": "CLI generator of software blueprints: Markdown diagrams, data charts, and UI prototypes to standalone HTML, PDF, SVG, PNG, or JPEG",
   "type": "module",
   "license": "MIT",
@@ -15,9 +15,11 @@
   "keywords": [
     "blueprint",
     "markdown",
+    "d2",
     "mermaid",
     "vega-lite",
     "plantuml",
+    "graphviz",
     "wiremark",
     "diagrams",
     "ui-prototypes",
@@ -40,7 +42,8 @@
   "files": [
     "dist",
     "fonts",
-    "examples"
+    "examples",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -48,19 +51,26 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "pretest:graphviz": "npm run build",
+    "test:graphviz": "vitest run tests/graphviz-diagnostics.test.ts tests/graphviz-renderer.test.ts tests/graphviz-runner.test.ts tests/graphviz-source.test.ts tests/graphviz-svg.test.ts",
+    "test:d2-smoke": "vitest run tests/d2-diagnostics.test.ts tests/d2-policy.test.ts tests/d2-renderer.test.ts tests/d2-runner.test.ts tests/d2-svg.test.ts",
     "pretest": "npm run build",
     "test": "vitest run"
   },
   "dependencies": {
+    "@d2lang/d2": "0.1.34",
     "@mermaid-js/mermaid-cli": "12.0.0",
     "@plantuml/core": "1.2026.9",
     "@shikijs/rehype": "4.5.0",
+    "@viz-js/viz": "3.31.0",
     "@wiremark/core": "^0.1.0",
     "ajv": "8.20.0",
     "chokidar": "^5.0.0",
     "commander": "^15.0.0",
+    "echarts": "6.1.0",
     "hast-util-from-html": "^2.0.3",
     "jsonc-parser": "^3.3.1",
+    "postcss": "8.5.31",
     "puppeteer": "25.14.0",
     "rehype-stringify": "^10.0.1",
     "remark-gfm": "^4.0.1",

@@ -121,6 +121,36 @@ export async function run(): Promise<void> {
   assert.match(vegaLite.html, /<svg[^>]*width="\d+"[^>]*height="\d+"/);
   assert.match(vegaLite.html, /Dev/);
   assert.match(vegaLite.html, /Prod/);
+  const echarts = await extension.exports.compileMarkdown(
+    [
+      '```echarts width=640 height=360',
+      JSON.stringify({
+        xAxis: { type: 'category', data: ['One', 'Two'] },
+        yAxis: { type: 'value' },
+        series: [{ type: 'bar', data: [4, 7] }],
+      }),
+      '```',
+    ].join('\n'),
+    { sourceFile: '/tmp/blueprint4llm-echarts-host-smoke.md' },
+  );
+  assert.match(echarts.html, /class="bp-diagram bp-diagram--echarts"/);
+  assert.match(echarts.html, /<svg width="640" height="360"/);
+  assert.doesNotMatch(echarts.html, /Document check:/);
+  const d2 = await extension.exports.compileMarkdown(
+    [
+      '```d2',
+      'direction: right',
+      'client: Клиент',
+      'service: API заказов',
+      'client -> service: создать заказ',
+      '```',
+    ].join('\n'),
+    { sourceFile: '/tmp/blueprint4llm-d2-host-smoke.md' },
+  );
+  assert.match(d2.html, /class="bp-diagram bp-diagram--d2"/);
+  assert.match(d2.html, /<svg[^>]*width="\d+"[^>]*height="\d+"/);
+  assert.match(d2.html, /Клиент/);
+  assert.doesNotMatch(d2.html, /Document check:/);
 
   const previewSettings = vscode.workspace.getConfiguration('blueprint4llm.preview');
   await previewSettings.update(

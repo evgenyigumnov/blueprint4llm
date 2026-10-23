@@ -49,20 +49,87 @@ npm exec --yes --package=puppeteer@25.14.0 -- puppeteer browsers install chrome
 Use fenced blocks alongside CommonMark and GitHub Flavored Markdown: text, tables, lists,
 links, images, and code. Ordinary code blocks receive syntax highlighting.
 
-| Format    | Fence                   | Input and support                                                                                                          |
-| --------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Mermaid   | `mermaid`               | Flows, sequences, classes, states, and ER diagrams. Uses a vertical layout where supported.                                |
-| PlantUML  | `plantuml`              | Standard `@start…` / `@end…` diagrams. Local engine; no Java, external includes, or network requests.                      |
-| draw.io   | `drawio`, `draw.io`     | Structural JSON with nodes, groups, labels, and edges. Automatic layout; no XML.                                           |
-| Wiremark  | `wireframe`, `wiremark` | Screens and controls described as text. `wireframe` is the canonical fence.                                                |
-| Pencil    | `pencil`, `pen`         | Embedded `.pen` JSONC, schema 2.21. Frames, groups, shapes, paths, and text; no images, components, gradients, or effects. |
-| Balsamiq  | `balsamiq`              | One Mockups 3 JSON mockup with common controls. Preserves positions and text; no `.bmpr`, `.bmml`, assets, or symbols.     |
-| Figma     | `figma`                 | REST API JSON rendered locally, or a frame URL exported through the Figma API. URL mode needs a token.                     |
-| Vega-Lite | `vega-lite`, `vegalite` | Vega-Lite 6 specifications with embedded data; rendered locally as static SVG.                                             |
+| Format     | Fence                   | Input and support                                                                                                                                     |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D2         | `d2`                    | Self-contained D2 source rendered offline with bundled WebAssembly. Supports containers, connections, styles, SQL tables, UML classes, and sequences. |
+| Mermaid    | `mermaid`               | Flows, sequences, classes, states, and ER diagrams. Uses a vertical layout where supported.                                                           |
+| Graphviz   | `graphviz`, `dot`       | One offline DOT graph rendered to SVG in a worker. Supports verified `dot`, `neato`, `circo`, `fdp`, `osage`, `patchwork`, and `twopi` engines.       |
+| PlantUML   | `plantuml`              | Standard `@start…` / `@end…` diagrams. Local engine; no Java, external includes, or network requests.                                                 |
+| draw.io    | `drawio`, `draw.io`     | Structural JSON with nodes, groups, labels, and edges. Automatic layout; no XML.                                                                      |
+| Wiremark   | `wireframe`, `wiremark` | Screens and controls described as text. `wireframe` is the canonical fence.                                                                           |
+| Pencil     | `pencil`, `pen`         | Embedded `.pen` JSONC, schema 2.21. Frames, groups, shapes, paths, and text; no images, components, gradients, or effects.                            |
+| Balsamiq   | `balsamiq`              | One Mockups 3 JSON mockup with common controls. Preserves positions and text; no `.bmpr`, `.bmml`, assets, or symbols.                                |
+| Figma      | `figma`                 | REST API JSON rendered locally, or a frame URL exported through the Figma API. URL mode needs a token.                                                |
+| Excalidraw | `excalidraw`            | Strict `.excalidraw` JSON v2. Keeps positions, rotations, groups, shapes, text, and ordinary arrows; unsupported items get placeholders.              |
+| Vega-Lite  | `vega-lite`, `vegalite` | Vega-Lite 6 specifications with embedded data; rendered locally as static SVG.                                                                        |
 
 |                                                                  draw.io · release flow                                                                   |                                                                   Pencil · profile screen                                                                   |
 | :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | ![Release flow with a build-and-test group and a publish step](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg) | ![Profile screen with an avatar, email address, and save button](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg) |
+
+### D2 diagrams
+
+Put one self-contained D2 document in a `d2` fence. The bundled `@d2lang/d2` 0.1.34 WebAssembly
+engine compiles and renders locally. It needs no Go installation, D2 CLI, network connection, or
+external render service. See [`examples/blueprint-d2.md`](examples/blueprint-d2.md) for one diagram
+with nested containers, SQL and UML shapes, a sequence diagram, and Cyrillic labels.
+
+D2's native `direction`, ordinary shapes and connections, labels, containers, styles, classes, SQL
+tables, UML classes, and sequence diagrams are supported. The default layout is `dagre`; choose
+`elk` and the one supported static light theme with native configuration:
+
+```d2
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+  }
+}
+direction: right
+client -> service: запрос
+```
+
+Fence metadata is not supported. Keep all source in the block: imports, path references, layers,
+scenarios, steps, TALA, sketch mode, animation, icons and images, links, tooltips, Markdown, and
+LaTeX labels are rejected. Unknown `vars.d2-config` settings and theme IDs also produce a
+diagnostic. Ordinary labels, including Cyrillic, use the local Noto Sans fonts. D2 diagrams retain
+their static light colors in dark document themes.
+
+Each block is limited to 256 KiB. An active render stops after 30 seconds; at most two D2 jobs run
+at once. SVG output is limited to 4 MiB and 8,192 px per side. The shared SVG validator rejects
+active content and external resources. D2 is available in HTML, live preview, VS Code, PDF, and
+single-diagram SVG/PNG/JPEG export.
+
+### Graphviz diagrams
+
+Use `graphviz` or `dot` for one Graphviz DOT `graph` or `digraph`. The local `@viz-js/viz` 3.31.0
+package embeds Graphviz 16.1.0 as WebAssembly. Rendering runs in a disposable Node.js worker, so it
+does not need a system `dot` command and a synchronous layout can be stopped on timeout or preview
+cancellation. It works offline. See [`examples/blueprint-graphviz.md`](examples/blueprint-graphviz.md)
+for a directed graph with a cluster and an undirected graph.
+
+Fence metadata accepts one `engine=<name>` value. The default is `dot`; the verified engines are
+`circo`, `dot`, `fdp`, `neato`, `osage`, `patchwork`, and `twopi`.
+
+```dot engine=neato
+graph Services {
+  gateway -- orders;
+  gateway -- catalog;
+  orders -- database;
+}
+```
+
+The DOT graph attribute `layout` takes precedence over fence metadata `engine`. Each fence must
+contain one graph. Repeated, unknown, and empty metadata values, empty fences, and extra graphs
+produce diagnostics. Clusters, ports, record labels, HTML-like labels, and Unicode labels are
+supported. Graphviz font metrics can differ from browser and PDF font metrics; non-ASCII labels can
+produce renderer warnings.
+
+The renderer does not load images, files, stylesheets, fonts, or URLs named in DOT. Graphviz uses no
+filesystem or network bridge in the worker. External SVG links and CSS resources are rejected by
+the shared SVG validator. Each source is limited to 256 KiB; workers stop after 30 seconds, with
+at most two active workers. SVG output is limited to 4 MiB and 8,192 CSS pixels per side. The
+existing HTML, preview, VS Code, PDF, and SVG/PNG/JPEG export paths render Graphviz diagrams.
 
 ### draw.io diagrams
 
@@ -70,6 +137,27 @@ Embed structural JSON in a `drawio` or `draw.io` fence. For multiple pages, sele
 `page=<id>` in the fence metadata. Use `direction=TB` (default) or `direction=LR`.
 The renderer builds a new layout; original coordinates and styles are not preserved.
 The package includes a complete example in `examples/blueprint-draw.io.md`.
+
+### Excalidraw scenes
+
+Paste one complete `.excalidraw` JSON v2 document into an `excalidraw` fence. The local renderer
+keeps saved coordinates, dimensions, rotations, element order, groups, text, and ordinary line and
+arrow points. It uses no editor, network calls, or new runtime dependency. See
+[`examples/blueprint-excalidraw.md`](examples/blueprint-excalidraw.md).
+
+The static SVG profile supports rectangles, ellipses, diamonds, text, lines, and ordinary arrows.
+It uses sans-serif text in HTML and SVG and the existing Noto Sans font in PDF. It does not reproduce
+Excalidraw's hand-drawn RoughJS outlines or original font metrics. Non-solid fills, rough outlines,
+rounding, nonstandard arrowheads, and links produce warnings; images and other unsupported elements
+remain visible as labeled placeholders. Scene background and authored colors stay the same in both
+document themes. See [`docs/reference.md`](docs/reference.md) for the complete supported subset.
+
+Each block is limited to 1 MiB of UTF-8 JSON, 3,000 elements, nesting depth 100, 10,000 points per
+line or arrow, 100,000 points per scene, and 100 group IDs per element. Coordinates and dimensions
+are limited to 1,000,000; font sizes to 512; stroke widths to 100. Output SVG is limited to 4 MiB.
+Image data in `files` is ignored. Clipboard JSON, `.excalidrawlib`, links to scenes, and embedded
+scene metadata in PNG or SVG are not supported. The existing image export limits apply. PDF scales
+a tall scene to 220 mm and does not split it across pages.
 
 ### Figma frames
 
@@ -121,6 +209,57 @@ limited to 256 KiB, 64 JSON levels, 50,000 AST nodes, 10,000 source rows, 100 ex
 transforms, 50,000 computed rows per dataset, 50,000 scenegraph items, 4 MiB SVG, 4,096 px per
 side, and 16 million pixels. Rendering stops after 30 seconds. See
 [`examples/blueprint-vega-lite.md`](examples/blueprint-vega-lite.md) for a complete offline chart.
+
+### Apache ECharts
+
+Use the `echarts` fence for one strict JSON ECharts option object. The local ECharts 6.1.0
+renderer validates a documented static profile, then renders SVG with ECharts' SVG server-side
+renderer in a worker thread. It does not execute JavaScript, fetch external data or assets, or add
+browser dependencies. The chart uses 800 × 450 px by default. Set only `width` and `height` as
+fence metadata; each must be an integer from 240 to 1,600 px.
+
+The profile supports bar, line, pie, scatter, radar, heatmap, and gauge series, including mixed bar
+and line series. Data must be inline in `series.data` or in one root `dataset` with `dimensions`,
+rectangular `source` rows, and explicit `series.encode`. Only the fields used by the example and
+the documented chart styles are accepted. Unknown options fail with a JSON Pointer and source
+location. Simple linear gradients are supported for the chart palette, series fills, and backgrounds.
+Formatters are plain templates with `{a}`, `{b}`, `{c}`, `{d}`, `{name}`, `{value}`, and
+`{percent}` placeholders; they cannot contain HTML or JavaScript. Tooltips, toolbox, data zoom,
+brush, timeline, transforms, URLs, image symbols, callbacks, custom series, and mixed coordinate
+systems are not supported. Legacy `grid.containLabel: true` is rejected; set explicit margins.
+Animation and interaction are disabled for static SVG output.
+
+The supported option fields are:
+
+| Area              | Accepted fields                                                                                                                                                                                                                                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root              | `title`, `legend`, `grid`, `xAxis`, `yAxis`, `radar`, `visualMap`, `dataset`, `series`, `color`, `backgroundColor`, `textStyle`, `animation`, `silent`                                                                                                                                             |
+| Title             | `show`, `text`, `subtext`, `left`, `top`, `right`, `bottom`, `itemGap`, `padding`, `backgroundColor`, `borderColor`, `borderWidth`, `borderRadius`, `textStyle`, `subtextStyle`                                                                                                                    |
+| Legend            | `show`, `type: "plain"`, `orient`, `left`, `top`, `right`, `bottom`, `width`, `height`, `itemWidth`, `itemHeight`, `itemGap`, `icon`, `data`, `formatter`, `textStyle`, `selectedMode: false`                                                                                                      |
+| Grid              | `show`, `left`, `right`, `top`, `bottom`, `width`, `height`, `containLabel: false`, `backgroundColor`, `borderColor`, `borderWidth`, `shadowBlur`, `shadowColor`                                                                                                                                   |
+| Axes              | `type`, `name`, `show`, `position`, `offset`, `nameLocation`, `nameGap`, `nameRotate`, `nameTextStyle`, `inverse`, `boundaryGap`, `min`, `max`, `scale`, `splitNumber`, `minInterval`, `maxInterval`, `interval`, `logBase`, `data`, `axisLine`, `axisTick`, `axisLabel`, `splitLine`, `splitArea` |
+| Text style        | `color`, `fontStyle`, `fontWeight`, `fontSize`, `fontFamily`, `lineHeight`, `width`, `overflow`, `align`, `verticalAlign`, `backgroundColor`, `borderColor`, `borderWidth`, `borderRadius`, `padding`                                                                                              |
+| Series common     | `type`, `name`, `data`, `encode`, `datasetIndex: 0`, `xAxisIndex`, `yAxisIndex`, `coordinateSystem`, `label`, `itemStyle`, `lineStyle`, `areaStyle`, `emphasis: { disabled }`, `select: { disabled }`, `silent`, `animation`, `selectedMode: false`                                                |
+| Bar               | `stack`, `barWidth`, `barMaxWidth`, `barMinHeight`, `barGap`, `barCategoryGap`, `showBackground`, `backgroundStyle`, `roundCap`                                                                                                                                                                    |
+| Line              | `stack`, `smooth`, `step`, `connectNulls`, `showSymbol`, `symbol`, `symbolSize`                                                                                                                                                                                                                    |
+| Pie               | `radius`, `center`, `roseType`, `clockwise`, `startAngle`, `minAngle`, `padAngle`, `avoidLabelOverlap`, `stillShowZeroSum`, `percentPrecision`, `labelLine`                                                                                                                                        |
+| Scatter and radar | `symbol`, `symbolSize`; radar also accepts the root `radar.indicator`, `shape`, `radius`, `center`, `startAngle`, `splitNumber`, `name`, `axisLine`, `splitLine`, and `splitArea`                                                                                                                  |
+| Heatmap           | `blurSize`, `minOpacity`, `maxOpacity`; requires root `visualMap` with `min`, `max`, `dimension`, layout, `inRange.color`, and optional `outOfRange.color`                                                                                                                                         |
+| Gauge             | `min`, `max`, `startAngle`, `endAngle`, `splitNumber`, `radius`, `center`, `axisLine`, `axisTick`, `splitLine`, `axisLabel`, `pointer`, `progress`, `anchor`, `detail`, `title`                                                                                                                    |
+
+Chart-specific data uses numbers and null gaps for bar/line, `[category, value]` pairs for bar/line,
+`[x, y]` for scatter, `{ name, value }` objects for pie/gauge/radar, and `[x, y, value]` for
+heatmap. Bar and line also accept `{ name, value, itemStyle }` items. Radar values must match the
+number of indicators. Dataset `dimensions` are unique strings and every `source` row must have one
+finite number, string, or null per dimension. `encode` uses only `x`, `y`, `value`, or `itemName`
+and must refer to an existing dimension.
+
+Each block is limited to 256 KiB, 32 JSON levels, 100,000 AST nodes, and 4 KiB per source line.
+Charts accept at most 20 series, 10,000 combined data points or dataset rows, and 32 dataset
+dimensions. Rendering runs in a worker with a 128 MiB old-generation heap limit, a 10 second time
+limit, and at most two concurrent charts. SVG output is limited to 4 MiB. Colors remain as authored
+in dark mode. See [`examples/blueprint-echarts.md`](examples/blueprint-echarts.md) for examples of
+all supported series and dataset encoding.
 
 ## Commands
 
@@ -174,7 +313,7 @@ the next build. A fatal document error still shows a diagnostic page until the s
 | Topic            | Behavior                                                                                                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | HTML             | Embeds diagram SVGs; local images are copied to an adjacent `assets/` folder. Open the output directly in a browser.                                                |
-| PDF              | A4 pages with local Noto Sans fonts and selectable text. External images must be saved locally before export.                                                       |
+| PDF              | A4 pages with local Noto Sans fonts and selectable text. Wide D2 diagrams use landscape pages. External images must be saved locally before export.                 |
 | Image paths      | Resolve relative to the Markdown file. Paths and symlinks that escape its directory are rejected.                                                                   |
 | Offline use      | Local renderers need no network; Figma URL blocks fetch during compilation. HTML still needs a connection for external images.                                      |
 | Safety           | Raw HTML is escaped. SVGs are checked for active content and external resources. User scripts and graphical editing are not supported.                              |
