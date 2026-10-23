@@ -11,7 +11,7 @@ Markdown stays the source of truth; the CLI renders it without calling an LLM.
 
 ## Representative example
 
-Explore a representative [`plan.md`](examples/representative-plan.md) and compare its rendered [HTML](examples/representative-plan.html) and [PDF](examples/representative-plan.pdf) outputs.
+Explore a representative [`plan.md`](examples/representative-plan.md) and compare its rendered [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) and [PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf) outputs.
 
 ## Quick start
 

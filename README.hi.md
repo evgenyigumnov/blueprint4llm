@@ -11,7 +11,7 @@ Markdown ही सत्य का मुख्य स्रोत रहता
 
 ## उदाहरण
 
-एक प्रतिनिधि [`plan.md`](examples/representative-plan.md) देखें और इसके रेंडर किए गए [HTML](examples/representative-plan.html) तथा [PDF](examples/representative-plan.pdf) आउटपुट की तुलना करें।
+एक प्रतिनिधि [`plan.md`](examples/representative-plan.md) देखें और इसके रेंडर किए गए [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) तथा [PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf) आउटपुट की तुलना करें।
 
 ## जल्दी शुरू करें
 

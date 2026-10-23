@@ -11,7 +11,7 @@ Markdown 始终是唯一可信来源；CLI 无需调用 LLM 即可进行渲染�
 
 ## 示例
 
-查看 [`plan.md`](examples/representative-plan.md)，并对比其 [HTML](examples/representative-plan.html) 和 [PDF](examples/representative-plan.pdf) 渲染结果。
+查看 [`plan.md`](examples/representative-plan.md)，并对比其 [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) 和 [PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf) 渲染结果。
 
 ## 快速开始
 

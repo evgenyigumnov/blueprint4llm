@@ -11,7 +11,7 @@
 
 ## مثال
 
-استكشف [`plan.md`](examples/representative-plan.md) وقارن مخرجاته المعروضة بصيغتي [HTML](examples/representative-plan.html) و[PDF](examples/representative-plan.pdf).
+استكشف [`plan.md`](examples/representative-plan.md) وقارن مخرجاته المعروضة بصيغتي [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) و[PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf).
 
 ## البدء السريع
 

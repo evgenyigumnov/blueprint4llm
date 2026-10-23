@@ -11,7 +11,7 @@ Markdown reste la source de référence ; la CLI le génère sans appeler de LLM
 
 ## Exemple représentatif
 
-Découvrez un [`plan.md`](examples/representative-plan.md) représentatif et comparez ses rendus [HTML](examples/representative-plan.html) et [PDF](examples/representative-plan.pdf).
+Découvrez un [`plan.md`](examples/representative-plan.md) représentatif et comparez ses rendus [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) et [PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf).
 
 ## Démarrage rapide
 

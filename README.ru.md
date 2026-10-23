@@ -11,7 +11,7 @@ Markdown остаётся источником истины; CLI преобра�
 
 ## Пример
 
-Посмотрите [`plan.md`](examples/representative-plan.md) и сравните его с результатами в формате [HTML](examples/representative-plan.html) и [PDF](examples/representative-plan.pdf).
+Посмотрите [`plan.md`](examples/representative-plan.md) и сравните его с результатами в формате [HTML](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.html) и [PDF](https://evgenyigumnov.github.io/blueprint4llm/examples/representative-plan.pdf).
 
 ## Быстрый старт
 
