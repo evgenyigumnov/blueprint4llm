@@ -1,6 +1,6 @@
 ---
 name: blueprint4llm
-description: Create or revise visual software plans in Markdown with supported blueprint4llm formats, validate them, and visually inspect every diagram and UI prototype. Offer HTML or PDF export when the plan is complete. Use when a user requests a development plan, architecture diagram, UI prototype, or rendered blueprint.
+description: Create or revise visual software plans in Markdown with supported blueprint4llm formats, validate them, and visually inspect every diagram, chart, and UI prototype. Offer HTML or PDF export when the plan is complete. Use when a user requests a development plan, architecture diagram, chart, UI prototype, or rendered blueprint.
 license: MIT
 ---
 
@@ -23,8 +23,8 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 1. Read the relevant `AGENTS.md`, `CLAUDE.md`, `README.md`, and existing plan files. Use current source code and tests when the plan describes an existing project.
 2. Use the path requested by the user. If the user gives no path, follow the repository's plan convention or use `plan.md`.
 3. Preserve existing decisions and structure when you edit a plan. Mark assumptions and open questions. Do not invent product behavior or implementation status.
-4. Make the plan visual first. Prefer diagrams for architecture and flows, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
-5. Put each UI screen or separately illustrated state in its own fenced block. For GUI plans, check that the prototypes show the main user task and relevant feedback before rendering. Use only syntax supported by the selected renderer.
+4. Make the plan visual first. Prefer diagrams for architecture and flows, charts for data patterns, separate UI prototypes for screens, and Markdown tables for comparisons, requirements, or concise inventories. Use short prose only for assumptions, rationale, open questions, and details that visuals cannot show. Avoid long text blocks. Choose the simplest supported format that fits, and preserve formats the user already uses.
+5. Put each chart, UI screen, or separately illustrated state in its own fenced block. For GUI plans, check that the prototypes show the main user task and relevant feedback before rendering. Use only syntax supported by the selected renderer.
 6. Check that the CLI is available with `blueprint4llm --version`. If the command is missing, install it globally with `npm install --global blueprint4llm`, then check `blueprint4llm --version` again. If installation fails, tell the user that validation and rendering need the CLI and report the installation error.
 7. Validate the Markdown after edits:
 
@@ -34,7 +34,7 @@ For example, a GUI calculator plan in Rust needs a prototype of the calculator w
 
    Replace `./plan.md` with the actual path. Fix renderer errors, then run the check again.
 
-8. Visually inspect every diagram and UI prototype as described in [Visual review](#visual-review). Do this for every new or edited visual plan, including Markdown-only output. A successful `--check` does not prove that content fits or is readable. Fix failed blocks and inspect them again before continuing.
+8. Visually inspect every diagram, chart, and UI prototype as described in [Visual review](#visual-review). Do this for every new or edited visual plan, including Markdown-only output. A successful `--check` does not prove that content fits or is readable. Fix failed blocks and inspect them again before continuing.
 
 9. Do not export the complete plan to HTML or PDF by default. If the user requested an export, use their output path when provided; otherwise use the Markdown path with the selected extension. Do not overwrite an existing file; choose a new filename and report it.
 
@@ -90,7 +90,6 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 | draw.io JSON | `drawio` or `draw.io`     | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
 | PlantUML     | `plantuml`                | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
 | OpenAPI      | `openapi`                 | Use for an embedded OpenAPI 3.1.1 contract. The local renderer shows operations and schemas in a static SVG; it supports local JSON Pointer references and warns about fields outside its displayed subset.                      |
-| Vega-Lite    | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections.                          |
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. A flow with UML activity semantics or a UML model is usually PlantUML. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
@@ -99,6 +98,14 @@ draw.io JSON is a project-specific subset. Read the [draw.io renderer documentat
 OpenAPI supports only version 3.1.1 and local `#/...` references. It does not fetch external
 resources or validate the full OpenAPI specification. See the [OpenAPI contract example](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/examples/blueprint-openapi.md)
 and the renderer limits in the README before using less common OpenAPI fields.
+
+### Charts
+
+| Format    | Fence                     | Best fit and trade-off                                                                                                                                                                                      |
+| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vega-Lite | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections. |
+
+Use charts when comparisons, trends, distributions, or relationships in the data are central to the plan. Prefer a table when exact values matter more than visual patterns. Keep chart data embedded in the specification.
 
 ### UI prototypes
 
