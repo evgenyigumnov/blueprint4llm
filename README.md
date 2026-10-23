@@ -7,6 +7,10 @@ Markdown stays the source of truth; the CLI renders it without calling an LLM.
 
 ![Markdown source beside its rendered Mermaid diagram, Balsamiq screen, and request status chart](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/markdown-to-visual.png)
 
+## Representative example
+
+Explore a representative [`plan.md`](examples/representative-plan.md) and compare its rendered [HTML](examples/representative-plan.html) and [PDF](examples/representative-plan.pdf) outputs.
+
 ## Quick start
 
 ### Use with Codex or Claude Code
