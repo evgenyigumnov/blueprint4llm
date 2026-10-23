@@ -1,6 +1,6 @@
 # blueprint4llm
 
-**Markdown plans → diagrams, UI prototypes, HTML, and PDF.**
+**Markdown plans → diagrams, UI prototypes, charts, HTML, and PDF.**
 
 Write a plan yourself or with an agent. Review the system and screens before implementation.
 Markdown stays the source of truth; the CLI renders it without calling an LLM.
