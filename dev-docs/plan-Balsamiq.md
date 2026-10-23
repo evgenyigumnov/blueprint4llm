@@ -14,7 +14,7 @@
 
 ### Формат первой версии
 
-Поддержать JSON отдельного balsamiq со структурой `mockup.controls.control`, которую описывает документация Balsamiq Mockups 3. В Markdown использовать метку `balsamiq`:
+Поддержать JSON отдельного макета со структурой `mockup.controls.control`, которую описывает документация Balsamiq Mockups 3. В Markdown использовать метку `balsamiq`:
 
 ```balsamiq
 {
