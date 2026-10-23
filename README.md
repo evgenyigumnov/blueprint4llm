@@ -1,5 +1,7 @@
 # blueprint4llm
 
+**Languages:** [English](README.md) | [Русский](README.ru.md) | [Español](README.es.md) | [中文](README.zh.md) | [हिन्दी](README.hi.md) | [Français](README.fr.md) | [العربية](README.ar.md)
+
 **Markdown plans → diagrams, UI prototypes, charts, HTML, and PDF.**
 
 Write a plan yourself or with an agent. Review the system and screens before implementation.
