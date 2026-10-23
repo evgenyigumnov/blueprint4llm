@@ -65,9 +65,17 @@ links, images, and code. Ordinary code blocks receive syntax highlighting.
 | Vega-Lite  | `vega-lite`, `vegalite` | Vega-Lite 6 specifications with embedded data; rendered locally as static SVG.                                                                        |
 | ECharts    | `echarts`               | Strict JSON using the supported static chart profile; rendered locally as SVG.                                                                        |
 
-|                                                                  draw.io · release flow                                                                   |                                                                   Pencil · profile screen                                                                   |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| ![Release flow with a build-and-test group and a publish step](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg) | ![Profile screen with an avatar, email address, and save button](https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg) |
+Each supported format has a visual example below. All labels in the images are in English.
+
+| Format | Preview | Format | Preview |
+| ------ | :-----: | ------ | :-----: |
+| D2 | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/d2.svg" alt="Orders API connected to its orders table" width="420"> | Mermaid | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/mermaid.svg" alt="Order request sequence from customer to database" width="420"> |
+| Graphviz | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/graphviz.svg" alt="Order flow from customer to database" width="420"> | PlantUML | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/plantuml.svg" alt="Order request sequence between customer, web app, API, and database" width="420"> |
+| draw.io | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg" alt="Release flow with a build-and-test group and a publish step" width="420"> | Wiremark | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/wiremark.svg" alt="Sign-in screen with email and password fields" width="420"> |
+| Pencil | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg" alt="Profile screen with an avatar, email address, and save button" width="420"> | Balsamiq | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/balsamiq.svg" alt="Sign-in mockup with email and password fields" width="420"> |
+| Figma | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/figma.svg" alt="Figma sign-in screen with a continue button" width="420"> | OpenAPI | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/openapi.svg" alt="Tasks API reference with a list-tasks operation" width="420"> |
+| Excalidraw | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/excalidraw.svg" alt="Client sends a request to an API" width="420"> | Vega-Lite | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/vega-lite.svg" alt="Weekly requests bar chart with English day and request labels" width="420"> |
+| ECharts | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/echarts.svg" alt="Requests by day bar chart" width="420"> | | |
 
 ### Figma frames
 

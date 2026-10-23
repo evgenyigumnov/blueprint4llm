@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 406 505" width="406" height="505"><svg class="bp-d2-bp-diagram-001 d2-svg" width="406" height="505" viewBox="-101 -101 406 505"><rect x="-101" y="-101" width="406" height="505" rx="0" fill="#FFFFFF" class="fill-N7" stroke-width="0"></rect><style type="text/css">
+.bp-d2-bp-diagram-001 .text {
+	font-family: "Noto Sans", Arial, sans-serif;
+}
+.bp-d2-bp-diagram-001 .text-bold {
+	font-family: "Noto Sans", Arial, sans-serif;
+	font-weight: 700;
+}
+.bp-d2-bp-diagram-001 .text-italic {
+	font-family: "Noto Sans", Arial, sans-serif;
+	font-style: italic;
+}</style><style type="text/css">.bp-d2-bp-diagram-001 .shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.bp-d2-bp-diagram-001 .connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bp-d2-bp-diagram-001 .blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.bp-d2-bp-diagram-001 .fill-N1{fill:#0A0F25;}
+		.bp-d2-bp-diagram-001 .fill-N2{fill:#676C7E;}
+		.bp-d2-bp-diagram-001 .fill-N7{fill:#FFFFFF;}
+		.bp-d2-bp-diagram-001 .fill-B1{fill:#0D32B2;}
+		.bp-d2-bp-diagram-001 .fill-B2{fill:#0D32B2;}
+		.bp-d2-bp-diagram-001 .fill-B6{fill:#F7F8FE;}
+		.bp-d2-bp-diagram-001 .fill-AA2{fill:#4A6FF3;}
+		.bp-d2-bp-diagram-001 .stroke-N1{stroke:#0A0F25;}
+		.bp-d2-bp-diagram-001 .stroke-B1{stroke:#0D32B2;}
+		.bp-d2-bp-diagram-001 .stroke-B2{stroke:#0D32B2;}.bp-d2-bp-diagram-001 .appendix text.text{fill:#0A0F25}.bp-d2-bp-diagram-001 .md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.bp-d2-bp-diagram-001 .light-code{display: block}.bp-d2-bp-diagram-001 .dark-code{display: none}</style><g class="YXBp"><g class="shape"><rect x="36" y="0" width="132" height="67" stroke="#0D32B2" fill="#F7F8FE" class="stroke-B1 fill-B6" style="stroke-width:2;"></rect></g><text x="102" y="38.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Orders API</text></g><g class="b3JkZXJz"><g class="shape"><rect x="0" y="189" width="204" height="114" stroke="#0A0F25" fill="#FFFFFF" class="shape stroke-N1 fill-N7" style="stroke-width:2;"></rect><rect x="0" y="189" width="204" height="38" fill="#0A0F25" class="class_header fill-N1"></rect><text x="10" y="216.25" fill="#FFFFFF" class="text fill-N7" style="text-anchor:start;font-size:24px">Orders</text><text x="10" y="251" fill="#0D32B2" class="text fill-B2" style="text-anchor:start;font-size:20px">id</text><text x="86" y="251" fill="#676C7E" class="text fill-N2" style="text-anchor:start;font-size:20px">int</text><text x="194" y="251" fill="#4A6FF3" class="text fill-AA2" style="text-anchor:end;font-size:20px">PK</text><line x1="0" x2="204" y1="265" y2="265" stroke="#0A0F25" class="stroke-N1" style="stroke-width:2"></line><text x="10" y="289" fill="#0D32B2" class="text fill-B2" style="text-anchor:start;font-size:20px">status</text><text x="86" y="289" fill="#676C7E" class="text fill-N2" style="text-anchor:start;font-size:20px">string</text><text x="194" y="289" fill="#4A6FF3" class="text fill-AA2" style="text-anchor:end;font-size:20px"></text><line x1="0" x2="204" y1="303" y2="303" stroke="#0A0F25" class="stroke-N1" style="stroke-width:2"></line></g></g><g class="KGFwaSAtJmd0OyBvcmRlcnMpWzBd"><marker id="bp-diagram-001-mk-d2-3523089764-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2"></polygon> </marker><path d="M 102 69 C 102 115.800003 102 140.199997 102 185" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#bp-diagram-001-mk-d2-3523089764-3488378134)" mask="url(#bp-diagram-001-d2-3523089764)"></path><text x="102.5" y="133" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">saves</text></g><mask id="bp-diagram-001-d2-3523089764" maskUnits="userSpaceOnUse" x="-101" y="-101" width="406" height="505">
+<rect x="-101" y="-101" width="406" height="505" fill="white"></rect>
+<rect x="80" y="117" width="45" height="22" fill="black"></rect>
+</mask></svg></svg>
