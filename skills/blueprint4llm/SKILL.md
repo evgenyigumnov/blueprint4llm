@@ -96,12 +96,11 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. A flow with UML activity semantics or a UML model is usually PlantUML. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
-
 ### Charts
 
-| Format    | Fence                     | Best fit and trade-off                                                                                                                                                                                                                                                                                                                   |
-| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Vega-Lite | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections.                                                                                                                                  |
+| Format    | Fence                     | Best fit and trade-off                                                                                                                                                                                      |
+| --------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vega-Lite | `vega-lite` or `vegalite` | Use for a data chart defined in strict JSON with embedded rows. The static SVG renderer uses local Vega-Lite 6 and Vega bundles; it does not load external resources or support interactive selections.     |
 | ECharts   | `echarts`                 | Use for bar, line, pie, scatter, radar, heatmap, or gauge charts. The static SVG renderer accepts a strict local JSON profile, including mixed bar and line series, and disables animation and interaction. |
 
 Use charts when comparisons, trends, distributions, or relationships in the data are central to the plan. Prefer a table when exact values matter more than visual patterns. Keep chart data embedded in the specification.

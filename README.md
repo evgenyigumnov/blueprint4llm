@@ -9,6 +9,34 @@ Markdown stays the source of truth; the CLI renders it without calling an LLM.
 
 ## Quick start
 
+### Use with Codex or Claude Code
+
+From your project directory, install the `blueprint4llm` skill with the [skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+# Codex
+npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm --agent codex
+
+# Claude Code
+npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm --agent claude-code
+```
+
+The installer requires **Node.js ≥22.20.0** and npm. It installs the skill for the current project by default; add `--global` to use it across projects. Codex stores project skills in `.agents/skills/`; Claude Code uses `.claude/skills/`.
+
+Invoke the skill in your agent:
+
+```text
+# Codex
+$blueprint4llm Create a visual plan for a task queue.
+
+# Claude Code
+/blueprint4llm Create a visual plan for a task queue.
+```
+
+The skill guides the agent through writing a visual plan, validating and rendering it, and reviewing each visual. Rendering requires the `blueprint4llm` CLI and Puppeteer's Chrome; the next section shows how to install and run the CLI.
+
+### Use the CLI directly
+
 Requires **Node.js ≥22.13.0**, npm, and Puppeteer's Chrome.
 
 ```bash
@@ -20,10 +48,13 @@ Save this as `plan.md`:
 ````markdown
 # Request workflow
 
-```mermaid
-flowchart TD
-    Form[Request form] --> API[API validation]
-    API --> Queue[Processing queue]
+```d2
+form: Request form
+api: API validation
+queue: Processing queue
+
+form -> api
+api -> queue
 ```
 ````
 
@@ -67,15 +98,15 @@ links, images, and code. Ordinary code blocks receive syntax highlighting.
 
 Each supported format has a visual example below. All labels in the images are in English.
 
-| Format | Preview | Format | Preview |
-| ------ | :-----: | ------ | :-----: |
-| D2 | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/d2.svg" alt="Orders API connected to its orders table" width="420"> | Mermaid | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/mermaid.svg" alt="Order request sequence from customer to database" width="420"> |
-| Graphviz | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/graphviz.svg" alt="Order flow from customer to database" width="420"> | PlantUML | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/plantuml.svg" alt="Order request sequence between customer, web app, API, and database" width="420"> |
-| draw.io | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg" alt="Release flow with a build-and-test group and a publish step" width="420"> | Wiremark | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/wiremark.svg" alt="Sign-in screen with email and password fields" width="420"> |
-| Pencil | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg" alt="Profile screen with an avatar, email address, and save button" width="420"> | Balsamiq | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/balsamiq.svg" alt="Sign-in mockup with email and password fields" width="420"> |
-| Figma | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/figma.svg" alt="Figma sign-in screen with a continue button" width="420"> | OpenAPI | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/openapi.svg" alt="Tasks API reference with a list-tasks operation" width="420"> |
-| Excalidraw | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/excalidraw.svg" alt="Client sends a request to an API" width="420"> | Vega-Lite | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/vega-lite.svg" alt="Weekly requests bar chart with English day and request labels" width="420"> |
-| ECharts | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/echarts.svg" alt="Requests by day bar chart" width="420"> | | |
+| Format     |                                                                                        Preview                                                                                        | Format    |                                                                                            Preview                                                                                            |
+| ---------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| D2         |             <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/d2.svg" alt="Orders API connected to its orders table" width="420">              | Mermaid   |           <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/mermaid.svg" alt="Order request sequence from customer to database" width="420">           |
+| Graphviz   |            <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/graphviz.svg" alt="Order flow from customer to database" width="420">             | PlantUML  | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/plantuml.svg" alt="Order request sequence between customer, web app, API, and database" width="420"> |
+| draw.io    |  <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/drawio.svg" alt="Release flow with a build-and-test group and a publish step" width="420">  | Wiremark  |            <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/wiremark.svg" alt="Sign-in screen with email and password fields" width="420">            |
+| Pencil     | <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/pencil.svg" alt="Profile screen with an avatar, email address, and save button" width="420"> | Balsamiq  |            <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/balsamiq.svg" alt="Sign-in mockup with email and password fields" width="420">            |
+| Figma      |          <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/figma.svg" alt="Figma sign-in screen with a continue button" width="420">           | OpenAPI   |           <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/openapi.svg" alt="Tasks API reference with a list-tasks operation" width="420">            |
+| Excalidraw |             <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/excalidraw.svg" alt="Client sends a request to an API" width="420">              | Vega-Lite |   <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/vega-lite.svg" alt="Weekly requests bar chart with English day and request labels" width="420">    |
+| ECharts    |                  <img src="https://raw.githubusercontent.com/evgenyigumnov/blueprint4llm/main/docs/assets/echarts.svg" alt="Requests by day bar chart" width="420">                   |           |                                                                                                                                                                                               |
 
 ### Figma frames
 
@@ -87,7 +118,6 @@ URL mode accepts HTTPS `/design/` or `/file/` frame URLs. Use a personal access 
 `file_content:read` permission. Token lookup order: `CompileOptions.figmaAccessToken`,
 `FIGMA_ACCESS_TOKEN`, then `.env` in the current working directory. The token is sent only
 to `api.figma.com`; exported SVGs are embedded in the result.
-
 
 ## Commands
 
@@ -156,7 +186,7 @@ the next build. A fatal document error still shows a diagnostic page until the s
 
 | Workflow     | Setup                                                                                                                                                                                        |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Coding agent | Install the CLI, then run `npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm`. The skill guides visual planning, validation, and review.                                      |
+| Coding agent | Use the `blueprint4llm` skill; see [Quick start](#quick-start) for Codex and Claude Code installation and invocation.                                                                        |
 | VS Code      | Install a built VSIX with `code --install-extension <file.vsix>`. Open a Markdown file and run **Blueprint: Open Preview to the Side**. Use **Blueprint: Export Preview as PDF** to save it. |
 
 The VS Code preview compiles unsaved edits with a 200 ms delay, configurable through
