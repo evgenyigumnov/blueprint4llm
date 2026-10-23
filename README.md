@@ -49,15 +49,16 @@ npm exec --yes --package=puppeteer@25.14.0 -- puppeteer browsers install chrome
 Use fenced blocks alongside CommonMark and GitHub Flavored Markdown: text, tables, lists,
 links, images, and code. Ordinary code blocks receive syntax highlighting.
 
-| Format   | Fence                   | Input and support                                                                                                          |
-| -------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Mermaid  | `mermaid`               | Flows, sequences, classes, states, and ER diagrams. Uses a vertical layout where supported.                                |
-| PlantUML | `plantuml`              | Standard `@start…` / `@end…` diagrams. Local engine; no Java, external includes, or network requests.                      |
-| draw.io  | `drawio`, `draw.io`     | Structural JSON with nodes, groups, labels, and edges. Automatic layout; no XML.                                           |
-| Wiremark | `wireframe`, `wiremark` | Screens and controls described as text. `wireframe` is the canonical fence.                                                |
-| Pencil   | `pencil`, `pen`         | Embedded `.pen` JSONC, schema 2.21. Frames, groups, shapes, paths, and text; no images, components, gradients, or effects. |
-| Balsamiq | `balsamiq`              | One Mockups 3 JSON mockup with common controls. Preserves positions and text; no `.bmpr`, `.bmml`, assets, or symbols.     |
-| Figma    | `figma`                 | REST API JSON rendered locally, or a frame URL exported through the Figma API. URL mode needs a token.                     |
+| Format    | Fence                   | Input and support                                                                                                          |
+| --------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Mermaid   | `mermaid`               | Flows, sequences, classes, states, and ER diagrams. Uses a vertical layout where supported.                                |
+| PlantUML  | `plantuml`              | Standard `@start…` / `@end…` diagrams. Local engine; no Java, external includes, or network requests.                      |
+| draw.io   | `drawio`, `draw.io`     | Structural JSON with nodes, groups, labels, and edges. Automatic layout; no XML.                                           |
+| Wiremark  | `wireframe`, `wiremark` | Screens and controls described as text. `wireframe` is the canonical fence.                                                |
+| Pencil    | `pencil`, `pen`         | Embedded `.pen` JSONC, schema 2.21. Frames, groups, shapes, paths, and text; no images, components, gradients, or effects. |
+| Balsamiq  | `balsamiq`              | One Mockups 3 JSON mockup with common controls. Preserves positions and text; no `.bmpr`, `.bmml`, assets, or symbols.     |
+| Figma     | `figma`                 | REST API JSON rendered locally, or a frame URL exported through the Figma API. URL mode needs a token.                     |
+| Vega-Lite | `vega-lite`, `vegalite` | Vega-Lite 6 specifications with embedded data; rendered locally as static SVG.                                             |
 
 |                                                                  draw.io · release flow                                                                   |                                                                   Pencil · profile screen                                                                   |
 | :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -99,6 +100,27 @@ schemas, 2,000 references, and 5,000 rendered lines. The resulting SVG is at mos
 16,384 px high, and 4 MiB. HTML, live preview, VS Code, and SVG/PNG/JPEG export show the full SVG.
 PDF printing scales each diagram to a maximum height of 220 mm, so a large contract can be small on
 the page. One OpenAPI block is not split across PDF pages.
+
+### Vega-Lite charts
+
+Use `vega-lite` or `vegalite` for one Vega-Lite 6 specification. Supply strict JSON and keep data
+inside `data.values` or root `datasets`. The local Vega-Lite schema validates every field; the
+renderer uses the bundled Vega and Vega-Lite browser libraries in an isolated Chromium page. It
+does not fetch data, images, fonts, or schemas. The output is static SVG, so selection, binding,
+streaming, image marks, projections, and automatic container resize are not available. Tooltip
+fields are retained and produce a warning because static images cannot show interactive tooltips.
+The renderer accepts Vega-Lite's unit, layer, concat, facet, and repeat views; bar, line, point,
+circle, square, area, rect, rule, tick, text, arc, trail, boxplot, errorbar, and errorband marks;
+and filter, calculate, aggregate, joinaggregate, bin, timeUnit, stack, fold, and inline lookup
+transforms. Parameters must have constant values. A `$schema`, when supplied, must be the bundled
+Vega-Lite v6 schema identifier shown in the example.
+
+Single views default to 480 × 300 px, a white background, and sans-serif text. Explicit sizes and
+colors are preserved. Data colors are not inverted in dark or high-contrast themes. Each block is
+limited to 256 KiB, 64 JSON levels, 50,000 AST nodes, 10,000 source rows, 100 expanded views, 100
+transforms, 50,000 computed rows per dataset, 50,000 scenegraph items, 4 MiB SVG, 4,096 px per
+side, and 16 million pixels. Rendering stops after 30 seconds. See
+[`examples/blueprint-vega-lite.md`](examples/blueprint-vega-lite.md) for a complete offline chart.
 
 ## Commands
 
@@ -149,18 +171,19 @@ the next build. A fatal document error still shows a diagnostic page until the s
 
 ## Output and limits
 
-| Topic           | Behavior                                                                                                                                                            |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML            | Embeds diagram SVGs; local images are copied to an adjacent `assets/` folder. Open the output directly in a browser.                                                |
-| PDF             | A4 pages with local Noto Sans fonts and selectable text. External images must be saved locally before export.                                                       |
-| Image paths     | Resolve relative to the Markdown file. Paths and symlinks that escape its directory are rejected.                                                                   |
-| Offline use     | Local renderers need no network; Figma URL blocks fetch during compilation. HTML still needs a connection for external images.                                      |
-| Safety          | Raw HTML is escaped. SVGs are checked for active content and external resources. User scripts and graphical editing are not supported.                              |
-| Document limits | 5 MiB of Markdown, 100 visual blocks, and normally 256 KiB per block.                                                                                               |
-| JSON limits     | draw.io, Pencil, and Figma: 1 MiB and 10,000 cells/nodes. Balsamiq: 256 KiB and 3,000 controls.                                                                     |
-| OpenAPI limits  | 256 KiB source, 200 operations, 500 named schemas, 2,000 references, 5,000 layout lines, and 4 MiB SVG.                                                             |
-| Timeouts        | Mermaid and PlantUML: 30 seconds. draw.io layout: 5 seconds. PDF: 60 seconds.                                                                                       |
-| Chrome on Linux | Requires Chrome system libraries. If sandbox startup fails, rendering retries with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force this mode. |
+| Topic            | Behavior                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML             | Embeds diagram SVGs; local images are copied to an adjacent `assets/` folder. Open the output directly in a browser.                                                |
+| PDF              | A4 pages with local Noto Sans fonts and selectable text. External images must be saved locally before export.                                                       |
+| Image paths      | Resolve relative to the Markdown file. Paths and symlinks that escape its directory are rejected.                                                                   |
+| Offline use      | Local renderers need no network; Figma URL blocks fetch during compilation. HTML still needs a connection for external images.                                      |
+| Safety           | Raw HTML is escaped. SVGs are checked for active content and external resources. User scripts and graphical editing are not supported.                              |
+| Document limits  | 5 MiB of Markdown, 100 visual blocks, and normally 256 KiB per block.                                                                                               |
+| JSON limits      | draw.io, Pencil, and Figma: 1 MiB and 10,000 cells/nodes. Balsamiq: 256 KiB and 3,000 controls.                                                                     |
+| Vega-Lite limits | 256 KiB source, 64 levels, 50,000 AST nodes, 10,000 source rows, 100 expanded views and transforms, 50,000 computed rows/items, and 4 MiB SVG.                      |
+| OpenAPI limits   | 256 KiB source, 200 operations, 500 named schemas, 2,000 references, 5,000 layout lines, and 4 MiB SVG.                                                             |
+| Timeouts         | Mermaid, PlantUML, and Vega-Lite: 30 seconds. draw.io layout: 5 seconds. PDF: 60 seconds.                                                                           |
+| Chrome on Linux  | Requires Chrome system libraries. If sandbox startup fails, rendering retries with `--no-sandbox`. Set `BLUEPRINT4LLM_DISABLE_CHROME_SANDBOX=1` to force this mode. |
 
 ## Agent and editor workflows
 

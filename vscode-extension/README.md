@@ -30,7 +30,9 @@ When one diagram has a renderer error, the preview keeps the rest of the documen
 
 Local images are copied into per-document Webview resource folders and removed when the panel closes. The Webview has scripts disabled and receives a restrictive Content Security Policy. Mermaid and Wiremark use the same compiler as the CLI.
 
-The preview follows VS Code light, dark, and high contrast themes. Text, links, code blocks, diagnostic cards, and borders use the active theme's Webview color variables; diagrams are adjusted for dark and high contrast backgrounds. Diagnostic severity is stated in text and remains distinguishable in high contrast mode.
+The preview follows VS Code light, dark, and high contrast themes. Text, links, code blocks, diagnostic cards, and borders use the active theme's Webview color variables; diagrams are adjusted for dark and high contrast backgrounds. Vega-Lite charts keep their data colors and use a light chart surface. Diagnostic severity is stated in text and remains distinguishable in high contrast mode.
+
+Vega-Lite 6 fences (`vega-lite` and `vegalite`) render offline from the bundled Vega runtime and local schema. Charts use strict JSON and embedded `data.values` or `datasets`; the output is static SVG. External data, image marks, interactive selections, tooltip interactions, and automatic container resize are not supported. See the core package README for limits and the Vega-Lite example.
 
 ## Development
 
@@ -48,7 +50,7 @@ npm run package
 
 `npm run test:host` starts an Extension Development Host at the minimum supported VS Code version. On headless Linux, run it under `xvfb-run -a`.
 
-`npm run test:package` builds a VSIX in a temporary directory, launches the unpacked package in the Extension Development Host, renders Mermaid through the packaged CLI, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
+`npm run test:package` builds a VSIX in a temporary directory, checks that the Vega browser bundles and schema are packaged, launches the unpacked package in the Extension Development Host, renders Mermaid and Vega-Lite through the packaged runtime, and checks the missing Chrome diagnostic. Run both checks with `npm test`.
 
 ## Installation
 

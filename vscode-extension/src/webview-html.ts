@@ -134,9 +134,13 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-body.vscode-dark .bp-diagram > svg,
-body.vscode-high-contrast .bp-diagram > svg {
+body.vscode-dark .bp-diagram:not(.bp-diagram--vega-lite) > svg,
+body.vscode-high-contrast .bp-diagram:not(.bp-diagram--vega-lite) > svg {
   filter: invert(1) hue-rotate(180deg);
+}
+
+.bp-diagram--vega-lite {
+  background: #fff;
 }
 `;
 

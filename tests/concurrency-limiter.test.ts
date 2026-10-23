@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { ConcurrencyLimiter } from '../src/renderers/concurrency-limiter.js';
 
@@ -29,5 +29,40 @@ describe('ConcurrencyLimiter', () => {
     expect(peak).toBe(2);
     expect(starts).toEqual([1, 2, 3, 4, 5]);
     expect(active).toBe(0);
+  });
+
+  it('removes an aborted queued operation and releases the next waiter', async () => {
+    const limiter = new ConcurrencyLimiter(1);
+    let releaseFirst: (() => void) | undefined;
+    const first = limiter.run(
+      () =>
+        new Promise<void>((resolve) => {
+          releaseFirst = resolve;
+        }),
+    );
+    const cancelled = new AbortController();
+    const secondOperation = vi.fn(async () => undefined);
+    const second = limiter.run(secondOperation, cancelled.signal);
+    const thirdOperation = vi.fn(async () => undefined);
+    const third = limiter.run(thirdOperation);
+
+    cancelled.abort(new Error('queued render cancelled'));
+    await expect(second).rejects.toThrow('queued render cancelled');
+    releaseFirst?.();
+    await first;
+    await third;
+
+    expect(secondOperation).not.toHaveBeenCalled();
+    expect(thirdOperation).toHaveBeenCalledOnce();
+  });
+
+  it('does not start an operation for a signal already aborted', async () => {
+    const limiter = new ConcurrencyLimiter(1);
+    const controller = new AbortController();
+    controller.abort(new Error('already cancelled'));
+    const operation = vi.fn(async () => undefined);
+
+    await expect(limiter.run(operation, controller.signal)).rejects.toThrow('already cancelled');
+    expect(operation).not.toHaveBeenCalled();
   });
 });

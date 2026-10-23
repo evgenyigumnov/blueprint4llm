@@ -97,6 +97,30 @@ export async function run(): Promise<void> {
   assert.match(openapi.html, /<tspan[^>]*>GET<\/tspan>/);
   assert.match(openapi.html, /<tspan[^>]*>\/orders<\/tspan>/);
   assert.doesNotMatch(openapi.html, /Document check:/);
+  const vegaLite = await extension.exports.compileMarkdown(
+    [
+      '```vega-lite',
+      JSON.stringify({
+        data: {
+          values: [
+            { environment: 'Dev', latency: 85 },
+            { environment: 'Prod', latency: 95 },
+          ],
+        },
+        mark: 'bar',
+        encoding: {
+          x: { field: 'environment', type: 'nominal' },
+          y: { field: 'latency', type: 'quantitative' },
+        },
+      }),
+      '```',
+    ].join('\n'),
+    { sourceFile: '/tmp/blueprint4llm-vega-lite-host-smoke.md' },
+  );
+  assert.match(vegaLite.html, /class="bp-diagram bp-diagram--vega-lite"/);
+  assert.match(vegaLite.html, /<svg[^>]*width="\d+"[^>]*height="\d+"/);
+  assert.match(vegaLite.html, /Dev/);
+  assert.match(vegaLite.html, /Prod/);
 
   const previewSettings = vscode.workspace.getConfiguration('blueprint4llm.preview');
   await previewSettings.update(

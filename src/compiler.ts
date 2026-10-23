@@ -25,6 +25,7 @@ import { drawioRenderer } from './renderers/drawio.js';
 import { pencilRenderer } from './renderers/pencil.js';
 import { balsamiqRenderer } from './renderers/balsamiq.js';
 import { openapiRenderer } from './renderers/openapi.js';
+import { vegaLiteRenderer } from './renderers/vega-lite.js';
 import type { DiagramRenderCache } from './renderers/cache.js';
 import { resolveFigmaAccessToken } from './renderers/figma-token.js';
 import { renderHtmlPage } from './template.js';
@@ -124,6 +125,7 @@ export async function compileMarkdown(
         pencilRenderer,
         balsamiqRenderer,
         openapiRenderer,
+        vegaLiteRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,
@@ -201,6 +203,7 @@ export async function checkMarkdown(
         pencilRenderer,
         balsamiqRenderer,
         openapiRenderer,
+        vegaLiteRenderer,
       ],
       sourceFile: options.sourceFile,
       warnings,

@@ -33,6 +33,8 @@ try {
   const cliPackageEntry = rendererRequire.resolve('@mermaid-js/mermaid-cli');
   const cliPath = path.join(path.dirname(cliPackageEntry), 'cli.js');
   const puppeteerEntry = rendererRequire.resolve('puppeteer');
+  const vegaSchema = rendererRequire.resolve('vega/vega-schema.json');
+  const vegaLiteSchema = rendererRequire.resolve('vega-lite/vega-lite-schema.json');
 
   assert.equal(await pathExists(path.join(corePackagePath, 'dist', 'index.js')), true);
   assert.equal(
@@ -42,6 +44,10 @@ try {
   );
   assert.equal(await pathExists(cliPath), true);
   assert.equal(await pathExists(puppeteerEntry), true);
+  assert.equal(await pathExists(path.join(path.dirname(vegaSchema), 'vega.min.js')), true);
+  assert.equal(await pathExists(path.join(path.dirname(vegaLiteSchema), 'vega-lite.min.js')), true);
+  assert.equal(await pathExists(vegaSchema), true);
+  assert.equal(await pathExists(vegaLiteSchema), true);
   assert.equal(await pathExists(path.join(packagedExtensionPath, 'node_modules', 'vscode')), false);
   assert.match(
     await readFile(path.join(packagedExtensionPath, 'readme.md'), 'utf8'),
@@ -94,6 +100,23 @@ export async function run() {
   assert.ok(openapi.html.includes('class="bp-diagram bp-diagram--openapi"'));
   assert.ok(openapi.html.includes('>GET</tspan>'));
   assert.ok(openapi.html.includes('>/orders</tspan>'));
+  const vegaLite = await api.compileMarkdown([
+    fence + 'vega-lite',
+    JSON.stringify({
+      data: { values: [{ environment: 'Dev', latency: 85 }, { environment: 'Prod', latency: 95 }] },
+      mark: 'bar',
+      encoding: {
+        x: { field: 'environment', type: 'nominal' },
+        y: { field: 'latency', type: 'quantitative' },
+      },
+    }),
+    fence,
+  ].join(String.fromCharCode(10)), {
+    sourceFile: '/tmp/blueprint4llm-packaged-vega-lite.md',
+  });
+  assert.ok(vegaLite.html.includes('class="bp-diagram bp-diagram--vega-lite"'));
+  assert.ok(vegaLite.html.includes('Dev'));
+  assert.ok(vegaLite.html.includes('Prod'));
   assert.equal(api.getPreviewCount(), 0);
   console.log('Packaged extension loaded the runtime and compiled Markdown');
 }
