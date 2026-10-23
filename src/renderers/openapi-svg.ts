@@ -28,17 +28,24 @@ export function renderOpenApiSvg(
   const elements: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}" viewBox="0 0 ${layout.width} ${layout.height}">`,
     `<title>${escapeXml(title)}</title>`,
-    `<rect x="0" y="0" width="${layout.width}" height="${layout.height}" fill="#ffffff"/>`,
+    `<rect x="0" y="0" width="${layout.width}" height="${layout.height}" fill="${escapeXml(layout.background ?? '#ffffff')}"/>`,
   ];
   for (const box of layout.boxes) {
+    const radius = box.radius === undefined ? '' : ` rx="${formatNumber(box.radius)}"`;
+    const stroke = box.stroke === undefined ? 'none' : escapeXml(box.stroke);
+    const strokeWidth = box.strokeWidth === undefined ? 1 : box.strokeWidth;
     elements.push(
-      `<rect x="${formatNumber(box.x)}" y="${formatNumber(box.y)}" width="${formatNumber(box.width)}" height="${formatNumber(box.height)}" rx="8" fill="${escapeXml(box.fill)}" stroke="${escapeXml(box.stroke)}" stroke-width="1"/>`,
+      `<rect x="${formatNumber(box.x)}" y="${formatNumber(box.y)}" width="${formatNumber(box.width)}" height="${formatNumber(box.height)}"${radius} fill="${escapeXml(box.fill)}" stroke="${stroke}" stroke-width="${formatNumber(strokeWidth)}"/>`,
     );
   }
   for (const text of layout.texts) {
     const weight = text.weight === undefined ? '' : ` font-weight="${text.weight}"`;
+    const family =
+      text.family === 'mono'
+        ? 'ui-monospace, SFMono-Regular, Consolas, monospace'
+        : 'Noto Sans, Arial, sans-serif';
     elements.push(
-      `<text x="${formatNumber(text.x)}" y="${formatNumber(text.y)}" font-family="Noto Sans, Arial, sans-serif" font-size="${formatNumber(text.fontSize)}" fill="${escapeXml(text.color)}"${weight}><tspan x="${formatNumber(text.x)}" dy="0">${escapeXml(text.text)}</tspan></text>`,
+      `<text x="${formatNumber(text.x)}" y="${formatNumber(text.y)}" font-family="${escapeXml(family)}" font-size="${formatNumber(text.fontSize)}" fill="${escapeXml(text.color)}"${weight}><tspan x="${formatNumber(text.x)}" dy="0">${escapeXml(text.text)}</tspan></text>`,
     );
   }
   elements.push('</svg>');

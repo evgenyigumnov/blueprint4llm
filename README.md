@@ -84,14 +84,14 @@ to `api.figma.com`; exported SVGs are embedded in the result.
 ### OpenAPI contracts
 
 Put an existing OpenAPI 3.1.1 contract in an `openapi` fence. The renderer creates a static SVG
-summary of operations, parameters, request bodies, responses, and component schemas. YAML 1.2 and
-strict JSON are supported. Ordinary `yaml` and `json` fences remain code blocks. See
+reference with every operation, parameter, request body, response, and component schema expanded.
+YAML 1.2 and strict JSON are supported. Ordinary `yaml` and `json` fences remain code blocks. See
 [`examples/blueprint-openapi.md`](examples/blueprint-openapi.md) for a complete example.
 
 The renderer supports the fields it displays, local `#/...` JSON Pointer references, schema
 composition, and recursive schema references. It does not fetch files or URLs. External references,
 other OpenAPI versions, nonstandard JSON Schema dialects, and unsupported identifier keywords such
-as `$id` and `$anchor` produce diagnostics. Other valid OpenAPI fields that the summary does not
+as `$id` and `$anchor` produce diagnostics. Other valid OpenAPI fields that the reference does not
 show produce warnings with source locations. These checks do not replace a full OpenAPI validator.
 
 The source limit is 256 KiB per block. A contract can contain up to 200 operations, 500 named

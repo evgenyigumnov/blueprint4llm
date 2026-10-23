@@ -1,7 +1,7 @@
 # Orders API
 
-The `openapi` fence renders an OpenAPI 3.1.1 contract as a static API summary. The renderer works
-locally and keeps references between operations and models visible.
+The `openapi` fence renders an OpenAPI 3.1.1 contract as a fully expanded static API reference. The
+renderer works locally and keeps references between operations and models visible.
 
 ```openapi
 openapi: 3.1.1

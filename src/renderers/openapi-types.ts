@@ -128,7 +128,9 @@ export interface ApiLayoutBox {
   width: number;
   height: number;
   fill: string;
-  stroke: string;
+  stroke?: string;
+  strokeWidth?: number;
+  radius?: number;
 }
 
 export interface ApiLayoutText {
@@ -138,4 +140,5 @@ export interface ApiLayoutText {
   color: string;
   text: string;
   weight?: number;
+  family?: 'sans' | 'mono';
 }

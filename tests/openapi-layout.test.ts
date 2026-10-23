@@ -35,18 +35,21 @@ components:
 }
 
 describe('OpenAPI layout', () => {
-  it('lays out operations and models in source order with measured wrapped descriptions', () => {
+  it('lays out operations and models in expanded cards with measured wrapped descriptions', () => {
     const layout = layoutOpenApiDocument(model());
     const text = layout.texts.map(({ text: line }) => line).join('\n');
     expect(layout.width).toBe(1_200);
     expect(layout.height).toBeGreaterThan(0);
     expect(text).toContain('Operations');
-    expect(text).toContain('GET /orders/{id}');
+    expect(text).toContain('GET');
+    expect(text).toContain('/orders/{id}');
+    expect(text).toContain('Parameters');
+    expect(text).toContain('Responses');
     expect(text).toContain('Order (#/components/schemas/Order)');
     expect(text).toContain('Models');
-    expect(text).toContain('Order');
-    expect(text).toContain('Property id (required)');
-    expect(layout.boxes.length).toBe(2);
+    expect(text).toContain('id (required)');
+    expect(layout.boxes.length).toBeGreaterThan(10);
+    expect(layout.boxes.some(({ fill }) => fill === '#2563eb')).toBe(true);
   });
 
   it('keeps long unbroken paths and descriptions through line wrapping', () => {
@@ -61,6 +64,72 @@ describe('OpenAPI layout', () => {
     expect(layout.texts.every(({ x, y }) => x >= 0 && x < layout.width && y <= layout.height)).toBe(
       true,
     );
+  });
+
+  it('lays out parameter content, response headers, and nested schema constraints', () => {
+    const document = buildOpenApiModel(
+      parseOpenApiSource(`
+openapi: 3.1.1
+info: { title: Details, version: '1' }
+paths:
+  /details:
+    patch:
+      parameters:
+        - name: filter
+          in: query
+          content:
+            text/plain: { schema: { type: string } }
+      responses:
+        '302': { description: redirect }
+        '500':
+          description: failed
+          headers:
+            X-Trace:
+              required: true
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail: { type: string, readOnly: true }
+                  metadata:
+                    type: object
+                    additionalProperties: { type: string, writeOnly: true }
+                  choice:
+                    oneOf: [{ type: string }, { type: integer }]
+                  arbitrary: true
+                  impossible: false
+components:
+  schemas:
+    Variants:
+      allOf: [{ type: object }]
+      anyOf: [true, { type: integer }]
+`),
+    );
+    const text = layoutOpenApiDocument(document)
+      .texts.map(({ text: line }) => line)
+      .join('\n');
+
+    expect(text).toContain('PATCH');
+    expect(text).toContain('302');
+    expect(text).toContain('500');
+    expect(text).toContain('Header X-Trace · required');
+    expect(text).toContain('text/plain');
+    expect(text).toContain('Items');
+    expect(text).toContain('Additional properties');
+    expect(text).toContain('oneOf 1');
+    expect(text).toContain('Allows any value');
+    expect(text).toContain('Allows no value');
+    expect(text).toContain('read only');
+    expect(text).toContain('write only');
+    expect(text).toContain('allOf 1');
+    expect(text).toContain('anyOf 1');
   });
 
   it('summarizes unsupported features in the SVG model', () => {

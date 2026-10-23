@@ -5,11 +5,11 @@ import { MAX_OPENAPI_SOURCE_BYTES, parseOpenApiSource } from './openapi-source.j
 import { renderOpenApiSvg } from './openapi-svg.js';
 import type { DiagramRenderer } from './types.js';
 
-/** Renders an embedded OpenAPI 3.1.1 document into a static API summary. */
+/** Renders an embedded OpenAPI 3.1.1 document into a fully expanded API reference. */
 export const openapiRenderer: DiagramRenderer = {
   name: 'openapi',
   languages: ['openapi'],
-  cacheKey: 'openapi-3.1.1-static-svg-v1;yaml@2.9.1;refs=json-pointer;layout=vertical-v1',
+  cacheKey: 'openapi-3.1.1-static-svg-v2;yaml@2.9.1;refs=json-pointer;layout=reference-v2',
   maxSourceBytes: MAX_OPENAPI_SOURCE_BYTES,
 
   async render(source, context) {

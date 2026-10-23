@@ -26,7 +26,8 @@ paths:
     expect(first).toContain(`viewBox="0 0 ${layout.width} ${layout.height}"`);
     expect(first).toContain('<text ');
     expect(first).toContain('<tspan ');
-    expect(first).toContain('GET /orders');
+    expect(first).toContain('>GET</tspan>');
+    expect(first).toContain('>/orders</tspan>');
   });
 
   it('produces identical SVG for YAML and JSON with the same ordered fields', () => {

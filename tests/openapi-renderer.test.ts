@@ -20,7 +20,7 @@ function fence(source: string): string {
 describe('OpenAPI renderer integration', () => {
   it('versions the cache key with the parser and layout rules', () => {
     expect(openapiRenderer.cacheKey).toContain('yaml@2.9.1');
-    expect(openapiRenderer.cacheKey).toContain('layout=vertical-v1');
+    expect(openapiRenderer.cacheKey).toContain('layout=reference-v2');
   });
 
   it('renders OpenAPI fences through compileMarkdown and checkMarkdown', async () => {
@@ -28,7 +28,8 @@ describe('OpenAPI renderer integration', () => {
     const compiled = await compileMarkdown(markdown, { sourceFile: 'orders.md' });
     expect(compiled.html).toContain('class="bp-diagram bp-diagram--openapi"');
     expect(compiled.html).toContain('Orders');
-    expect(compiled.html).toContain('GET /orders/{id}');
+    expect(compiled.html).toContain('GET');
+    expect(compiled.html).toContain('/orders/{id}');
     expect(compiled.errors).toEqual([]);
     expect(await checkMarkdown(markdown, { sourceFile: 'orders.md' })).toEqual({
       warnings: [],
