@@ -1,10 +1,84 @@
 # Changelog
 
+## [0.22.7] — 2026-10-24
+
+### Changed
+
+- Restore release notes for versions recorded in the Git history.
+
+## [0.22.6] — 2026-10-23
+
+### Fixed
+
+- Load ECharts modules from file URLs in the rendering worker and reject font-family values that could break generated SVG styles.
+
+## [0.22.5] — 2026-10-23
+
+### Improved
+
+- Refresh format examples, preview artwork, and README documentation.
+
 ## [0.22.4] — 2026-10-23
 
 ### Changed
 
 - Remove the legacy text-based UI renderer and its dependency. Use Balsamiq for UI prototypes in examples, exported documents, documentation, and README artwork.
+
+## [0.22.2] — 2026-10-23
+
+### Added
+
+- Add README instructions for installing and using the `blueprint4llm` skill with Codex and Claude Code.
+
+## [0.22.1] — 2026-10-23
+
+### Added
+
+- Support D2 and Graphviz diagrams, Excalidraw scenes, and Apache ECharts charts, rendered locally as SVG.
+
+## [0.21.0] — 2026-10-23
+
+### Added
+
+- Render Vega-Lite 6 specifications with embedded data as static SVG, with schema validation and local rendering.
+
+## [0.20.0] — 2026-10-23
+
+### Added
+
+- Add structured diagnostics, JSON diagnostic reports, and the `--diagnostics-summary` option for CLI exports and previews.
+
+## [0.18.0] — 2026-10-23
+
+### Improved
+
+- Refactor OpenAPI layout generation into dedicated modules and expand its layout tests.
+
+## [0.17.0] — 2026-10-23
+
+### Added
+
+- Render OpenAPI 3.1.1 JSON or YAML contracts as static SVG references, including operations, parameters, request and response bodies, component schemas, and local references.
+
+## [0.16.15] — 2026-10-22
+
+### Changed
+
+- Refresh the README and examples, and add reference documentation for supported formats.
+
+## [0.16.7] — 2026-10-22
+
+No functional changes. This version updates package metadata and removes an obsolete development checklist.
+
+## [0.16.3] — 2026-10-22
+
+No functional changes. This version updates package metadata and repository instructions.
+
+## [0.16.1] — 2026-10-22
+
+### Changed
+
+- Clarify the project overview and installation instructions in the README.
 
 ## [0.16.0] — 2026-10-22
 
