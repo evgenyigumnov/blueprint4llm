@@ -1,26 +1,64 @@
 # План: расширить знания LLM о форматах
 
-Статус: **частично выполнен** (контрольная точка: 2026-10-26). План и критерии ниже остаются целевыми; продолжать с раздела «Зафиксированный прогресс», не начинать заново.
+Статус: **выполнен** (финальная проверка: 2026-10-26).
 
-## Зафиксированный прогресс и продолжение
+## Итоговая проверка и результат
 
-Изменения остаются в рабочем дереве; коммита нет. Не переписывать готовые справки — сначала сверить их текущее содержимое и завершать только незаконченные пункты.
+Все 12 справок завершены, карта форматов и навигация в `SKILL.md` обновлены. Каждая справка разделяет upstream-модель и фактический профиль `blueprint4llm`; исходные цели, область работ и критерии этого плана сохранены ниже. Изменения не закоммичены.
 
-**Справки, отмеченные worker'ами как завершённые:**
+### Проверка справок
 
-- Новые: `d2-llm.md`, `mermaid-llm.md`, `graphviz-llm.md`, `plantuml-llm.md`.
-- Расширенные: `drawio-llm.md`, `excalidraw-llm.md`, `pencil-llm.md`, `balsamiq-llm.md`, `figma-llm.md`, `openapi-llm.md`, `vega-lite-llm.md`.
-- Для этих 11 справок worker'ы сообщили об успешном `blueprint4llm <guide> --check` и целевых тестах. Во время первого запуска также сообщалось, что `npm test` прошёл: 75 файлов тестов, 700 тестов. Эти результаты не заменяют финальную проверку всего набора после продолжения.
+Для каждой строки выполнена указанная команда; все проверки завершились с кодом 0, `guide OK`, 0 ошибками и 0 предупреждениями.
 
-**Незавершённое:**
+| Формат             | Команда                                                                   | Результат                            |
+| ------------------ | ------------------------------------------------------------------------- | ------------------------------------ |
+| D2                 | `node dist/cli.js skills/blueprint4llm/formats/d2-llm.md --check`         | Пройдено; 0 ошибок, 0 предупреждений |
+| Mermaid            | `node dist/cli.js skills/blueprint4llm/formats/mermaid-llm.md --check`    | Пройдено; 0 ошибок, 0 предупреждений |
+| Graphviz DOT       | `node dist/cli.js skills/blueprint4llm/formats/graphviz-llm.md --check`   | Пройдено; 0 ошибок, 0 предупреждений |
+| PlantUML           | `node dist/cli.js skills/blueprint4llm/formats/plantuml-llm.md --check`   | Пройдено; 0 ошибок, 0 предупреждений |
+| draw.io            | `node dist/cli.js skills/blueprint4llm/formats/drawio-llm.md --check`     | Пройдено; 0 ошибок, 0 предупреждений |
+| Excalidraw         | `node dist/cli.js skills/blueprint4llm/formats/excalidraw-llm.md --check` | Пройдено; 0 ошибок, 0 предупреждений |
+| Pencil             | `node dist/cli.js skills/blueprint4llm/formats/pencil-llm.md --check`     | Пройдено; 0 ошибок, 0 предупреждений |
+| Balsamiq Mockups 3 | `node dist/cli.js skills/blueprint4llm/formats/balsamiq-llm.md --check`   | Пройдено; 0 ошибок, 0 предупреждений |
+| Figma              | `node dist/cli.js skills/blueprint4llm/formats/figma-llm.md --check`      | Пройдено; 0 ошибок, 0 предупреждений |
+| OpenAPI            | `node dist/cli.js skills/blueprint4llm/formats/openapi-llm.md --check`    | Пройдено; 0 ошибок, 0 предупреждений |
+| Vega-Lite          | `node dist/cli.js skills/blueprint4llm/formats/vega-lite-llm.md --check`  | Пройдено; 0 ошибок, 0 предупреждений |
+| ECharts            | `node dist/cli.js skills/blueprint4llm/formats/echarts-llm.md --check`    | Пройдено; 0 ошибок, 0 предупреждений |
+| Карта форматов     | `node dist/cli.js skills/blueprint4llm/formats/README.md --check`         | Пройдено; 0 ошибок, 0 предупреждений |
 
-1. `echarts-llm.md` уже частично изменён. Worker остановился до финального результата и проверок: изучить существующий diff, сохранить верные изменения и закончить только недостающее; не перезаписывать справку с нуля.
-2. Создать `skills/blueprint4llm/formats/README.md` с картой 12 форматов, официальными источниками и заданиями для проверки выбора формата и авторинга.
-3. Обновить `skills/blueprint4llm/SKILL.md`: дать ссылки на все 12 справок, сохранить компактный выбор формата и требовать читать только выбранную справку, включая общие знания о формате и локальную совместимость.
-4. После завершения содержимого прогнать `blueprint4llm <guide> --check` для всех 12 справок; выполнить `npm run build`, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm test` и проверить diff. Исправлять по необходимости, не ослабляя проверки.
-5. Записать фактические результаты и итоговый статус сюда. Только если все обязательные проверки пройдут, обновить версию `0.23.0` в `package.json` и `package-lock.json` до `0.24.0`.
+### Проверка 24 упражнений
 
-Второй запуск `subtask4llm` прервался по тайм-ауту оболочки на задаче ECharts, когда повторная попытка worker'а ещё выполнялась после ошибок переполнения контекста. Итогового отчёта этого запуска нет; задачи навигации и финальной проверки не запускались. При продолжении начать с текущих файлов и пунктов выше, а не с повторного создания уже перечисленных справок.
+Ответы на вопросы о выборе формата сверены с указанными официальными источниками и локальным профилем соответствующей справки. Для каждой задачи авторинга создан компактный пример; все 12 примеров проверены одной командой во временном файле вне репозитория.
+
+| Формат             | Проверенный ответ на вопрос понимания                                                                                                                                                                                                                                                                                                                                                                    | Авторинг                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| D2                 | `sequence_diagram` задаёт взаимодействие участников, а порядок сообщений следует порядку объявлений; обычные связи D2 не гарантируют визуального порядка. [Официальная справка](https://d2lang.com/tour/sequence-diagrams/)                                                                                                                                                                              | Блок с контейнером и помеченной связью прошёл общий CLI check.                                    |
+| Mermaid            | Для участников, сообщений и `opt`-фрагмента подходит `sequenceDiagram`; flowchart выражает граф процесса, но не ту же временную модель сообщений. [Официальная справка](https://mermaid.js.org/syntax/sequenceDiagram.html)                                                                                                                                                                              | Sequence-блок с request/response и `opt` прошёл общий CLI check.                                  |
+| Graphviz DOT       | Неориентированный граф объявляется как `graph` и использует `--`; `cluster_*` — соглашение layout-движков для subgraph, а не конструкция формальной грамматики DOT. [Официальная справка](https://graphviz.org/doc/info/lang.html)                                                                                                                                                                       | `digraph` с `rankdir=LR`, кластером и внешней связью прошёл общий CLI check.                      |
+| PlantUML           | Class diagram показывает статическую структуру типов; deployment diagram показывает размещение программных компонентов на аппаратных узлах. [Class](https://plantuml.com/class-diagram), [deployment](https://plantuml.com/deployment-diagram)                                                                                                                                                           | Sequence-блок с actor, API, request и response прошёл общий CLI check.                            |
+| draw.io            | Нативный XML нужен для редактируемой модели draw.io с geometry/styles; structural JSON fence проекта описывает граф для автоматической раскладки и не сохраняет эти нативные данные. [Формат файла](https://github.com/jgraph/drawio/wiki/File-Format)                                                                                                                                                   | JSON-страница со слоем, двумя узлами и ребром прошла общий CLI check.                             |
+| Excalidraw         | Saved-scene JSON имеет тип `excalidraw` и версию документа; clipboard JSON использует тип `excalidraw/clipboard`. Renderer требует saved-scene envelope версии 2. [JSON Schema](https://docs.excalidraw.com/docs/codebase/json-schema)                                                                                                                                                                   | Сцена с двумя прямоугольниками и стрелкой прошла общий CLI check.                                 |
+| Pencil             | Поскольку локальный профиль не принимает component/ref и документные imports/variables/themes, самодостаточный блок использует inline frame/shape/text, явную геометрию и сплошные цвета. [Формат `.pen`](https://docs.pencil.dev/for-developers/the-pen-format)                                                                                                                                         | Вертикальный frame с padding/gap, прямоугольником и текстом прошёл общий CLI check.               |
+| Balsamiq Mockups 3 | BMPR сохраняет весь desktop project и его ресурсы, включая assets и Symbols; Mockups JSON переносит данные одного mockup, BMML — legacy XML для обмена/импорта. [Официальная документация](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf)                                                                                                      | JSON mockup 640×400 с Title, TextInput и Button прошёл общий CLI check.                           |
+| Figma              | REST JSON рендерится локально; URL mode вызывает аутентифицированный Images API export для SVG. [File nodes](https://developers.figma.com/docs/rest-api/files/), [endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/), [authentication](https://developers.figma.com/docs/rest-api/authentication/)                                                                                   | REST-shaped JSON с DOCUMENT/CANVAS/FRAME/TEXT прошёл общий CLI check.                             |
+| OpenAPI            | Security Requirement задаёт нужные схемы/области авторизации, `servers.url` задаёт target host; локальный статический renderer не показывает ни `security`, ни `servers`, а сообщает предупреждения. [OpenAPI 3.1.1](https://spec.openapis.org/oas/v3.1.1.html)                                                                                                                                          | OpenAPI 3.1.1 GET с обязательным path parameter и локальным schema `$ref` прошёл общий CLI check. |
+| Vega-Lite          | Для итогов по категориям подходят bar mark, nominal category на `x` и quantitative amount на `y`; `field`/`type` кодируют данные строк, `value` — постоянный визуальный параметр, `datum` — постоянное значение данных через scale. [Encoding](https://vega.github.io/vega-lite/docs/encoding.html)                                                                                                      | JSON-блок с тремя inline-записями прошёл общий CLI check.                                         |
+| ECharts            | Bar, line, scatter и heatmap обычно используют Cartesian axes; pie размещает категории без `xAxis`/`yAxis`. Локальный статический профиль исключает интерактивные компоненты вроде `dataZoom`. [Axes](https://echarts.apache.org/handbook/en/concepts/axis/), [pie](https://echarts.apache.org/handbook/en/how-to/chart-types/pie/basic-pie/), [interaction](https://echarts.apache.org/en/feature.html) | JSON option с grid margins, тремя категориями и bar series прошёл общий CLI check.                |
+
+Команда проверки временных authoring examples: `node dist/cli.js /tmp/blueprint-format-exercises.e0AtxW/authoring.md --check`. Результат: код 0, 0 ошибок, 0 предупреждений. README содержит 12 ссылок на справки и по одному упражнению каждого типа для каждого формата; Python structural check подтвердил разрешение всех ссылок и структуру всех 12 пар.
+
+### Проверки проекта и версия
+
+| Команда                | Результат                                                                                                                                                                                                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`        | Код 0; TypeScript build без ошибок и предупреждений.                                                                                                                                                                                                                                     |
+| `npm run typecheck`    | Код 0; повторно пройдено после финального форматирования документации.                                                                                                                                                                                                                   |
+| `npm run lint`         | Код 0; повторно пройдено после финального форматирования документации.                                                                                                                                                                                                                   |
+| `npm run format:check` | Первый запуск выявил форматирование в `plan-formats.md`, `balsamiq-llm.md`, `pencil-llm.md` и новой карте README. После Prettier исправлений команда пройдена; повторная проверка после версии и итогового обновления плана также завершилась кодом 0: все файлы соответствуют Prettier. |
+| `npm test`             | Код 0; 75/75 test files и 700/700 tests passed, пропущенных тестов не указано. `pretest` также заново выполнил build.                                                                                                                                                                    |
+| `git diff --check`     | Код 0; ошибок пробелов нет.                                                                                                                                                                                                                                                              |
+
+После прохождения проверок выполнено `npm version 0.24.0 --no-git-tag-version` (код 0). `package.json`, `package-lock.json` и корневая запись `packages[""]` в lockfile содержат `0.24.0`. `package-lock.json` исключён `.gitignore`, но локальный файл проверен; коммита и git-тега не создавалось.
 
 ## Цель
 
@@ -33,20 +71,20 @@
 
 Примеры в `examples/` показывают отдельные сценарии. Они не определяют полный набор возможностей формата или библиотеки.
 
-## Исходное состояние
+## Исходное состояние до работ
 
-В `skills/blueprint4llm/formats/` лежат восемь справок. Они полезны для сборки блоков под проект, но в основном описывают fenced input, версии и правила конкретной интеграции. В README перечислены двенадцать визуальных форматов; у D2, Mermaid, Graphviz и PlantUML отдельных справок пока нет.
+До начала работ в `skills/blueprint4llm/formats/` лежали восемь справок. Они полезны для сборки блоков под проект, но в основном описывают fenced input, версии и правила конкретной интеграции. В README перечислены двенадцать визуальных форматов; у D2, Mermaid, Graphviz и PlantUML отдельных справок пока нет.
 
 Сначала нужно проверить текущий охват по реализации. Некоторые интеграции используют широкие языки или полноценные библиотеки, а некоторые добавляют собственную схему или ограничения. Например, текущая справка ECharts описывает статический профиль, а draw.io renderer принимает проектный structural JSON. Эти отличия нужно подтвердить реализацией, а не переносить на остальные форматы по аналогии.
 
 ## Источники истины
 
-| Вопрос | Источник |
-| --- | --- |
-| Понятия, грамматика и семантика самого формата | Официальная спецификация или документация формата |
-| Реальные возможности подключённой библиотеки | Версия пакета из `package.json`/lockfile и документация этой версии |
-| Поведение обвязки `blueprint4llm` | Текущие адаптеры, валидаторы, renderers и целевые тесты |
-| Типичный сценарий использования | Официальные примеры и проверенные сценарии проекта; `examples/` служит иллюстрацией, а не полным справочником |
+| Вопрос                                         | Источник                                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Понятия, грамматика и семантика самого формата | Официальная спецификация или документация формата                                                             |
+| Реальные возможности подключённой библиотеки   | Версия пакета из `package.json`/lockfile и документация этой версии                                           |
+| Поведение обвязки `blueprint4llm`              | Текущие адаптеры, валидаторы, renderers и целевые тесты                                                       |
+| Типичный сценарий использования                | Официальные примеры и проверенные сценарии проекта; `examples/` служит иллюстрацией, а не полным справочником |
 
 Для каждого формата перед написанием справки определить один из профилей охвата: полноценный язык библиотеки, ограниченная версия стандарта, интеграционный формат проекта или собственное подмножество. Не заявлять ни полную поддержку, ни ограничения, пока это не подтверждено кодом и документацией соответствующей версии.
 
@@ -72,20 +110,20 @@
 
 Расширить существующие восемь файлов и добавить справки для четырёх остальных форматов из README. Материал для каждого файла собирать по соответствующему официальному источнику и сверять с кодом интеграции.
 
-| Формат | Справка | Знания о формате, которые нужно добавить |
-| --- | --- | --- |
-| D2 | `d2-llm.md` | Текстовая декларативная модель, ключи и контейнеры, связи, формы и атрибуты, таблицы, UML и sequence diagrams; когда применять layout и вложенность. |
-| Mermaid | `mermaid-llm.md` | Объявления типов диаграмм, грамматика и модели flowchart, sequence, class, state, ER и других поддерживаемых типов; различия синтаксиса и выбор типа диаграммы. |
-| Graphviz DOT | `graphviz-llm.md` | `graph` и `digraph`, узлы, рёбра, атрибуты, subgraphs и clusters, ports, record/HTML labels, семантика layout-движков. |
-| PlantUML | `plantuml-llm.md` | Модели UML и синтаксис sequence, class, activity, state, component и deployment диаграмм; участников, связи, группировку и стили. |
-| draw.io | `drawio-llm.md` | Модель native draw.io файла и графа (`mxfile`, страницы, `mxGraphModel`, cells, vertices, edges и стили); отдельно описать проектный structural JSON и его связь с native форматом. |
-| Excalidraw | `excalidraw-llm.md` | Файл сцены и модель элементов, координаты, текст, привязки, группы, редакторское состояние, файлы и отличие file JSON от clipboard JSON. |
-| Pencil | `pencil-llm.md` | Общая модель `.pen` документа, дерева объектов, координат и layout, узлов, paints, effects, компонентов и повторного использования; отдельно зафиксировать подтверждённый профиль проекта. |
-| Balsamiq Mockups 3 | `balsamiq-llm.md` | Модель mockup, controls, свойства, координаты, порядок слоёв, symbols и assets; различия Mockups JSON, BMPR и BMML. |
-| Figma | `figma-llm.md` | Структура REST file response и node tree, типы объектов, геометрия, styles, components, instances, geometry data, ссылки и авторизация API. |
-| OpenAPI | `openapi-llm.md` | Модель API description: paths, operations, parameters, request/response bodies, schemas, references, security, servers, callbacks/webhooks и расширения; разделить общую версию стандарта и закреплённую проектом версию. |
-| Vega-Lite | `vega-lite-llm.md` | Грамматика визуальных кодировок, типы данных, marks, scales, axes/legends, transforms, composition, facet/repeat и взаимодействия; отдельно описать ограничения статического вывода. |
-| ECharts | `echarts-llm.md` | Модель option tree, `series`, components, coordinate systems, datasets/encodes, основные типы диаграмм, визуальные каналы, layout и взаимодействия; отдельно описать профиль статического рендерера. |
+| Формат             | Справка             | Знания о формате, которые нужно добавить                                                                                                                                                                                  |
+| ------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D2                 | `d2-llm.md`         | Текстовая декларативная модель, ключи и контейнеры, связи, формы и атрибуты, таблицы, UML и sequence diagrams; когда применять layout и вложенность.                                                                      |
+| Mermaid            | `mermaid-llm.md`    | Объявления типов диаграмм, грамматика и модели flowchart, sequence, class, state, ER и других поддерживаемых типов; различия синтаксиса и выбор типа диаграммы.                                                           |
+| Graphviz DOT       | `graphviz-llm.md`   | `graph` и `digraph`, узлы, рёбра, атрибуты, subgraphs и clusters, ports, record/HTML labels, семантика layout-движков.                                                                                                    |
+| PlantUML           | `plantuml-llm.md`   | Модели UML и синтаксис sequence, class, activity, state, component и deployment диаграмм; участников, связи, группировку и стили.                                                                                         |
+| draw.io            | `drawio-llm.md`     | Модель native draw.io файла и графа (`mxfile`, страницы, `mxGraphModel`, cells, vertices, edges и стили); отдельно описать проектный structural JSON и его связь с native форматом.                                       |
+| Excalidraw         | `excalidraw-llm.md` | Файл сцены и модель элементов, координаты, текст, привязки, группы, редакторское состояние, файлы и отличие file JSON от clipboard JSON.                                                                                  |
+| Pencil             | `pencil-llm.md`     | Общая модель `.pen` документа, дерева объектов, координат и layout, узлов, paints, effects, компонентов и повторного использования; отдельно зафиксировать подтверждённый профиль проекта.                                |
+| Balsamiq Mockups 3 | `balsamiq-llm.md`   | Модель mockup, controls, свойства, координаты, порядок слоёв, symbols и assets; различия Mockups JSON, BMPR и BMML.                                                                                                       |
+| Figma              | `figma-llm.md`      | Структура REST file response и node tree, типы объектов, геометрия, styles, components, instances, geometry data, ссылки и авторизация API.                                                                               |
+| OpenAPI            | `openapi-llm.md`    | Модель API description: paths, operations, parameters, request/response bodies, schemas, references, security, servers, callbacks/webhooks и расширения; разделить общую версию стандарта и закреплённую проектом версию. |
+| Vega-Lite          | `vega-lite-llm.md`  | Грамматика визуальных кодировок, типы данных, marks, scales, axes/legends, transforms, composition, facet/repeat и взаимодействия; отдельно описать ограничения статического вывода.                                      |
+| ECharts            | `echarts-llm.md`    | Модель option tree, `series`, components, coordinate systems, datasets/encodes, основные типы диаграмм, визуальные каналы, layout и взаимодействия; отдельно описать профиль статического рендерера.                      |
 
 Список возможностей в последней колонке задаёт исследовательское направление, а не утверждение о поддержке каждого пункта локальным renderer. До написания текста проверить точную версию, подключённые модули, конфигурацию сборки и поведение адаптера.
 
@@ -93,20 +131,20 @@
 
 Сверять факты с официальными источниками для целевой версии. Документация живых проектов может описывать возможности новее установленной библиотеки; в таком случае помечать версию явно.
 
-| Формат | Начальные официальные источники |
-| --- | --- |
-| D2 | [D2 Tour](https://www.d2lang.com/tour/intro/) |
-| Mermaid | [Mermaid Diagram Syntax](https://mermaid.js.org/intro/syntax-reference.html) |
-| Graphviz DOT | [DOT Language](https://www.graphviz.org/content/dot-language/), [Graphviz documentation](https://graphviz.org/documentation/) |
-| PlantUML | [PlantUML starting guide](https://plantuml.com/starting) и связанная с неё Language Reference Guide |
-| draw.io | [File Format](https://github.com/jgraph/drawio/wiki/File-Format), [AI diagram generation](https://www.drawio.com/docs/reference/diagram-generation/) |
-| Excalidraw | [JSON Schema](https://docs.excalidraw.com/docs/codebase/json-schema) |
-| Pencil | [The `.pen` Format](https://docs.pencil.dev/for-developers/the-pen-format) |
-| Balsamiq | [Mockups 3 for Desktop Documentation](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf) |
-| Figma | [Figma REST API](https://developers.figma.com/docs/rest-api/), [File nodes](https://developers.figma.com/docs/rest-api/files/) |
-| OpenAPI | [OpenAPI Specification 3.1.1](https://spec.openapis.org/oas/v3.1.1.html), [version index](https://spec.openapis.org/oas/) |
-| Vega-Lite | [Vega-Lite documentation](https://vega.github.io/vega-lite/docs/), [view specification](https://vega.github.io/vega-lite/docs/spec.html) |
-| ECharts | [Option reference](https://echarts.apache.org/en/option.html), [ECharts Handbook](https://echarts.apache.org/handbook/en/) |
+| Формат       | Начальные официальные источники                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D2           | [D2 Tour](https://www.d2lang.com/tour/intro/)                                                                                                        |
+| Mermaid      | [Mermaid Diagram Syntax](https://mermaid.js.org/intro/syntax-reference.html)                                                                         |
+| Graphviz DOT | [DOT Language](https://www.graphviz.org/content/dot-language/), [Graphviz documentation](https://graphviz.org/documentation/)                        |
+| PlantUML     | [PlantUML starting guide](https://plantuml.com/starting) и связанная с неё Language Reference Guide                                                  |
+| draw.io      | [File Format](https://github.com/jgraph/drawio/wiki/File-Format), [AI diagram generation](https://www.drawio.com/docs/reference/diagram-generation/) |
+| Excalidraw   | [JSON Schema](https://docs.excalidraw.com/docs/codebase/json-schema)                                                                                 |
+| Pencil       | [The `.pen` Format](https://docs.pencil.dev/for-developers/the-pen-format)                                                                           |
+| Balsamiq     | [Mockups 3 for Desktop Documentation](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf)       |
+| Figma        | [Figma REST API](https://developers.figma.com/docs/rest-api/), [File nodes](https://developers.figma.com/docs/rest-api/files/)                       |
+| OpenAPI      | [OpenAPI Specification 3.1.1](https://spec.openapis.org/oas/v3.1.1.html), [version index](https://spec.openapis.org/oas/)                            |
+| Vega-Lite    | [Vega-Lite documentation](https://vega.github.io/vega-lite/docs/), [view specification](https://vega.github.io/vega-lite/docs/spec.html)             |
+| ECharts      | [Option reference](https://echarts.apache.org/en/option.html), [ECharts Handbook](https://echarts.apache.org/handbook/en/)                           |
 
 Пример версионного расхождения для проверки: официальный индекс OpenAPI уже перечисляет 3.2.x, тогда как текущая справка проекта описывает OpenAPI 3.1.1. Будущая справка должна знать более широкий контекст версий и отдельно указывать, что принимает текущий renderer.
 

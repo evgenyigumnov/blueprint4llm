@@ -20,24 +20,24 @@ A **Symbol** is a reusable source made from controls and placed as an instance i
 
 ### Mockups 3 file formats are not interchangeable
 
-| Format | What it represents upstream | When to use it |
-| --- | --- | --- |
-| **Mockups JSON** | A JSON representation of a selected mockup that Mockups 3 can export and import (the desktop workflow copies it through the clipboard). It is useful for moving one mockup's control data; it does not carry the project's images or Symbols. | Use for a single mockup's data, or when a tool explicitly accepts this JSON shape. It is not the complete desktop project file. |
-| **BMPR** | The Mockups 3 desktop project format: one project file containing its mockups and project resources, including assets and Symbols. | Use to save, share, or reopen a complete Mockups 3 project. |
-| **BMML / XML** | The older, human-readable Balsamiq Mockups Markup Language format, typically one XML file per mockup. Older multi-mockup projects could keep images and Symbols in a separate assets folder or ZIP. Mockups 3 provided import/conversion to BMPR; BMML is a legacy format, not a synonym for JSON. | Use only for legacy exchange or migration through a compatible Balsamiq application. |
+| Format           | What it represents upstream                                                                                                                                                                                                                                                                        | When to use it                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Mockups JSON** | A JSON representation of a selected mockup that Mockups 3 can export and import (the desktop workflow copies it through the clipboard). It is useful for moving one mockup's control data; it does not carry the project's images or Symbols.                                                      | Use for a single mockup's data, or when a tool explicitly accepts this JSON shape. It is not the complete desktop project file. |
+| **BMPR**         | The Mockups 3 desktop project format: one SQLite-backed BAR archive containing the project's mockups and resources, including assets and Symbols.                                                                                                                                                  | Use to save, share, or reopen a complete Mockups 3 project.                                                                     |
+| **BMML / XML**   | The older, human-readable Balsamiq Mockups Markup Language format, typically one XML file per mockup. Older multi-mockup projects could keep images and Symbols in a separate assets folder or ZIP. Mockups 3 provided import/conversion to BMPR; BMML is a legacy format, not a synonym for JSON. | Use only for legacy exchange or migration through a compatible Balsamiq application.                                            |
 
 ### Choosing common controls
 
 Choose the control that communicates the user's intent at a glance. In a sketch, controls represent a design decision rather than implementing it.
 
-| Control family | Good fit |
-| --- | --- |
-| Labels, titles, subtitles, paragraphs | Name a screen or section, label content, and provide short explanatory copy. Use clear heading levels and keep long copy brief. |
-| Text input and text area | Show where a user enters one-line or multi-line content. Put a short example or hint in the field when it clarifies the expected value. |
-| Button | Mark an action. Make the primary action visually prominent and name it with a verb; keep secondary actions quieter. |
-| Checkbox and radio button | Show independent toggles with checkboxes, or mutually exclusive options with radio buttons. Make the current choice obvious in the sketch. |
-| Combo box and list | Suggest a compact choice control or a visible set of options. Use a list when comparing options is more important than saving space. |
-| Rectangle and line | Group related content into a panel or separate regions with a divider. Keep decoration subordinate to information. |
+| Control family                        | Good fit                                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Labels, titles, subtitles, paragraphs | Name a screen or section, label content, and provide short explanatory copy. Use clear heading levels and keep long copy brief.            |
+| Text input and text area              | Show where a user enters one-line or multi-line content. Put a short example or hint in the field when it clarifies the expected value.    |
+| Button                                | Mark an action. Make the primary action visually prominent and name it with a verb; keep secondary actions quieter.                        |
+| Checkbox and radio button             | Show independent toggles with checkboxes, or mutually exclusive options with radio buttons. Make the current choice obvious in the sketch. |
+| Combo box and list                    | Suggest a compact choice control or a visible set of options. Use a list when comparing options is more important than saving space.       |
+| Rectangle and line                    | Group related content into a panel or separate regions with a divider. Keep decoration subordinate to information.                         |
 
 ## blueprint4llm static renderer profile
 
@@ -528,8 +528,8 @@ The renderer reads the code fence as strict JSON text. JSON comments, trailing c
 ## Sources and evidence
 
 - Official upstream reference: [Balsamiq Mockups 3 for Desktop documentation (PDF)](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf) (application overview, controls and properties, Symbols and Assets, Mockups JSON export/import, BMML import, and BMPR format).
-- Official migration reference: [Converting BMML files to BMPR](https://balsamiq.com/wireframes/cloud/docs/bmmltobmpr/).
-- Official background on the legacy XML name: [New File Extension: BMML](https://balsamiq.com/company/news/new-file-extension-bmml/).
+- Official migration reference: [Converting BMML files to BMPR](https://balsamiq.com/support/troubleshooting-faqs/bmml-to-bmpr/).
+- Official background on the legacy XML name: [Mockups 1.6 release notes](https://balsamiq.com/learn/mockups-16-release-linking-mockups-and-more/).
 - Local profile checked against [balsamiq.ts](../../../src/renderers/balsamiq.ts), [balsamiq-json.ts](../../../src/renderers/balsamiq-json.ts), [balsamiq-svg.ts](../../../src/renderers/balsamiq-svg.ts), [balsamiq-json.test.ts](../../../tests/balsamiq-json.test.ts), and [balsamiq-svg.test.ts](../../../tests/balsamiq-svg.test.ts).
 
 **Review date:** 2026-10-26.

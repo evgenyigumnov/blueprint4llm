@@ -16,7 +16,7 @@ An upstream `.pen` file is a JSON document (JSON comments are allowed) with a `v
 
 ### Paints, effects, and reusable design systems
 
-Upstream graphics are richer than a single color per node. A fill may be a solid color, gradient, image, or mesh gradient, and a node may stack fills painted in array order. Strokes can have multiple fills and additional alignment/width options. Nodes may also have ordered effects such as shadows, blur, background blur, or shaders. Use gradients or imagery for visual emphasis rather than encoding meaning by color alone; use contrast, labels, and repeated visual patterns so the design remains understandable.
+Upstream graphics are richer than a single color per node. A fill may be a solid color, gradient, image, mesh gradient, or shader, and a node may stack fills painted in array order. Strokes can have multiple fills and additional alignment/width options. Nodes may also have ordered effects such as shadows, blur, background blur, or shaders. Use gradients or imagery for visual emphasis rather than encoding meaning by color alone; use contrast, labels, and repeated visual patterns so the design remains understandable.
 
 The native format also supports design-system patterns:
 
@@ -25,21 +25,52 @@ The native format also supports design-system patterns:
 - Document-wide `variables` and `themes` can centralize colors, dimensions, and other values and select variants such as light/dark or compact/regular.
 - `imports` can refer to other `.pen` files. These features help maintain consistency in full editor documents, but they are not a substitute for literal, self-contained values in the local renderer profile.
 
+For example, an upstream-only reusable status badge can be defined once and instantiated with a visual override:
+
+```jsonc
+{
+  "version": "2.21",
+  "children": [
+    {
+      "id": "status-badge",
+      "type": "rectangle",
+      "reusable": true,
+      "width": 112,
+      "height": 28,
+      "cornerRadius": 14,
+      "fill": "#DCFCE7",
+    },
+    {
+      "id": "critical-badge",
+      "type": "ref",
+      "ref": "status-badge",
+      "x": 128,
+      "y": 0,
+      "fill": "#FEE2E2",
+    },
+  ],
+}
+```
+
+`reusable`, `ref`, and instance overrides are native format features; the local profile below rejects them.
+
 **Upstream only:** the preceding capabilities describe the broader `.pen` format, not promises that blueprint4llm can render every native file. Native design files can contain properties, node types, assets, references, and document metadata that this renderer deliberately rejects. Do not pass a complete editor-authored file into the renderer unless it has been reduced to the local profile.
 
 ## Upstream format vs. blueprint4llm profile
 
 The upstream schema is versioned; this renderer currently embeds and accepts **only schema `2.21`**, but accepting that version string does not mean it implements the full upstream schema. The implementation validates a strict local allowlist and emits static SVG. Use this comparison to decide what to flatten or omit before authoring:
 
-| Area | Upstream `.pen` capability | Current blueprint4llm acceptance |
-| --- | --- | --- |
-| Document | Versioned document with `children`, and document-level `imports`, `variables`, and `themes`. | Root accepts exactly `version: "2.21"` and `children`. Other root fields are rejected. |
-| Nodes | Frames, groups, shapes, text, and additional node kinds including `note`, `prompt`, `context`, `icon`, `script`, `browser`, and `ref`. | Only `frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, and `text`. Only frames/groups may own `children`; IDs must be unique and cannot contain `/`. |
-| Sizing and layout | Dynamic sizing, fill-to-parent behavior, absolute layout positions, and other editor layout semantics. | Finite x/y/rotation, explicit positive dimensions on leaves, optional frame/group dimensions computed from children, and only `none`/horizontal/vertical layout with the local gap/padding/alignment rules below. No `fit_content`/`fill_container` strings or `layoutPosition`. |
-| Appearance | Multiple fills; gradients, images, mesh gradients, stroke variants, and effects including shadows and blur. | One solid hex color or `none` for each fill/stroke, optional common opacity and stroke properties, plus the listed text, corner, and clipping properties. No image loading, gradient, shader, mesh paint, or effect support. |
-| Components | Reusable definitions, `ref` instances, descendant overrides, slots, variables, themes, and imports. | Not supported: these properties/types are rejected. Inline ordinary nodes and literal color/number values instead. |
+| Area              | Upstream `.pen` capability                                                                                                             | Current blueprint4llm acceptance                                                                                                                                                                                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Document          | Versioned document with `children`, and document-level `imports`, `variables`, and `themes`.                                           | Root accepts exactly `version: "2.21"` and `children`. Other root fields are rejected.                                                                                                                                                                                           |
+| Nodes             | Frames, groups, shapes, text, and additional node kinds including `note`, `prompt`, `context`, `icon`, `script`, `browser`, and `ref`. | Only `frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, and `text`. Only frames/groups may own `children`; IDs must be unique and cannot contain `/`.                                                                                                                  |
+| Sizing and layout | Dynamic sizing, fill-to-parent behavior, absolute layout positions, and other editor layout semantics.                                 | Finite x/y/rotation, explicit positive dimensions on leaves, optional frame/group dimensions computed from children, and only `none`/horizontal/vertical layout with the local gap/padding/alignment rules below. No `fit_content`/`fill_container` strings or `layoutPosition`. |
+| Appearance        | Multiple fills; gradients, images, mesh gradients, stroke variants, and effects including shadows and blur.                            | One solid hex color or `none` for each fill/stroke, optional common opacity and stroke properties, plus the listed text, corner, and clipping properties. No image loading, gradient, shader, mesh paint, or effect support.                                                     |
+| Components        | Reusable definitions, `ref` instances, descendant overrides, slots, variables, themes, and imports.                                    | Not supported: these properties/types are rejected. Inline ordinary nodes and literal color/number values instead.                                                                                                                                                               |
 
 When drawing a screen or simple illustration for this project, prefer concrete frames and ordinary shapes, explicitly size leaf nodes, use solid hex colors, and keep the full tree inside the Markdown fence. This produces predictable offline SVG without requiring asset resolution or a Pencil editor.
+
+There is no Pencil rendering SDK dependency: `src/renderers/pencil*.ts` implements the project schema, layout, and SVG output. It uses `jsonc-parser` for JSONC parsing (`^3.3.1` in `package.json`, resolved to `3.3.1` in `package-lock.json`). The focused contract tests are `tests/pencil-json.test.ts`, `tests/pencil-layout.test.ts`, and `tests/pencil-renderer.test.ts`; they cover parsing and rejected fields, layout, and SVG rendering.
 
 ## Markdown fence and document shape
 

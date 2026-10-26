@@ -82,6 +82,8 @@ webhooks:
 
 Place the complete OpenAPI document in an `openapi` fence; the compatible contract below shows Markdown placement and the supported profile together. The root must be an object with `info.title` and `info.version` as non-empty strings. Include at least one of `paths` or `components`. An empty `paths: {}` is valid when components contain schemas to display. Add paths for callable operations and components for reusable schemas and objects.
 
+This profile is implemented by the project's own parser, model builder, reference resolver, and SVG renderer, not by a general OpenAPI SDK. `yaml` 2.9.1 is the pinned YAML parser in `package.json` and `package-lock.json`; the focused renderer tests also assert that parser version in the renderer cache key. The renderer's exact OAS version check is separate from the YAML parser version.
+
 ### Build a useful compatible contract
 
 - Give each path a key beginning with `/`, such as `/v1/shipments/{shipmentId}`. The renderer recognizes `get`, `put`, `post`, `delete`, `options`, `head`, `patch`, and `trace` operations.
@@ -391,6 +393,8 @@ components:
 ### Renderer limits
 
 The current parser accepts one YAML 1.2 document or strict JSON document. YAML aliases, merge keys, custom tags, non-string mapping keys, and non-finite numbers are rejected. The source limit is 256 KiB, with at most 10,000 syntax-tree nodes and depth 64. The renderer allows at most 200 operations, 500 named schemas, and 2,000 `$ref` uses. It produces a static SVG with a 1,200 px width, a maximum height of 16,384 px, a 5,000-line layout limit, and a 4 MiB output limit.
+
+Check this guide's compatible examples with `blueprint4llm skills/blueprint4llm/formats/openapi-llm.md --check`.
 
 ## Official references
 

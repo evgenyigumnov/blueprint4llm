@@ -22,11 +22,13 @@ A node's `fills` and `strokes` are ordered paint arrays. Upstream paint records 
 
 ### API access, revisions, node links, and exports
 
-The REST API's file endpoint retrieves document structure, while the file-nodes endpoint can focus on node IDs and the images endpoint exports selected nodes in formats such as SVG or PNG. A design link's file key identifies the file; `node-id` identifies the selected layer, and an optional `version-id` pins a revision. For example, query the official API's file or image endpoint with the relevant file key, node ID, version and export options rather than treating an editor URL as the response JSON. Figma's REST API requires an authorized credential with permission to read the requested file; access may be restricted by the user's file permissions and token scopes. Keep credentials in a secret manager, environment, or local ignored `.env`, never in a diagram block, guide, source JSON, or committed file.
+The REST API's file endpoint retrieves document structure, the file-nodes endpoint can focus on node IDs, and the images endpoint exports selected nodes in formats such as SVG or PNG. A design link's file key identifies the file; `node-id` identifies the selected layer, and an optional `version-id` pins a revision. For example, query the official API's file or image endpoint with the relevant file key, node ID, version and export options rather than treating an editor URL as the response JSON. Figma supports OAuth 2, personal access tokens, and organization or enterprise plan access tokens. File and image reads require the `file_content:read` scope where applicable, and token scopes do not bypass file or organization sharing permissions. Personal and plan access tokens use the `X-Figma-Token` header; OAuth access tokens use a Bearer authorization header. Keep credentials in a secret manager, environment, or local ignored `.env`, never in a diagram block, guide, source JSON, or committed file.
 
 **Upstream-only capabilities:** Figma's full node tree, component metadata and variants, style/variable references, gradient/image paints, complex text ranges, masks/effects, boolean operations, and node-specific API options are broader than blueprint4llm's local JSON renderer. The remote URL path is an SVG export path, not support for every REST node field. The precise local profile follows.
 
 ## Current blueprint4llm local JSON profile
+
+No Figma SDK package or version is pinned in `package.json` or `package-lock.json`. The local compatibility profile below is implemented by blueprint4llm's own REST JSON parser and SVG renderer.
 
 The JSON input must be a Figma file response object with a `document` object whose `type` is `DOCUMENT`. Its `children` are typically `CANVAS` pages, and each page's `children` contain frames. Each node needs a non-empty string `id` and `type`; `name` is an optional string, and `children` is an optional array. Node IDs must be unique throughout the tree. `absoluteBoundingBox` contains finite numeric `x`, `y`, `width`, and `height` values; widths and heights cannot be negative. The selected frame must have positive width and height.
 
@@ -425,7 +427,7 @@ This workspace overview uses one page and one top-level frame, so no selection o
 
 A URL is a live, network-backed input, distinct from local JSON. The accepted shape is an HTTPS link on `figma.com` or `www.figma.com` with a `/design/<file-key>` or `/file/<file-key>` path and exactly one `node-id=<number>-<number>` query parameter. One optional `version-id` may also be supplied. Unrelated query parameters are ignored. The renderer translates the link to a request to Figma's Images API for one SVG (`format=svg`, with text not outlined), then downloads the returned SVG. It does not fetch the complete REST file tree and does not pass a full file response through the local JSON renderer.
 
-URL mode requires a real configured `FIGMA_ACCESS_TOKEN`. The renderer resolves it from the compile option, the `FIGMA_ACCESS_TOKEN` environment variable, or a `.env` file in the current working directory, in that order. The token is sent only to Figma's API request, not to the returned SVG download host. Without a non-empty configured token, URL rendering stops before making a request. File permissions or a missing `file_content:read` scope can prevent access. Invalid/expired credentials, denied or unavailable files/nodes, rate limits, request timeouts, and unavailable SVG exports can also fail. Local JSON needs no token and makes no network request. Do not treat a URL as an offline snapshot, fabricate a token, or place credentials in the Markdown.
+URL mode requires a real configured `FIGMA_ACCESS_TOKEN`. The renderer resolves it from the compile option, the `FIGMA_ACCESS_TOKEN` environment variable, or a `.env` file in the current working directory, in that order. It sends the token only in the `X-Figma-Token` header on Figma's API request, not to the returned SVG download host. Supply a personal access token or REST plan access token that has access to the requested file; this integration does not perform OAuth sign-in, send a Bearer token, or refresh OAuth credentials. Without a non-empty configured token, URL rendering stops before making a request. File permissions or a missing `file_content:read` scope can prevent access. Invalid/expired credentials, denied or unavailable files/nodes, rate limits, request timeouts, and unavailable SVG exports can also fail. Local JSON needs no token and makes no network request. Do not treat a URL as an offline snapshot, fabricate a token, or place credentials in the Markdown.
 
 ## Authoring tips and response limitations
 
@@ -449,8 +451,13 @@ API responses can be incomplete for a rendering purpose: file requests may limit
 ## Official references
 
 - [Figma REST API overview](https://developers.figma.com/docs/rest-api/)
-- [Figma file endpoints](https://developers.figma.com/docs/rest-api/files/)
+- [Figma file node types](https://developers.figma.com/docs/rest-api/file-node-types/)
+- [Figma file property types](https://developers.figma.com/docs/rest-api/file-property-types/)
+- [Figma file endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
+- [Figma image export endpoint](https://developers.figma.com/docs/rest-api/file-endpoints/#get-image)
 - [Figma REST API authentication](https://developers.figma.com/docs/rest-api/authentication/)
-- [Figma image export endpoint](https://developers.figma.com/docs/rest-api/images-endpoint/)
+- [Figma API scopes](https://developers.figma.com/docs/rest-api/scopes/)
+- [Personal access tokens](https://developers.figma.com/docs/rest-api/personal-access-tokens/)
+- [Plan access tokens](https://developers.figma.com/docs/rest-api/plan-access-tokens/)
 
 Review date: 2026-10-26.

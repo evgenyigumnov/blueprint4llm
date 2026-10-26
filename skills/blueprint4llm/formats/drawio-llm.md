@@ -47,6 +47,8 @@ This example shows the native wrapper, default layer, two vertices with geometry
 
 ## blueprint4llm compatibility profile
 
+The project has no draw.io runtime dependency, so there is no upstream draw.io library version pinned here. This profile is defined by the repository-local parser, layout, and SVG renderer cited below.
+
 Use a `drawio` or `draw.io` fenced code block for the project's structural JSON graph. The body must be JSON in the schema below—not native `<mxfile>` XML. Native `mxCell` fields such as `value`, `style`, `vertex`, `edge`, `mxGeometry`, coordinates, and editor metadata are not interpreted. Unknown JSON properties are discarded during normalization. This adapter is implemented locally; it does not use draw.io's XML parser or native renderer.
 
 The fence info string may include `page=<id>` and `direction=TB` or `direction=LR`, separated by spaces. Use each option at most once; direction values are uppercase, and `direction=TB` is the default. A document with exactly one page needs no page option; when the JSON has multiple pages, set `page=<id>` to choose one. Page selection is exact and the id must exist.

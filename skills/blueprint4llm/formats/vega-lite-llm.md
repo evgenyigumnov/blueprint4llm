@@ -10,6 +10,8 @@ A unit view usually has `data`, `mark`, and `encoding`. A larger view can compos
 
 ### Data, types, and channels
 
+Vega-Lite's data model is tabular: a dataset is a collection of records with named fields. Upstream specifications can embed `values`, load `url` data, refer to a named source supplied at runtime or through top-level `datasets`, and use generators such as `sequence`, `graticule`, or `sphere`. The project profile below narrows this to embedded object rows and inline named datasets.
+
 A field's type communicates how its values should be interpreted. State it explicitly for clear, predictable charts:
 
 | Type           | Meaning                                 | Common use                    |
@@ -19,14 +21,14 @@ A field's type communicates how its values should be interpreted. State it expli
 | `nominal`      | Categories without an intrinsic order   | region, product, status       |
 | `ordinal`      | Categories with a meaningful order      | severity, rank, ordered bands |
 
-An encoding assigns a field (or a constant `value`) to a channel. Choose channels for the question, not just for decoration:
+An encoding assigns a field, a constant visual `value`, or a constant data `datum` to a channel. Use a field definition with `field` and `type` when the visual should respond to data rows. Choose channels for the question, not just for decoration:
 
 - `x` and `y` are the strongest channels for position and are usually easiest to compare accurately. Use time on an ordered axis; use a discrete axis for categories.
 - `color` distinguishes series or groups. Use a qualitative palette for nominal categories and a sequential or diverging palette for ordered/numeric values; keep categories distinguishable and avoid using color alone for essential distinctions.
 - `size`, `shape`, and `opacity` can add dimensions, but are less precise than position. Use them sparingly, especially when a chart already has many groups.
 - `text` labels marks, `detail` separates groups without adding another visible legend, and `row`/`column` can organize small multiples. Use `tooltip` when an interactive host should reveal details on demand.
 
-Field definitions can also specify aggregation, sorting, binning, time units, axis or legend settings, and scales. A field-level `aggregate` summarizes values before encoding; do not accidentally aggregate away distinctions that should remain separate. A constant-value definition is useful for a fixed guide or label; a field definition is appropriate when the visual should respond to row values.
+Field definitions can also specify aggregation, sorting, binning, time units, axis or legend settings, and scales. A field-level `aggregate` summarizes values before encoding; do not accidentally aggregate away distinctions that should remain separate. Use `value` for a fixed visual property, such as a constant label color; use `datum` when a fixed data value should still pass through a scale.
 
 ### Marks, scales, axes, and legends
 
@@ -89,7 +91,7 @@ Layered, concatenated, faceted, and repeated views are supported by the local v6
 
 The output is a static SVG, not a live Vega view. The legacy `selection` property is rejected. A `params` entry containing `select`, `bind`, or `expr` is rejected, so selection-driven filtering, brushing, and bound controls cannot be used. Constant-value parameters are accepted, but that does not make the result interactive. A tooltip encoding is accepted with a warning because the SVG cannot show interactive tooltips. Do not depend on hover, click, input binding, or other event-driven behavior.
 
-Geographic `projection` is rejected, as are `href` values and `href` encodings, automatic resize, and `width`/`height` set to `"container"`. External data and network requests are blocked. External image, font, and CSS resources cannot load; CSS `url(#fragment)` references to local SVG definitions are allowed.
+Geographic `projection` is rejected, as are hyperlink-producing `href` properties and `href` encodings. A field named `href` in ordinary row data remains inert unless used by the rejected encoding. Automatic resize and `width`/`height` set to `"container"` are rejected. External data and network requests are blocked. External image, font, and CSS resources cannot load; CSS `url(#fragment)` references to local SVG definitions are allowed.
 
 ### Static output and resource ceilings
 
@@ -193,7 +195,7 @@ This layered chart compares quarterly net bookings with total regional quota. Th
 **Official Vega-Lite sources; reviewed 2026-10-26:**
 
 - [Vega-Lite documentation](https://vega.github.io/vega-lite/docs/) and [specification](https://vega.github.io/vega-lite/docs/spec.html)
-- [Encoding](https://vega.github.io/vega-lite/docs/encoding.html), [marks](https://vega.github.io/vega-lite/docs/mark.html), [scales](https://vega.github.io/vega-lite/docs/scale.html), [axes](https://vega.github.io/vega-lite/docs/axis.html), and [legends](https://vega.github.io/vega-lite/docs/legend.html)
+- [Data](https://vega.github.io/vega-lite/docs/data.html), [encoding](https://vega.github.io/vega-lite/docs/encoding.html), [marks](https://vega.github.io/vega-lite/docs/mark.html), [scales](https://vega.github.io/vega-lite/docs/scale.html), [axes](https://vega.github.io/vega-lite/docs/axis.html), and [legends](https://vega.github.io/vega-lite/docs/legend.html)
 - [Transforms](https://vega.github.io/vega-lite/docs/transform.html), [layering](https://vega.github.io/vega-lite/docs/layer.html), [faceting](https://vega.github.io/vega-lite/docs/facet.html), [repetition](https://vega.github.io/vega-lite/docs/repeat.html), and [concatenation](https://vega.github.io/vega-lite/docs/concat.html)
 - [Parameters](https://vega.github.io/vega-lite/docs/parameter.html) and [selections](https://vega.github.io/vega-lite/docs/selection.html)
 

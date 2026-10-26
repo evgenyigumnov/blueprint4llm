@@ -6,31 +6,29 @@ Use an `echarts` fenced block for a static chart that the local blueprint4llm re
 
 > This section describes what upstream Apache ECharts (v6) can do. It is **not** part of the blueprint4llm static profile. The renderer below accepts only a small subset of this model. Anything marked “upstream” here that is not listed in the local tables is outside the project’s pinned, offline profile.
 
-ECharts builds a chart from an option object: a flat dictionary whose keys name top-level components and series. ECharts separates three ideas that matter for authoring:
+ECharts configures a chart with a hierarchical `option` object. Its root names components and a `series` list; nested objects hold their settings. ECharts separates three ideas that matter for authoring:
 
-- **Components** are auxiliary pieces that decorate or drive a chart: `title`, `legend`, `tooltip`, `toolbox`, `dataZoom`, `visualMap`, `timeline`, `grid` (for maps), `geo`, `parallel`, and `dataset`. Each is one object under the option root.
-- **Series** are the actual charts — the bars, lines, pie slices, scatter points, heatmaps, radar polygons, gauges, trees, maps, graphs, funnels, sankeys, and dozens more. A single chart can hold many series; each series belongs to exactly one coordinate system.
-- **Coordinate systems** define how data values become screen positions: `cartesian2d` (the ordinary x/y grid), `radar`, `gauge`, `geo`/map (`bmap`, `amap`, or a bundled GeoJSON), `parallel`, the `triple` 3D system (via echarts-gl), and wind charts.
+- **Components** are top-level option sections for chart context, layout, data, or controls: `title`, `legend`, `tooltip`, `toolbox`, `dataZoom`, `visualMap`, `timeline`, `grid`, `geo`, `parallel`, and `dataset` are examples. Many component options accept either one object or an array. Components such as a title and legend can render as static visuals; controls such as data zoom become interactive in a browser host.
+- **Series** are the data views — bars, lines, pie slices, scatter points, heatmaps, radar polygons, gauges, trees, maps, graphs, funnels, sankeys, and dozens more. A chart can combine multiple series; some use coordinate systems, while others have a standalone layout. Supported placement varies by series type.
+- **Coordinate systems** define how values become screen positions. ECharts includes the Cartesian `grid` (`cartesian2d`), `polar`, `geo`, `singleAxis`, `radar`, `parallel`, and `calendar` systems; ECharts 6 adds `matrix` for arranging charts and components in cells. Some series use a standalone layout rather than axes, and supported coordinate systems vary by series type. Three-dimensional coordinate systems are available through the separate `echarts-gl` extension.
 
 ### Series versus components
 
-In upstream ECharts every series is also a component, but they play different roles. Components like `tooltip`, `toolbox`, `dataZoom`, `legend`, and `visualMap` are interactive helpers; they only make sense in a live DOM. A chart can have zero or more components but must have at least one series to draw. Series carry their own `type` (e.g. `'line'`) plus per-series styling (`itemStyle`, `lineStyle`, `areaStyle`, `label`, `emphasis`). Components sit alongside `series` at the option root; they are never nested inside a series.
+In upstream ECharts every series is also a component, but they play different roles. Components such as `title`, `legend`, and axes can supply static visual context; `tooltip`, `toolbox`, and `dataZoom` can provide controls in a browser host. A chart can have zero or more components but must have at least one series to draw. Series carry their own `type` (e.g. `'line'`) plus per-series styling (`itemStyle`, `lineStyle`, `areaStyle`, `label`, `emphasis`). Components sit alongside `series` at the option root; they are never nested inside a series.
 
 ### Coordinate systems and chart families
 
-Upstream ECharts ships many chart families in `echarts/charts`, each mapped to a coordinate system:
+Upstream ECharts ships many chart families in `echarts/charts`; the coordinate system and layout depend on the series type:
 
-- **Cartesian (`cartesian2d`)**: bar, line, scatter, heatmap — these need `xAxis`/`yAxis` and can share a `grid`.
-- **Radar**: radar series read a `radar.indicator` definition.
-- **Gauge**: gauge series draw on their own radial scale; they do not use axes.
-- **Map / geo (`geo`)**: map, graph, and geo charts render over a geographic base layer with lat/long or pixel offsets.
-- **Parallel, 3D (`triple`), wind**: parallel coordinate charts, three-dimensional scenes (echarts-gl), and weather wind fields.
+- **Cartesian (`cartesian2d`)**: bar, line, scatter, and heatmap commonly use `xAxis`/`yAxis` and share a `grid`; some upstream series can also use other supported coordinate systems.
+- **Other coordinate-based families**: radar uses `radar.indicator`; parallel charts use parallel axes; polar, single-axis, geo, calendar, and matrix support their own layouts. Map series need registered map data or a geographic base.
+- **Other chart families**: pie and gauge commonly use standalone layouts; tree, treemap, sunburst, graph, funnel, sankey, and chord each have type-specific data and layout. These families do not all use Cartesian axes.
 
-Within the Cartesian family upstream also offers tree, treemap, funnel, sankey, sunburst, kanban, calendar, effect (streaming) graphs, and flow charts. Choosing a chart is first a choice of coordinate system: position-based (cartesian/scatter) for comparisons over time or two variables; radial (radar/gauge/pie) for part-to-whole or bounded scores; geographic (geo/map) for location data.
+ECharts 6 adds a chord series, scatter jittering, and the matrix coordinate system. Choosing a chart is first a choice of data structure and visual task: compare ordered values with a line or bar, show part-to-whole with pie or hierarchical data, correlate measures with scatter or heatmap, compare bounded scores with radar, report one bounded metric with gauge, or show location data with geo/map.
 
 ### Dataset and the encode model
 
-Upstream ECharts can separate data from series with a root `dataset`. The dataset holds `dimensions` and `source`; each series then maps dimensions to channels through `encode` (`x`, `y`, `value`, `itemName`, or arrays of them). This lets many series share one table. A second, powerful feature is **data transform**: the dataset can declare `transform` objects that filter, sort, group, reverse, pack, or clone rows before any series reads them — for example aggregating millions of points into daily buckets or keeping only the top-N categories.
+Upstream ECharts can separate data from series with a root `dataset`. The dataset holds `dimensions` and `source`; each series then maps dimensions to channels through `encode` (`x`, `y`, `value`, `itemName`, or arrays of them). This lets many series share one table. A dataset can also declare one or more `transform` steps before a series reads the result. The official transform guide covers filtering and sorting and describes registered transforms such as aggregation, regression, boxplot, and clustering; availability can depend on which transform is registered and loaded.
 
 ### Visual channels and layout
 
@@ -38,7 +36,7 @@ Upstream ECharts maps data to visual channels: position (`x`, `y`), color (inclu
 
 ### Interaction lifecycle (upstream only)
 
-In a browser host ECharts wires up an event/action lifecycle: user input fires events (`click`, `mouseover`, `legendselectchanged`, `datazoom`, etc.), components listen via `chart.on(...)`, and actions run through `chart.action(...)`. Emphasis highlights the hovered series, tooltip reveals details, dataZoom zooms an axis, and animation eases data in. blueprint4llm renders a **static** SVG and turns all of this off (see below), so these behaviors are upstream capabilities that the project does not execute.
+In a browser host ECharts wires up an event/action lifecycle: user input fires events (`click`, `mouseover`, `legendselectchanged`, `datazoom`, etc.), components listen via `chart.on(...)`, and actions can be dispatched with `chart.dispatchAction(...)`. Emphasis highlights hovered data, a tooltip reveals details, and data zoom changes the visible range. ECharts server-side rendering can emit SVG and supports limited initial animation or highlighting; full mouse-driven interaction requires a browser runtime. blueprint4llm renders a **static** SVG and disables animation, interaction, emphasis, and selection (see below).
 
 ### Choosing a design (upstream guidance)
 
@@ -68,6 +66,8 @@ Put the option object directly inside the fence. The only supported fence metada
 The body must use strict JSON: quote property names and strings with double quotes; do not use comments, trailing commas, duplicate keys, functions, `NaN`, or infinity. The top value must be an object. Unknown fields and fields outside the profile cause validation errors.
 
 The parser limits a block to 256 KiB, each line to 4 KiB, JSON nesting to 32 levels, and 100,000 JSON syntax-tree nodes. Keep charts within 20 series and 10,000 total inline points or dataset rows. A dataset can declare up to 32 dimensions.
+
+Rendered SVG is limited to 4 MiB, and a rendering worker is stopped after 10 seconds. Blocks that exceed either limit fail instead of producing a chart.
 
 ## Root option fields
 
@@ -178,7 +178,7 @@ The inline point count across all series, or the dataset row count, cannot excee
 
 The renderer runs local ECharts 6.1.0 in server-side SVG mode. It emits a static SVG with the requested canvas dimensions and a `viewBox`; it does not produce a live chart. The renderer sets animation off, marks output silent, and disables series emphasis and selection. If input asks for animation, interaction, emphasis, or selection effects, the renderer may report a warning while still producing static output. The default canvas background is white when `backgroundColor` is omitted. The renderer supplies `Noto Sans, DejaVu Sans, sans-serif` as the default font family.
 
-Only the fields listed in this guide pass the profile. For example, `tooltip`, `toolbox`, `dataZoom`, arbitrary component options, and JavaScript formatter functions are outside it. Dataset transforms and external sources are also outside it. Formatters must be plain strings of at most 512 characters, cannot contain markup, and may use only `{a}`, `{b}`, `{c}`, `{d}`, `{name}`, `{value}`, or `{percent}` placeholders. Do not add fields just because another ECharts runtime accepts them.
+Only the fields listed in this guide pass the profile. For example, `tooltip`, `toolbox`, `dataZoom`, arbitrary component options, and JavaScript formatter functions are outside it. Dataset transforms and external sources are also outside it. Formatters must be strings of at most 512 characters and may use only `{a}`, `{b}`, `{c}`, `{d}`, `{name}`, `{value}`, or `{percent}` placeholders; tag-shaped `<...>` substrings and unknown brace placeholders are rejected. Do not add fields just because another ECharts runtime accepts them.
 
 ## Complete example
 
@@ -358,6 +358,9 @@ This example shows monthly fulfillment volume and on-time rate, using one embedd
 **Official Apache ECharts sources; reviewed 2026-10-26:**
 
 - [ECharts option documentation](https://echarts.apache.org/en/option.html) — the full option tree, component, series, coordinate-system, dataset, and visual-mapping reference.
-- [ECharts handbook](https://echarts.apache.org/handbook/en/) — concepts (chart container, style, dataset, data transform, axis, visual mapping, legend, event/action), chart recipes, SSR, and the v5→v6 upgrade guide.
+- [Dataset](https://echarts.apache.org/handbook/en/concepts/dataset/) and [data transform](https://echarts.apache.org/handbook/en/concepts/data-transform/) — upstream data reuse, encode mappings, and registered transforms.
+- [ECharts 6 features](https://echarts.apache.org/handbook/en/basics/release-note/v6-feature/) — matrix layout, chord series, and scatter jittering.
+- [Events and actions](https://echarts.apache.org/handbook/en/concepts/event/) and [server-side rendering](https://echarts.apache.org/handbook/en/how-to/cross-platform/server/) — browser interaction and upstream SVG SSR behavior.
+- [ECharts handbook](https://echarts.apache.org/handbook/en/) — chart concepts, recipes, and the v5→v6 upgrade guide.
 
 The upstream material in this guide is separated from the local profile by section heading. The pinned static profile above is grounded in `src/renderers/echarts.ts`, `echarts-source.ts`, `echarts-options.ts`, `echarts-options-schema.ts`, `echarts-options-data.ts`, `echarts-options-fields.ts`, and `echarts-runner.ts` (worker loads `echarts/core`, `echarts/charts`, `echarts/components`, `echarts/renderers` with the SVG renderer in SSR mode). Behavior is covered by `tests/echarts-source.test.ts`, `echarts-options.test.ts`, and `echarts-renderer.test.ts`. Package pins ECharts to `6.1.0`; the profile revision is `echarts-static-profile-v1`.

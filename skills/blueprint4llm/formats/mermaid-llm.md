@@ -54,6 +54,19 @@ A state declaration can be as small as a transition between two named states. `[
 
 An ER declaration uses `erDiagram`. A relation has the form `CUSTOMER ||--o{ ORDER : places`: the markers at both ends encode minimum/maximum cardinality, and `--` denotes identifying while `..` denotes non-identifying. Common end markers include `||` (exactly one), `o|` (zero or one), `|{` (one or more), and `o{` (zero or more). Entities can list attributes in braces, conventionally as `type name` with optional `PK`, `FK`, or `UK` key markers and a quoted comment. Entity labels are commonly singular nouns. Include foreign keys only when the implementation-level detail is useful; the relationship itself may already communicate the association.
 
+### Other useful grammars
+
+These types answer different questions and have their own statement forms; do not reuse flowchart links as if all Mermaid diagrams shared one grammar.
+
+- **Schedule (`gantt`):** Start with `gantt`, set the input date format with `dateFormat`, then optionally add a title and `section` groups. A task row is `Label : [tags,] [id,] start-or-after, end-or-duration`; tasks without an explicit start default to the preceding task's end. Use this for dated work, durations, and task dependencies rather than an undated process flow.
+- **Version history (`gitGraph`):** After `gitGraph`, write Git-like commands such as `commit`, `branch`, `checkout`, and `merge`. Mermaid applies them in source order, starting on `main`; choose it to show branch history and merge structure rather than arbitrary system relationships.
+- **Idea hierarchy (`mindmap`):** Start with `mindmap`, put the root idea on the first content line, and use indentation to nest child ideas. It is a text outline rendered as a hierarchy, not a graph with labeled relationships.
+- **Chronology (`timeline`):** Start with `timeline`, optionally add `title` and `section` lines, then write `period : event` entries. Multiple events can share a period by adding more colon-separated events. Source order controls the chronology, so choose it for dated eras and milestones rather than task durations.
+- **Requirement traceability (`requirementDiagram`):** Define typed requirements with fields such as `id`, `text`, `risk`, and `verifymethod`; define `element` nodes for referenced system artifacts, then connect nodes with relations such as `satisfies`, `verifies`, or `traces`. Choose this for requirement-to-design or requirement-to-test traceability, not for a general dependency map.
+- **Actor goals (`usecase-beta`):** Mermaid 12's use-case grammar starts with the exact `usecase-beta` declaration and puts each statement on its own physical line. Declare actors with `actor`; write use cases as ellipse calls such as `Login("Sign in")` or rectangle labels such as `Login[Sign in]`. Use solid associations for actor/use-case links and explicit include, extend, or generalization operators when those UML meanings matter. Use it when external actors and system goals are the point of the diagram; the beta keyword is part of the required syntax.
+
+`gantt`, `gitGraph`, `mindmap`, `timeline`, `requirementDiagram`, and `usecase-beta` are documented upstream types. The project adapter recognizes and normalizes some of their directions, but the focused render tests listed in the compatibility profile cover only flowchart, sequence, class, state, and ER; validate these other families with the local CLI before relying on them in a plan.
+
 ## Examples
 
 These examples are complete Mermaid definitions. They are deliberately written using core syntax available in the project's locked renderer as well as the upstream language.
@@ -176,7 +189,8 @@ A successful check confirms the installed local CLI can parse and render each bl
 - [Class diagram syntax](https://mermaid.js.org/syntax/classDiagram.html) — members, visibility, relationships, namespaces, and multiplicity.
 - [State diagram syntax](https://mermaid.js.org/syntax/stateDiagram.html) — states, transitions, composite states, pseudostates, and direction.
 - [Entity relationship syntax](https://mermaid.js.org/syntax/entityRelationshipDiagram.html) — entities, attributes, cardinality, and identifying relationships.
-- [Gantt syntax](https://mermaid.js.org/syntax/gantt.html), [GitGraph syntax](https://mermaid.js.org/syntax/gitgraph.html), and [mindmap syntax](https://mermaid.js.org/syntax/mindmap.html) — examples of task, commit-history, and hierarchy-specific models.
+- [Gantt syntax](https://mermaid.js.org/syntax/gantt.html), [GitGraph syntax](https://mermaid.js.org/syntax/gitgraph.html), [mindmap syntax](https://mermaid.js.org/syntax/mindmap.html), and [timeline syntax](https://mermaid.js.org/syntax/timeline.html) — task, commit-history, hierarchy, and chronology models.
+- [Requirement diagram syntax](https://mermaid.js.org/syntax/requirementDiagram.html) and [use-case diagram syntax](https://mermaid.js.org/syntax/usecase.html) — requirement traceability and actor-goal models.
 - [Mermaid usage and security configuration](https://mermaid.js.org/config/usage.html) — security levels, rendering API, and deployment behavior.
 
 **Reviewed:** 2026-10-26

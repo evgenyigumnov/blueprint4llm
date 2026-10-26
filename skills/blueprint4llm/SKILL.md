@@ -86,17 +86,17 @@ Use these criteria when the user leaves format choice open or asks for a recomme
 
 | Format                                  | Fence                 | Best fit and trade-off                                                                                                                                                                                                           |
 | --------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| D2                                      | `d2`                  | Use for D2 source that combines architecture containers, graph connections, SQL tables, UML classes, or sequence diagrams. The local WebAssembly renderer supports a static profile and two checked layout engines.              |
-| Mermaid                                 | `mermaid`             | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
-| Graphviz DOT                            | `graphviz` or `dot`   | Use for node and edge graphs, clusters, ports, record labels, and HTML-like labels. The renderer uses an embedded local WebAssembly build and a worker; it supports seven verified engines and one graph per block.              |
+| [D2](formats/d2-llm.md)                 | `d2`                  | Use for D2 source that combines architecture containers, graph connections, SQL tables, UML classes, or sequence diagrams. The local WebAssembly renderer supports a static profile and two checked layout engines.              |
+| [Mermaid](formats/mermaid-llm.md)       | `mermaid`             | Use for concise process flows, simple sequences, and architecture maps. It is easy to scan and edit as text. It works best when relationships matter more than exact placement.                                                  |
+| [Graphviz DOT](formats/graphviz-llm.md) | `graphviz` or `dot`   | Use for node and edge graphs, clusters, ports, record labels, and HTML-like labels. The renderer uses an embedded local WebAssembly build and a worker; it supports seven verified engines and one graph per block.              |
 | [draw.io JSON](formats/drawio-llm.md)   | `drawio` or `draw.io` | Use for graphs where explicit nodes, groups, and connections matter. The renderer creates an automatic layout with basic shapes; it does not preserve source positions or styles. It accepts structural JSON, not `.drawio` XML. |
 | [Excalidraw](formats/excalidraw-llm.md) | `excalidraw`          | Use for an existing v2 scene when saved positions, rotations, groups, and ordinary arrows matter. It renders a static subset as SVG; unsupported elements stay visible as placeholders.                                          |
-| PlantUML                                | `plantuml`            | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
+| [PlantUML](formats/plantuml-llm.md)     | `plantuml`            | Use when UML structure or semantics matter, such as class, component, state, deployment, detailed sequence, or activity diagrams. This renderer runs locally but disables network access and external includes.                  |
 | [OpenAPI](formats/openapi-llm.md)       | `openapi`             | Use for an embedded OpenAPI 3.1.1 contract. The local renderer shows operations and schemas in a static SVG; it supports local JSON Pointer references and warns about fields outside its displayed subset.                      |
 
 Choose by the information and visual control the diagram needs. A short flowchart is usually Mermaid. Use draw.io JSON when groups and explicit graph structure matter more than exact placement and styling. A flow with UML activity semantics or a UML model is usually PlantUML. Do not choose a format only because it is first in the table or because its syntax is shorter. If the request needs exact draw.io positions or styles, explain that this renderer does not preserve them.
 
-Before authoring a format with a linked guide, open only the selected format guide. Its local renderer profile is self-contained, so authoring does not require external format documentation or loading other format guides.
+Before authoring, read only the selected format guide. It covers both upstream format knowledge and this project's local compatibility profile. External browsing is not required for ordinary authoring; consult official documentation only if the guide does not cover a requested capability.
 
 ### Charts
 
@@ -117,7 +117,7 @@ Use charts when comparisons, trends, distributions, or relationships in the data
 
 Choose by fidelity and the kind of information the screen must show: Figma for detailed design data, Balsamiq for rough control layouts, and Pencil for custom vector geometry. If the requested fidelity exceeds the renderer's supported subset, explain the limitation.
 
-For formats with linked guides, use the selected guide as the authoring reference; do not fetch external format documentation. For formats without linked guides, do not read external documentation by default for common formats such as Mermaid or PlantUML; consult it only when syntax or renderer support is unclear. Do not invent Figma credentials or convert source files unless asked.
+Do not invent Figma credentials or convert source files unless asked.
 
 ## Prose style
 
