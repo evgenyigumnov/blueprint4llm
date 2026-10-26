@@ -12,3 +12,4 @@ vscode-extension/out/
 vscode-extension/*.vsix
 .env
 article-en.md
+.agents/skills-lock.json
