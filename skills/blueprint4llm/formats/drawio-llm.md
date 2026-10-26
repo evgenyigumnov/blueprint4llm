@@ -131,19 +131,3 @@ This parcel-order flow shows checkout, payment authorization, warehouse work, tr
 }
 ```
 
-## Validation, sources, and review
-
-For the **blueprint4llm structural JSON** example, run:
-
-```sh
-blueprint4llm skills/blueprint4llm/formats/drawio-llm.md --check
-```
-
-This checks the Markdown fences using this project's JSON parser and layout/render path; it does not validate native draw.io XML. Validate a native file by opening it in draw.io, and consult the official generation guide's XML schema and style-reference guidance when producing native files. Local profile details in this guide are based on `src/renderers/drawio-json.ts`, `src/renderers/drawio-layout.ts`, `src/renderers/drawio-rank.ts`, `src/renderers/drawio-svg.ts`, `src/renderers/drawio.ts`, and `tests/drawio-*.test.ts`.
-
-Official upstream sources:
-
-- [draw.io File Format wiki](https://github.com/jgraph/drawio/wiki/File-Format)
-- [draw.io diagram generation reference](https://www.drawio.com/docs/reference/diagram-generation/)
-
-Reviewed: 2026-10-26.

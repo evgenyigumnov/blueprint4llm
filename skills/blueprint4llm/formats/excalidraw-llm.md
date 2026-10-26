@@ -422,20 +422,3 @@ This order-checkout diagram shows a storefront request, API and order services, 
 }
 ```
 
-### Validation, sources, and review
-
-Validate the Markdown guide and its fenced diagrams with:
-
-```sh
-blueprint4llm skills/blueprint4llm/formats/excalidraw-llm.md --check
-```
-
-This checks the project's local compatibility profile; it does not certify every upstream Excalidraw feature or execute the editor. For local boundaries, consult `src/renderers/excalidraw.ts`, `excalidraw-json.ts`, `excalidraw-schema.ts`, the SVG modules, and `tests/excalidraw-*.test.ts` in the repository. The project implements this adapter itself rather than pinning an upstream Excalidraw runtime.
-
-Official references (reviewed 2026-10-26):
-
-- [Excalidraw JSON Schema: saved-file and clipboard formats](https://docs.excalidraw.com/docs/codebase/json-schema)
-- [Excalidraw Frames: membership and element ordering](https://docs.excalidraw.com/docs/codebase/frames)
-- [Excalidraw API: scene updates, elements, and files](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/api/props/excalidraw-api)
-- [Excalidraw element types: geometry, text, groups, bindings, and element variants](https://github.com/excalidraw/excalidraw/blob/master/packages/element/src/types.ts)
-- [Excalidraw imported/exported data types](https://github.com/excalidraw/excalidraw/blob/master/packages/excalidraw/data/types.ts)

@@ -1,6 +1,13 @@
 # Figma REST JSON and links
 
-Use a `figma` fenced code block for either a local Figma REST file response in JSON or an HTTPS Figma design link. These are separate input modes: JSON is rendered locally without a network request, while a link asks the renderer to export one frame through Figma's authenticated API.
+Use a `figma` fenced code block in one of these two input modes:
+
+| Mode | Fence body | How it renders |
+| --- | --- | --- |
+| **JSON** | A Figma REST file-response object | The local JSON parser renders the supported subset to SVG. It needs no token and makes no network request. |
+| **URL** | An HTTPS Figma design link with a `node-id` | The renderer exports the selected frame as SVG through Figma's Images API. It requires `FIGMA_ACCESS_TOKEN`, supplied as a compile option, environment variable, or `.env` entry. If missing, the renderer reports `FIGMA_ACCESS_TOKEN is required to render a Figma URL`. |
+
+Choose JSON for a portable, offline snapshot. Choose a URL when you want Figma to export a specific frame. URL mode needs network access and a valid token. The detailed input requirements appear in the sections below.
 
 ## Upstream Figma REST model (format knowledge)
 
