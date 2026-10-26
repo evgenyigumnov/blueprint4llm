@@ -1,6 +1,6 @@
 {
   "name": "blueprint4llm",
-  "version": "0.22.7",
+  "version": "0.23.0",
   "description": "CLI generator of software blueprints: Markdown diagrams, data charts, and UI prototypes to standalone HTML, PDF, SVG, PNG, or JPEG",
   "type": "module",
   "license": "MIT",
