@@ -1,6 +1,32 @@
 # Excalidraw JSON for blueprint4llm
 
-Write one strict JSON scene inside a Markdown fence whose language is `excalidraw`. The current renderer reads an Excalidraw file-scene envelope at document version 2 and emits static SVG. This is a renderer profile: it draws a small set of shapes and keeps each element's saved geometry; it does not run Excalidraw's editor or layout engine.
+Excalidraw is an interactive, freeform whiteboard whose scene is stored as JSON. It is useful for hand-composed sketches, flow diagrams, annotated images, and other editable visual scenes. Unlike a text-to-layout language, a scene primarily records objects and their canvas geometry; the editor supplies interaction, rendering, and editing behavior.
+
+## Upstream Excalidraw document model
+
+A saved `.excalidraw` file is a JSON document. The documented envelope uses `type: "excalidraw"`, a schema `version` (the published example uses `2`), optional `source` provenance, an `elements` array, optional `appState`, and optional `files`. `elements` is the scene content; `appState` contains editor/canvas configuration; `files` stores data for image elements. Element-level fields such as `version` are editing/reconciliation metadata, not the document's schema version.
+
+An element has a stable `id`, a `type`, and usually a rectangle in scene coordinates (`x`, `y`, `width`, `height`), with style and type-specific properties. The full editor schema includes rectangles, ellipses, diamonds, text, lines, arrows, free-draw strokes, images, frames and other element types. Elements also carry state and rendering fields such as `angle`, `strokeColor`, `backgroundColor`, `fillStyle`, `strokeStyle`, `roughness`, `opacity`, `seed`, and `isDeleted`. Saved element order matters for stacking; IDs let text, arrows, and frames refer to other elements.
+
+### Compose a scene: geometry, text, groups, and connections
+
+- **Place objects explicitly.** Coordinates and dimensions describe saved canvas geometry; they are not a tree of nested layout instructions. Use a consistent grid and leave room for labels and connectors. In an editor session, moving or resizing objects can update dependent geometry; a JSON-only consumer must not assume it will perform those edits.
+- **Use shapes for concepts and text for labels.** A text element has its own position, dimensions, content, alignment, font, and line-height settings. Text can be associated with a shape through `containerId` and the shape's `boundElements`, so the editor can treat it as a container label. The upstream model also supports text wrapping/auto-resizing and vertical alignment; those are editor semantics, not just SVG text styling.
+- **Distinguish groups, containers, and frames.** `groupIds` represent logical grouping (and can encode nested groups). Text-container bindings associate a label with a shape. Frames are visual regions with child membership via `frameId`; the editor can clip/render frame contents. These are different relationships. Upstream guidance orders frame children before the frame element in the array so frame rendering and clipping work correctly.
+- **Connect with lines or arrows.** Linear elements store `points` as local coordinates relative to their element `x`/`y`; start/end bindings can associate endpoints with other elements. In the full model, a binding includes an element ID and attachment information. Use an ordinary arrow with explicit points for a direct or hand-routed connector. Elbow arrows are for orthogonal, editor-managed routing; they have extra routing state and can be convenient when connectors must stay square through edits. Don't invent that internal routing metadata when the editor can create it.
+- **Treat images as assets plus elements.** An image element refers to an asset by `fileId`; the root `files` object maps file IDs to image data, including a MIME type and data URL. A reference without its corresponding file payload is not a self-contained image scene.
+
+### Saved file, clipboard JSON, and live editor state
+
+A saved file describes a whole scene, with the file envelope and optional editor state and image payloads. Excalidraw's clipboard format is a related but distinct payload for copied elements: its `type` is `"excalidraw/clipboard"`, and it contains selected `elements` plus optional image `files`, rather than the saved-file envelope. Do not relabel one format as the other or assume a selected clipboard scene contains all surrounding elements.
+
+The live editor additionally manages pointer/tool state, selection, zoom and scroll, undo/redo, collaboration, and interactions such as moving bound labels or rerouting arrows. Only the serialized scene data is portable JSON; a static consumer does not become an editor by reading it. Use the editor or its API to create/update scenes, normalize elements, preserve rich editing metadata, and save/export a complete document. For hand-authored diagrams, choose explicit saved coordinates, dimensions, and simple IDs/relationships; use editor-produced data when full editor fidelity, advanced elements, or working image assets matter.
+
+## blueprint4llm compatibility profile: custom static subset
+
+The local adapter is **not** the Excalidraw editor and does not load or run `@excalidraw/excalidraw`. This project has no Excalidraw editor dependency; its own parser and SVG modules accept a bounded subset of file-scene JSON and emit deterministic static SVG. Thus, upstream-valid features may be ignored, warned about, or drawn only as placeholders here. Use this profile, not the broad upstream model above, when authoring a fence for blueprint4llm.
+
+Write one strict JSON scene inside a Markdown fence whose language is `excalidraw`. The local renderer requires a file-scene envelope at document version 2. This minimal example is compatible:
 
 ````markdown
 ```excalidraw
@@ -8,7 +34,7 @@ Write one strict JSON scene inside a Markdown fence whose language is `excalidra
 ```
 ````
 
-## Scene envelope
+### Scene envelope
 
 The JSON root must be an object with:
 
@@ -20,7 +46,7 @@ Optional `appState.viewBackgroundColor` sets the scene background. It must be `"
 
 Use strict JSON: no comments, trailing commas, or duplicate object keys. The source limit is 1 MiB, the nesting limit is 100, and a scene may contain at most 3,000 elements. A scene with no visible elements is accepted with a warning and renders as a small empty-scene placeholder.
 
-## Elements and coordinates
+### Elements and coordinates
 
 Every element needs these fields:
 
@@ -37,7 +63,7 @@ The renderer preserves element array order when painting. For rectangles, ellips
 
 The SVG view box is calculated from visible geometry and includes padding. Deleted elements (`isDeleted: true`) are omitted from the drawing and its bounds. The renderer doesn't create a fixed page size from editor zoom or scroll state.
 
-## Supported drawing types
+### Supported drawing types
 
 - `rectangle`, `ellipse`, and `diamond` draw their respective outline shapes.
 - `text` draws text at its saved position.
@@ -48,7 +74,7 @@ Both `line` and `arrow` require `points`: an array of at least two `[x, y]` nume
 
 For arrowheads, use `startArrowhead` and/or `endArrowhead` with `"arrow"` or `"triangle"`, or `null` for no head. Other nonempty strings are accepted but rendered as the `"arrow"` style with a warning. `elbowed` defaults to `false`; an arrow with `elbowed: true` is shown as a placeholder because elbow routing is not drawn.
 
-## Groups, text containers, and bindings
+### Groups, text containers, and bindings
 
 `groupIds` is optional and defaults to `[]`. When present, it must be an array of non-empty strings, with no more than 100 IDs on one element. The renderer preserves the IDs as element metadata; groups do not create visible frames or change layout.
 
@@ -56,7 +82,7 @@ A text label is a separate `type: "text"` element. Give it its own `x`, `y`, `wi
 
 An ordinary arrow may refer to endpoint elements with `startBinding` and `endBinding`, each either `null` or an object containing a string `elementId`. These references are checked for missing or deleted targets and cause warnings if unresolved. The renderer still follows the arrow's explicit `points`; bindings do not recalculate endpoints, clip the path to a shape, or route it around other elements. For a connected scene, use an existing, non-deleted endpoint ID and keep the arrow's saved points visually aligned with the target shapes. `frameId` is also accepted as a nullable element ID and checked as a reference, but frame clipping is not implemented.
 
-## Text and visual fields
+### Text and visual fields
 
 `text` is required and must be a string for a text element. Text is emitted one saved line per line, with no automatic wrapping. Its useful optional fields are:
 
@@ -69,13 +95,13 @@ For other elements, omitted visual values use these defaults: `strokeColor` `"#1
 
 `fillStyle` accepts `"solid"`, `"hachure"`, `"cross-hatch"`, and `"zigzag"`, but the SVG renderer draws a solid fill and warns for non-solid styles. `roughness` accepts only 0, 1, or 2; nonzero values render with a smooth outline and produce a warning. `roundness` may be omitted, `null`, or an object; a non-null object is accepted but drawn with sharp corners and a warning. `link` may be a string or `null`, but links are not active in the SVG and produce a warning when nonempty. For text, `strokeColor` is the text color and a non-transparent `backgroundColor` draws a box behind the text.
 
-## Unsupported items and warnings
+### Unsupported items and warnings
 
 Only `rectangle`, `ellipse`, `diamond`, `text`, `line`, and ordinary non-elbow `arrow` elements have direct drawing support. Any other element type is accepted if it has valid common fields, then displayed as a labeled placeholder; this includes image, frame, `magicframe`, and free-draw elements. Frames do not clip their contents. Element data such as image files, links, or editor-only properties does not become active content in the output.
 
 Warnings do not necessarily mean the JSON is invalid. Expect warnings for unsupported element types, elbow arrows, unresolved element references, non-solid fills, nonzero roughness, non-null roundness, non-default text font families, inactive links, and empty scenes. Keep references pointed at existing, non-deleted IDs to avoid reference warnings. JSON syntax errors, duplicate IDs, missing required fields, invalid value types, and values outside the stated ranges are errors.
 
-## Complete scene example
+### Complete scene example
 
 This order-checkout diagram shows a storefront request, API and order services, payment authorization, an inventory decision, an event bus, fulfilment, and a manual-review branch. Labels use text containers; arrows carry endpoint bindings and explicit points. The elements use the supported profile and should validate without renderer warnings.
 
@@ -395,3 +421,21 @@ This order-checkout diagram shows a storefront request, API and order services, 
   ]
 }
 ```
+
+### Validation, sources, and review
+
+Validate the Markdown guide and its fenced diagrams with:
+
+```sh
+blueprint4llm skills/blueprint4llm/formats/excalidraw-llm.md --check
+```
+
+This checks the project's local compatibility profile; it does not certify every upstream Excalidraw feature or execute the editor. For local boundaries, consult `src/renderers/excalidraw.ts`, `excalidraw-json.ts`, `excalidraw-schema.ts`, the SVG modules, and `tests/excalidraw-*.test.ts` in the repository. The project implements this adapter itself rather than pinning an upstream Excalidraw runtime.
+
+Official references (reviewed 2026-10-26):
+
+- [Excalidraw JSON Schema: saved-file and clipboard formats](https://docs.excalidraw.com/docs/codebase/json-schema)
+- [Excalidraw Frames: membership and element ordering](https://docs.excalidraw.com/docs/codebase/frames)
+- [Excalidraw API: scene updates, elements, and files](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/api/props/excalidraw-api)
+- [Excalidraw element types: geometry, text, groups, bindings, and element variants](https://github.com/excalidraw/excalidraw/blob/master/packages/element/src/types.ts)
+- [Excalidraw imported/exported data types](https://github.com/excalidraw/excalidraw/blob/master/packages/excalidraw/data/types.ts)

@@ -1,40 +1,112 @@
 # Vega-Lite v6 for blueprint4llm
 
-Use this guide to write a Vega-Lite chart that the blueprint4llm renderer can validate and turn into a static SVG. Put one strict JSON object in a Markdown fence labelled `vega-lite` or `vegalite`.
+Use this guide to author declarative charts and understand the boundary between the upstream Vega-Lite grammar and blueprint4llm's offline, static renderer profile. Put one strict JSON object in a Markdown fence labelled `vega-lite` or `vegalite`. The compatible layered example near the end can be checked with `blueprint4llm skills/blueprint4llm/formats/vega-lite-llm.md --check`.
 
-## Specification shape
+## Upstream Vega-Lite v6: the declarative model
 
-A Vega-Lite chart is a JSON object. A unit chart has a `mark` and usually an `encoding`; a layered chart puts multiple mark-and-encoding units in a top-level `layer` array. A chart can also set `title`, `description`, `data`, `transform`, `width`, `height`, and `config`. Layer children inherit data and top-level encodings where the Vega-Lite schema permits it. The schema also accepts `concat`, `hconcat`, `vconcat`, `facet` with `spec`, and `repeat` with `spec` compositions.
+Vega-Lite describes a visualization rather than drawing it mark-by-mark at fixed coordinates. A specification declares the data, optional data transformations, a mark (the visual primitive), and encodings (which map fields to visual channels). Vega-Lite compiles that description into a lower-level Vega visualization. Scales translate data values into positions, colors, sizes, or other visual values; axes and legends make those mappings interpretable. The same grammar also supports composition, shared configuration, and interactive parameters.
 
-The `$schema` property is optional. If included, its value must be exactly `https://vega.github.io/schema/vega-lite/v6.json`. This is an identifier; the renderer validates against its installed package-local v6 schema and does not fetch a schema from that address. The current renderer uses Vega-Lite 6.5.0 and Vega 6.4.0.
+A unit view usually has `data`, `mark`, and `encoding`. A larger view can compose unit views with `layer`, `facet`, `repeat`, `concat`, `hconcat`, or `vconcat`. Metadata such as `title` and `description`, transforms, dimensions, and `config` can be placed where the schema permits. Vega-Lite's schema defines which properties are valid and where they may occur.
 
-Write JSON, not JSON with comments or trailing commas. The parser rejects duplicate keys, non-finite numbers, and non-object top-level values. The installed v6 schema then checks that fields such as `mark`, `encoding`, channel definitions, and transforms have valid shapes. If a schema field is wrong, the CLI reports its location in the JSON and Markdown source.
+### Data, types, and channels
 
-For an encoding, map channels such as `x`, `y`, `color`, and `text` to definitions. A field definition normally names a data `field` and its `type`: `quantitative` for numeric measures, `nominal` for categories, `ordinal` for ordered categories, or `temporal` for dates and times. Axis, legend, title, sort, scale, and aggregate settings belong in those definitions and must conform to the local v6 schema. Layering lets marks share the same data and chart coordinates; put shared channels on the layer and add only mark-specific channels to each layer when that keeps the chart clear.
+A field's type communicates how its values should be interpreted. State it explicitly for clear, predictable charts:
 
-## Embedded data
+| Type           | Meaning                                 | Common use                    |
+| -------------- | --------------------------------------- | ----------------------------- |
+| `quantitative` | Numeric magnitude on a continuous scale | revenue, duration, count      |
+| `temporal`     | Dates or times                          | time series, event dates      |
+| `nominal`      | Categories without an intrinsic order   | region, product, status       |
+| `ordinal`      | Categories with a meaningful order      | severity, rank, ordered bands |
 
-Keep the chart's data in the Markdown document. The usual form is `data` with a `values` array of records; each row must be a JSON object. For reusable inline tables, add a top-level `datasets` object whose entries are either arrays of records or objects with a `values` array, then refer to a table with `data: {"name": "tableName"}`. Named lookup sources must resolve to one of these inline datasets; a lookup may also contain its own inline `values`.
+An encoding assigns a field (or a constant `value`) to a channel. Choose channels for the question, not just for decoration:
 
-The renderer rejects `data.url`, URL-based lookup sources, unresolved dataset names, and generated data sources such as `sequence`, `graticule`, and `sphere`. A URL-looking string inside an ordinary record is just a value; it is not loaded. The combined input limit is 10,000 source rows across inline values and datasets. Each row must be an object.
+- `x` and `y` are the strongest channels for position and are usually easiest to compare accurately. Use time on an ordered axis; use a discrete axis for categories.
+- `color` distinguishes series or groups. Use a qualitative palette for nominal categories and a sequential or diverging palette for ordered/numeric values; keep categories distinguishable and avoid using color alone for essential distinctions.
+- `size`, `shape`, and `opacity` can add dimensions, but are less precise than position. Use them sparingly, especially when a chart already has many groups.
+- `text` labels marks, `detail` separates groups without adding another visible legend, and `row`/`column` can organize small multiples. Use `tooltip` when an interactive host should reveal details on demand.
 
-## Supported charts, transforms, and limits
+Field definitions can also specify aggregation, sorting, binning, time units, axis or legend settings, and scales. A field-level `aggregate` summarizes values before encoding; do not accidentally aggregate away distinctions that should remain separate. A constant-value definition is useful for a fixed guide or label; a field definition is appropriate when the visual should respond to row values.
 
-The static profile allows these marks: `bar`, `line`, `point`, `circle`, `square`, `area`, `rect`, `rule`, `tick`, `text`, `arc`, `trail`, `boxplot`, `errorbar`, and `errorband`. An `image` mark and other marks such as `geoshape` are rejected. The local v6 schema still validates the full shape of each accepted mark and its encodings.
+### Marks, scales, axes, and legends
 
-The renderer allows these transform operations: `filter`, `calculate`, `aggregate`, `joinaggregate`, `bin`, `timeUnit`, `stack`, `fold`, and `lookup`. For example, `calculate` writes an expression result to a field named by `as`; `aggregate` groups rows and computes summaries; `joinaggregate` adds a grouped summary to each row; `fold` turns several named fields into key/value rows; and `lookup` joins fields from an inline source. Transform objects must also satisfy the v6 schema. The whole specification may contain at most 100 transforms.
+Choose a mark that matches the comparison:
 
-Layered charts, concatenated charts, faceted charts, and repeated charts are supported by the local v6 schema. The static policy caps a chart at 100 expanded views after facet and repeat expansion. It also limits computed datasets to 50,000 rows, the rendered scenegraph to 50,000 items, either rendered side to 4,096 pixels, total rendered area to 16,000,000 pixels, and SVG output to 4 MiB. A Vega-Lite source block is limited to 256 KiB.
+| Question                                    | Useful marks                               | Design note                                                                                           |
+| ------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Compare amounts across categories           | `bar`, `tick`, or `point`                  | Bars emphasize magnitude from a baseline; points or ticks are compact for many categories.            |
+| Show change over an ordered dimension       | `line` or `area`                           | Lines emphasize continuity; use area when filled magnitude is meaningful and stacking is intentional. |
+| Show a relationship or distribution         | `point`, `circle`, or `boxplot`            | Scatter plots reveal association; boxplots summarize distributions.                                   |
+| Show values in two categorical dimensions   | `rect`                                     | A color-encoded tile grid can make a heatmap; choose an ordered, legible color scale.                 |
+| Add a reference, uncertainty, or annotation | `rule`, `errorbar`, `errorband`, or `text` | Keep reference marks visually subordinate to the data.                                                |
 
-## Static output behavior
+A scale maps a field's data domain to a visual range. Consider whether a quantitative scale should include zero, whether a log scale fits a multiplicative range, how a color domain should be bounded, and whether categorical colors remain distinct. Use axes for positional scales (titles, tick formatting, grid lines, and label density) and legends for non-positional encodings such as color, size, or shape. Clear titles and units help readers understand the encoded values; do not rely on a legend or color alone when direct labels or position would be clearer.
 
-The renderer compiles the spec with package-local Vega and Vega-Lite browser bundles in an isolated page and serializes the result as SVG. Rendering uses the English US locale and UTC timezone. Unit and layered charts default to 480 by 300 pixels when their dimensions are not supplied directly or through view configuration. The default background is white and the default font is sans-serif; explicit chart and config styles are preserved.
+### Transformations
 
-The SVG is static. It has no interactive selections, bindings, or expression-driven parameters: `selection` is rejected, and a `params` entry containing `select`, `bind`, or `expr` is rejected. Constant-value parameters are accepted by policy. Tooltip encodings are accepted but produce a warning because the SVG has no interactive tooltips. `href` values and `href` encodings, geographic projections, automatic resize, and container sizing are unsupported. Network requests, external data, and external image, font, or CSS resources are blocked; local CSS fragment references are allowed.
+Transforms reshape or derive the rows used by a view; they are data operations, not visual styling. Place them where their scope is clear, and keep the operation order intentional. Common patterns include:
 
-## Complete example
+- `filter` removes rows that are not relevant to the question.
+- `calculate` derives a field, such as a rate or net value, without changing the source records.
+- `aggregate` groups rows and emits summary values; `joinaggregate` adds a grouped summary to each original row.
+- `bin` groups continuous values into intervals; `timeUnit` derives calendar units such as month or year.
+- `stack` computes positions for stacked marks; use stacking only when the parts and total are meaningful.
+- `fold` reshapes several columns into key/value rows, which can make multiple measures share an encoding.
+- `lookup` joins fields from a key-indexed data source.
 
-This layered chart compares quarterly net bookings with total regional quota. The bars stack regions, a calculation derives net bookings after credits, and a layer-level aggregate builds the quarterly quota line. All values are embedded, so the chart can render without network access.
+The upstream grammar has additional transforms beyond these examples. A chart valid under the general Vega-Lite v6 grammar may still fall outside blueprint4llm's narrower transform policy; see the project profile below before relying on one.
+
+### Composition and interaction
+
+- **Layer** marks when they share a coordinate system and should be read together, such as bars with a target line. Put common encodings at the parent where possible; use distinct styles so overlaid marks remain legible.
+- **Facet** partitions data by one or more fields into small multiples. It is useful for comparing groups while preserving a common visual design, but many distinct facet values create many views.
+- **Repeat** applies one view template to a list of fields. Use it to compare several measures consistently; ensure the different scales are still comparable or explicitly explain why they are not.
+- **Concatenation** (`concat`, `hconcat`, `vconcat`) places distinct views together. Use it when panels need different encodings or questions, and order panels to support the reading flow.
+
+Interactive upstream Vega-Lite charts can declare named parameters for point/interval selections or bound input controls, then use those parameters in filters or conditional encodings for linked highlighting and brushing. The modern pattern is `params`; the older top-level `selection` form is legacy. Interaction is useful when a reader needs to explore detail, but provide a readable default state and do not make the main conclusion depend on an action the reader may not discover. This capability belongs to the upstream format; this project's SVG profile is static and does not implement interactive behavior.
+
+## blueprint4llm renderer profile: accepted input and static limits
+
+The project uses the package-local Vega-Lite **6.5.0** schema and browser bundle with Vega **6.4.0**, pinned in `package.json` and `package-lock.json`. This is the renderer's current v6 implementation, not a promise that every upstream Vega-Lite feature can be rendered here. The `$schema` property is optional; if present it must be exactly `https://vega.github.io/schema/vega-lite/v6.json`. That value is an identifier: validation uses the installed local schema and does not fetch the URL. The renderer applies its project policy and validates the specification against that schema; passing the upstream schema alone does not guarantee that a chart fits this static profile.
+
+### JSON and embedded data
+
+Write strict JSON: comments, trailing commas, duplicate object keys, non-finite numbers, and non-object top-level values are rejected. Schema and policy errors report a JSON location. Source blocks are limited to 256 KiB; the JSON parser also limits nesting to 64 levels and the syntax tree to 50,000 nodes.
+
+Keep all chart data in the Markdown document. Use `data` with a `values` array of record objects, or define reusable inline tables in a top-level `datasets` object and refer to them with `data: {"name": "tableName"}`. Dataset entries must be arrays of record objects or objects containing a `values` array. Named lookup sources must resolve to one of these root datasets; a lookup can alternatively contain its own inline `values`. Each data row must be an object. The combined source-row limit is 10,000 across inline values, datasets, and inline lookup tables (the same array is counted once).
+
+The renderer rejects `data.url`, URL-based lookup sources, unresolved dataset names, and generated sources such as `sequence`, `graticule`, and `sphere`. It does not load a URL-looking value found inside an ordinary data record.
+
+### Supported marks, transforms, and composition
+
+The static policy accepts these marks: `bar`, `line`, `point`, `circle`, `square`, `area`, `rect`, `rule`, `tick`, `text`, `arc`, `trail`, `boxplot`, `errorbar`, and `errorband`. `image` and other marks such as `geoshape` are rejected. The installed v6 schema still validates the full shape and properties of accepted mark definitions.
+
+The static policy accepts these transform operations: `filter`, `calculate`, `aggregate`, `joinaggregate`, `bin`, `timeUnit`, `stack`, `fold`, and `lookup`. Other upstream operations (for example, `window`, `density`, or `regression`) are not in this project profile. Every transform object must also pass the v6 schema, and there may be no more than 100 transforms in the entire specification.
+
+Layered, concatenated, faceted, and repeated views are supported by the local v6 schema and static policy. The renderer caps the specification at 100 expanded views after facet and repeat expansion. Design facets and repeats with this limit in mind; a field with many distinct values can exceed it even when the input table itself is small.
+
+### Interactions and other unsupported features
+
+The output is a static SVG, not a live Vega view. The legacy `selection` property is rejected. A `params` entry containing `select`, `bind`, or `expr` is rejected, so selection-driven filtering, brushing, and bound controls cannot be used. Constant-value parameters are accepted, but that does not make the result interactive. A tooltip encoding is accepted with a warning because the SVG cannot show interactive tooltips. Do not depend on hover, click, input binding, or other event-driven behavior.
+
+Geographic `projection` is rejected, as are `href` values and `href` encodings, automatic resize, and `width`/`height` set to `"container"`. External data and network requests are blocked. External image, font, and CSS resources cannot load; CSS `url(#fragment)` references to local SVG definitions are allowed.
+
+### Static output and resource ceilings
+
+The renderer compiles the specification with its package-local Vega and Vega-Lite browser bundles in an isolated page, then serializes the result as SVG. Rendering uses the English-US locale and UTC timezone. Unit and layered charts default to 480 × 300 px when dimensions are not set directly or through view configuration. The default background is white and the default font is sans-serif; explicit chart and config styles are retained.
+
+The local limits are:
+
+- 10,000 inline source rows; 50,000 rows in any computed dataset; and 50,000 rendered scenegraph items.
+- 100 transforms and 100 expanded views.
+- A rendered side no larger than 4,096 px and a rendered area no larger than 16,000,000 px.
+- SVG output no larger than 4 MiB; a source fence no larger than 256 KiB.
+
+These are project safeguards, not Vega-Lite grammar limits. Keep a chart focused and compact even when it is technically under the ceilings.
+
+## Complete compatible example
+
+This layered chart compares quarterly net bookings with total regional quota. The bars stack regions, a calculation derives net bookings after credits, and a layer-level aggregate builds the quarterly quota line. All values are embedded, so the chart renders without network access.
 
 ```vega-lite
 {
@@ -115,3 +187,14 @@ This layered chart compares quarterly net bookings with total regional quota. Th
   ]
 }
 ```
+
+## References and verification
+
+**Official Vega-Lite sources; reviewed 2026-10-26:**
+
+- [Vega-Lite documentation](https://vega.github.io/vega-lite/docs/) and [specification](https://vega.github.io/vega-lite/docs/spec.html)
+- [Encoding](https://vega.github.io/vega-lite/docs/encoding.html), [marks](https://vega.github.io/vega-lite/docs/mark.html), [scales](https://vega.github.io/vega-lite/docs/scale.html), [axes](https://vega.github.io/vega-lite/docs/axis.html), and [legends](https://vega.github.io/vega-lite/docs/legend.html)
+- [Transforms](https://vega.github.io/vega-lite/docs/transform.html), [layering](https://vega.github.io/vega-lite/docs/layer.html), [faceting](https://vega.github.io/vega-lite/docs/facet.html), [repetition](https://vega.github.io/vega-lite/docs/repeat.html), and [concatenation](https://vega.github.io/vega-lite/docs/concat.html)
+- [Parameters](https://vega.github.io/vega-lite/docs/parameter.html) and [selections](https://vega.github.io/vega-lite/docs/selection.html)
+
+The project-profile details above are grounded in `src/renderers/vega-lite.ts`, `vega-lite-source.ts`, `vega-lite-schema.ts`, `vega-lite-policy.ts`, `vega-lite-data.ts`, `vega-lite-style.ts`, and `vega-lite-page.ts`, with focused coverage in `tests/vega-lite-source.test.ts`, `vega-lite-schema.test.ts`, `vega-lite-policy.test.ts`, and `vega-lite-renderer.test.ts`. Package pins are recorded in `package.json` and `package-lock.json`.

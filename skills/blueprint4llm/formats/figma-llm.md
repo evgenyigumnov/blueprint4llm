@@ -2,7 +2,31 @@
 
 Use a `figma` fenced code block for either a local Figma REST file response in JSON or an HTTPS Figma design link. These are separate input modes: JSON is rendered locally without a network request, while a link asks the renderer to export one frame through Figma's authenticated API.
 
-## Local JSON structure
+## Upstream Figma REST model (format knowledge)
+
+Figma's REST API exposes structured file data and derived exports; it does **not** serialize the editor's native `.fig` document as a portable file. A file request such as `GET /v1/files/:file_key` returns a JSON response whose `document` is a tree, alongside file metadata such as the file name, last-modified time, version, and maps of components and styles. The tree conventionally starts at a `DOCUMENT`, whose `children` are `CANVAS` pages; page children are layers such as frames, groups, components, and shapes. Node IDs identify layers and appear in API responses with colon separators (for example, `12:34`).
+
+The file and node endpoints can return a large tree. Use the file endpoint's `depth` option or the file-nodes endpoint when you need a focused subset; preserve the page/frame ancestors and geometry needed to understand the chosen layer. File/version URLs identify a document revision, while node IDs identify a specific layer. REST file JSON, a browser link, and an editor-native file are different artifacts: the renderer accepts a REST-shaped JSON excerpt locally, not a `.fig` binary or arbitrary Figma export.
+
+### Nodes, hierarchy, and geometry
+
+Nodes have a `type`, `id`, `name`, visibility and opacity properties, and type-specific content. Common types include `DOCUMENT`, `CANVAS`, `FRAME`, `GROUP`, `COMPONENT`, `COMPONENT_SET`, `INSTANCE`, `RECTANGLE`, `ELLIPSE`, `LINE`, `TEXT`, `VECTOR`, and `BOOLEAN_OPERATION`. Frames commonly express layout regions, clipping and backgrounds; groups organize layers; components define reusable source designs; instances refer to those components and may carry property overrides. Component sets collect variants, and instance component properties can represent choices such as a variant, Boolean state, text value, or swapped instance. Boolean operations and many further node types are valid upstream but are not necessarily supported by a renderer.
+
+The tree is hierarchical, not a flat canvas: node `children` belong to their parent and their order is meaningful for painting. `absoluteBoundingBox` gives a node's axis-aligned bounds in document coordinates. `relativeTransform` is a 2-by-3 affine transform from the parent coordinate space, and `size` gives local dimensions; rotation and transforms therefore matter when interpreting nested geometry. Do not confuse a node's global bounding box with its local coordinates. A frame can clip its children, while visibility, opacity, masks, effects, and blend modes can change the final appearance. When choosing layers for a hand-authored snapshot, retain the complete parent-child relationships, coordinate information, and draw order that affect the selected frame.
+
+### Paints, text, styles, and vectors
+
+A node's `fills` and `strokes` are ordered paint arrays. Upstream paint records can describe solid colors, gradients and images, plus opacity, visibility, transforms, and other paint-specific data. Figma color channels are normalized values; style references and the file-level `styles` map identify reusable shared text, fill, stroke, and effect styles. A node's `styles` property points to those shared style IDs; style metadata is distinct from the resolved paint or text properties used to draw a layer. Variables and `boundVariables` add another reusable token layer. When authoring, prefer consistent semantic color/type/spacing tokens and shared component styles rather than duplicating slightly different values.
+
+`TEXT` nodes carry `characters`, a text `style`, and can also include per-character style overrides and line data. Use text styles for typeface, size, weight, alignment and line-height; remember that a font may not be installed in the eventual renderer. `VECTOR` nodes contain path geometry, commonly exposed as `fillGeometry` and `strokeGeometry` when the file or node request asks for `geometry=paths`. Paths carry SVG-like path data and winding rules. A vector's shape is not recoverable from its bounds alone. In the upstream API, geometry may be omitted unless requested; include the path geometry when creating a local JSON snapshot intended to render vector nodes.
+
+### API access, revisions, node links, and exports
+
+The REST API's file endpoint retrieves document structure, while the file-nodes endpoint can focus on node IDs and the images endpoint exports selected nodes in formats such as SVG or PNG. A design link's file key identifies the file; `node-id` identifies the selected layer, and an optional `version-id` pins a revision. For example, query the official API's file or image endpoint with the relevant file key, node ID, version and export options rather than treating an editor URL as the response JSON. Figma's REST API requires an authorized credential with permission to read the requested file; access may be restricted by the user's file permissions and token scopes. Keep credentials in a secret manager, environment, or local ignored `.env`, never in a diagram block, guide, source JSON, or committed file.
+
+**Upstream-only capabilities:** Figma's full node tree, component metadata and variants, style/variable references, gradient/image paints, complex text ranges, masks/effects, boolean operations, and node-specific API options are broader than blueprint4llm's local JSON renderer. The remote URL path is an SVG export path, not support for every REST node field. The precise local profile follows.
+
+## Current blueprint4llm local JSON profile
 
 The JSON input must be a Figma file response object with a `document` object whose `type` is `DOCUMENT`. Its `children` are typically `CANVAS` pages, and each page's `children` contain frames. Each node needs a non-empty string `id` and `type`; `name` is an optional string, and `children` is an optional array. Node IDs must be unique throughout the tree. `absoluteBoundingBox` contains finite numeric `x`, `y`, `width`, and `height` values; widths and heights cannot be negative. The selected frame must have positive width and height.
 
@@ -397,11 +421,17 @@ This workspace overview uses one page and one top-level frame, so no selection o
 }
 ```
 
-## URL input mode
+## URL input mode: authenticated SVG export
 
-A URL is a live, network-backed input. The accepted shape is an HTTPS link on `figma.com` or `www.figma.com` with a `/design/<file-key>` or `/file/<file-key>` path and exactly one `node-id=<number>-<number>` query parameter. One optional `version-id` may also be supplied. Unrelated query parameters are ignored. The renderer requests an SVG for that node through Figma's API and then downloads the returned SVG.
+A URL is a live, network-backed input, distinct from local JSON. The accepted shape is an HTTPS link on `figma.com` or `www.figma.com` with a `/design/<file-key>` or `/file/<file-key>` path and exactly one `node-id=<number>-<number>` query parameter. One optional `version-id` may also be supplied. Unrelated query parameters are ignored. The renderer translates the link to a request to Figma's Images API for one SVG (`format=svg`, with text not outlined), then downloads the returned SVG. It does not fetch the complete REST file tree and does not pass a full file response through the local JSON renderer.
 
-URL mode requires a real configured `FIGMA_ACCESS_TOKEN`. The renderer resolves it from the compile option, the `FIGMA_ACCESS_TOKEN` environment variable, or a `.env` file in the current working directory. Without a non-empty configured token, URL rendering stops before making a request. Local JSON needs no token and makes no network request. Do not treat a URL as an offline snapshot, fabricate a token, or expect URL mode to run offline.
+URL mode requires a real configured `FIGMA_ACCESS_TOKEN`. The renderer resolves it from the compile option, the `FIGMA_ACCESS_TOKEN` environment variable, or a `.env` file in the current working directory, in that order. The token is sent only to Figma's API request, not to the returned SVG download host. Without a non-empty configured token, URL rendering stops before making a request. File permissions or a missing `file_content:read` scope can prevent access. Invalid/expired credentials, denied or unavailable files/nodes, rate limits, request timeouts, and unavailable SVG exports can also fail. Local JSON needs no token and makes no network request. Do not treat a URL as an offline snapshot, fabricate a token, or place credentials in the Markdown.
+
+## Authoring tips and response limitations
+
+For a fully local illustration, prepare a small REST-response-shaped snapshot with one page, one selected frame, stable unique IDs, explicit bounds and only the layer fields needed for a static picture. Keep absolute coordinates consistent with each layer's parent relationship; do not paste just a frame's name or bounding box and expect Figma to reconstruct its contents. Include `geometry=paths` data for vector layers, and simplify gradients, images, effects, masks, complex text, or unsupported node types into ordinary shapes and text if a portable local rendering is required. For exact appearance with rich native features, a Figma SVG export may be a better source, but this guide's URL mode itself accepts a Figma link, not arbitrary SVG input.
+
+API responses can be incomplete for a rendering purpose: file requests may limit tree depth, vector geometry is optional, node bounds can be absent, and access restrictions can conceal the document. An export can fail independently of successfully opening a design in the editor. Check the endpoint's returned data and requested node/version before reducing the JSON; do not infer missing geometry from a screenshot or from component metadata alone.
 
 ## Common mistakes
 
@@ -413,3 +443,14 @@ URL mode requires a real configured `FIGMA_ACCESS_TOKEN`. The renderer resolves 
 - Using duplicate IDs, unsupported node types such as `BOOLEAN_OPERATION`, or a gradient/image fill instead of a visible `SOLID` paint.
 - Giving a `VECTOR` a fill or stroke but no matching path geometry. Vector paths must be supplied in `fillGeometry` or `strokeGeometry`.
 - Expecting every Figma effect, mask, blend mode, variable stroke, or per-character text style to render. Those features exceed this renderer's supported subset.
+- Treating the browser design link, editor-native `.fig` file, and REST file JSON as interchangeable formats; only the JSON response-shaped local subset is parsed offline.
+- Expecting full REST metadata such as components, styles, variables, or unrequested vector geometry to expand into a rendered design automatically.
+
+## Official references
+
+- [Figma REST API overview](https://developers.figma.com/docs/rest-api/)
+- [Figma file endpoints](https://developers.figma.com/docs/rest-api/files/)
+- [Figma REST API authentication](https://developers.figma.com/docs/rest-api/authentication/)
+- [Figma image export endpoint](https://developers.figma.com/docs/rest-api/images-endpoint/)
+
+Review date: 2026-10-26.

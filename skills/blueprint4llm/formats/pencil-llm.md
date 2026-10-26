@@ -1,6 +1,45 @@
 # Pencil JSONC guide for blueprint4llm
 
-This guide describes the Pencil schema 2.21 profile accepted by the current blueprint4llm renderer. It is a small, static drawing format that the renderer converts to SVG. Use it as a self-contained document format; it does not load external assets or resolve design-file features.
+Pencil's native `.pen` format is a versioned design document with a rich object tree, layout system, graphics, and reusable components. This guide first summarizes that upstream model, then defines the much smaller schema 2.21 profile accepted by blueprint4llm. The renderer consumes an embedded JSONC document and converts the accepted subset to static SVG; it does not load external assets or resolve editor-only design features.
+
+## Upstream `.pen` model — format knowledge
+
+An upstream `.pen` file is a JSON document (JSON comments are allowed) with a `version` and a tree of uniquely identified objects. The `children` array contains the canvas's top-level objects; the canvas is conceptually unbounded. Objects have a `type`, geometry, appearance and, where appropriate, children. The object tree expresses both containment and a design's logical structure: a page-sized frame can contain panels, a group can collect related marks, and leaves can be text or vector shapes.
+
+### Nodes, coordinates, and layout
+
+- **Frames** are rectangular container nodes with an optional visual surface. They can hold nested content, clip overflow, and apply horizontal, vertical, or absolute (`none`) layout. Use frames for screens, sections, cards, and other areas that need a surface, clipping, or layout behavior.
+- **Groups** collect related objects into a hierarchy without necessarily drawing a container surface. Use them to keep an icon, illustration, or related set of marks together.
+- **Shapes** include rectangles, ellipses, polygons, and SVG paths. **Text** nodes carry content and text styling. The upstream schema also defines other kinds of nodes (such as icons, scripts, browser previews, and references); see the local-profile comparison below before using them here.
+- The canvas uses ordinary 2D coordinates: x increases to the right and y increases downward. Top-level x/y locate an object's top-left corner on the canvas; nested x/y are relative to the parent's top-left. Rotation is counter-clockwise around that corner. In a flow layout, the parent places children and their x/y positions do not determine their flow position.
+- Upstream layout can combine fixed dimensions with dynamic `fit_content` and `fill_container` sizing, including fallback sizes. Frames can use flex-like `layout`, `gap`, padding, `justifyContent`, and `alignItems`; absolute positioning can be selected for a child with `layoutPosition`. Choose flow layout for repeated rows, columns, and responsive-looking arrangements; use explicit geometry when precise canvas placement matters. The actual support in blueprint4llm is narrower and is specified below.
+
+### Paints, effects, and reusable design systems
+
+Upstream graphics are richer than a single color per node. A fill may be a solid color, gradient, image, or mesh gradient, and a node may stack fills painted in array order. Strokes can have multiple fills and additional alignment/width options. Nodes may also have ordered effects such as shadows, blur, background blur, or shaders. Use gradients or imagery for visual emphasis rather than encoding meaning by color alone; use contrast, labels, and repeated visual patterns so the design remains understandable.
+
+The native format also supports design-system patterns:
+
+- Mark a node `reusable: true` to define a component, then use a `ref` node to instantiate it. An instance can override properties and customize nested descendants; nested instances can be composed into larger reusable components.
+- Frames can expose `slot`s as intended insertion points for approved child components. This is useful for shared shells, cards, menus, and other structures whose content varies.
+- Document-wide `variables` and `themes` can centralize colors, dimensions, and other values and select variants such as light/dark or compact/regular.
+- `imports` can refer to other `.pen` files. These features help maintain consistency in full editor documents, but they are not a substitute for literal, self-contained values in the local renderer profile.
+
+**Upstream only:** the preceding capabilities describe the broader `.pen` format, not promises that blueprint4llm can render every native file. Native design files can contain properties, node types, assets, references, and document metadata that this renderer deliberately rejects. Do not pass a complete editor-authored file into the renderer unless it has been reduced to the local profile.
+
+## Upstream format vs. blueprint4llm profile
+
+The upstream schema is versioned; this renderer currently embeds and accepts **only schema `2.21`**, but accepting that version string does not mean it implements the full upstream schema. The implementation validates a strict local allowlist and emits static SVG. Use this comparison to decide what to flatten or omit before authoring:
+
+| Area | Upstream `.pen` capability | Current blueprint4llm acceptance |
+| --- | --- | --- |
+| Document | Versioned document with `children`, and document-level `imports`, `variables`, and `themes`. | Root accepts exactly `version: "2.21"` and `children`. Other root fields are rejected. |
+| Nodes | Frames, groups, shapes, text, and additional node kinds including `note`, `prompt`, `context`, `icon`, `script`, `browser`, and `ref`. | Only `frame`, `group`, `rectangle`, `ellipse`, `polygon`, `path`, and `text`. Only frames/groups may own `children`; IDs must be unique and cannot contain `/`. |
+| Sizing and layout | Dynamic sizing, fill-to-parent behavior, absolute layout positions, and other editor layout semantics. | Finite x/y/rotation, explicit positive dimensions on leaves, optional frame/group dimensions computed from children, and only `none`/horizontal/vertical layout with the local gap/padding/alignment rules below. No `fit_content`/`fill_container` strings or `layoutPosition`. |
+| Appearance | Multiple fills; gradients, images, mesh gradients, stroke variants, and effects including shadows and blur. | One solid hex color or `none` for each fill/stroke, optional common opacity and stroke properties, plus the listed text, corner, and clipping properties. No image loading, gradient, shader, mesh paint, or effect support. |
+| Components | Reusable definitions, `ref` instances, descendant overrides, slots, variables, themes, and imports. | Not supported: these properties/types are rejected. Inline ordinary nodes and literal color/number values instead. |
+
+When drawing a screen or simple illustration for this project, prefer concrete frames and ordinary shapes, explicitly size leaf nodes, use solid hex colors, and keep the full tree inside the Markdown fence. This produces predictable offline SVG without requiring asset resolution or a Pencil editor.
 
 ## Markdown fence and document shape
 
@@ -938,3 +977,11 @@ This operations dashboard uses absolute placement inside explicitly sized frames
 - Using a trailing comma, duplicate JSON key, unsupported root field, or extra node property.
 - Supplying a URL, image, gradient, variable, component reference, shadow, or another effect as though it were a supported paint or node feature.
 - Assuming text wraps exactly like a browser's font metrics; wrapping is approximate, so leave room and inspect the rendered result.
+
+## Design guidance and official reference
+
+For an embedded blueprint4llm drawing, start with a page-sized frame, then divide it into meaningful child frames (header, navigation, content panels) and use either absolute placement or the supported simple flow layout. Use groups where related vector pieces should be organized together. Keep spacing and colors systematic; use text labels alongside status colors; draw small icons with basic shapes or path data. Prefer short copy and generous text boxes because wrapping is estimated rather than measured with actual font metrics.
+
+If reusing a native Pencil component, variable, theme, imported asset, or advanced paint, first flatten it into ordinary supported nodes and literal solid colors; otherwise validation will reject it or the renderer will not have the external information needed to draw it. Keep any upstream-only metadata out of the embedded JSONC instead of assuming unknown fields are ignored.
+
+Official reference: [The .pen Format](https://docs.pencil.dev/for-developers/the-pen-format) (upstream document model and schema). Reviewed **2026-10-26**. The upstream page describes the broader native format; the compatibility table and property details in this guide describe the blueprint4llm renderer only.

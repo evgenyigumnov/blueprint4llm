@@ -1,14 +1,55 @@
 # Balsamiq Mockups 3 JSON
 
-This format profile accepts one raw JSON mockup in a Markdown code fence tagged `balsamiq`. The renderer turns the supported controls into a static SVG wireframe. It does not run UI behavior.
+## Upstream Mockups 3 model
 
-## Document envelope
+Balsamiq Mockups 3 is a low-fidelity interface sketching tool. A project can contain multiple named mockups (screens or states), along with project-level notes, assets, and reusable symbols. Each mockup has a pixel-sized canvas populated by controls from the UI Library. A control is a typed visual object: its type determines its default appearance and which properties the editor exposes. It describes a proposed interface, not production UI code.
+
+The Property Inspector is where authors tune common geometry and alignment as well as control-specific settings such as text, color, or a selected state. Control property names and meanings vary by type; the full application supports many more control types and options than the small static subset described later in this guide. When a feature matters, use the real Balsamiq editor and its property inspector rather than assuming every Mockups 3 property is portable to a renderer.
+
+### Position, size, and visual order
+
+A control's `x` and `y` locate it on its mockup canvas in pixels; `w` and `h` describe its size. Think in canvas coordinates from the upper-left: place related controls consistently, align edges, and leave intentional gaps so the visual hierarchy is easy to scan. Controls can overlap. Their `zOrder` expresses front-to-back stacking, so use it deliberately for overlays, labels, and dividers instead of relying on accidental placement order. Groups help move and organize several controls together; layering commands let you bring controls forward or send them behind others.
+
+Use geometry to communicate structure, not just to fill space: align labels with their fields, keep related choices close, distinguish primary and secondary actions, and use consistent margins. Text should fit the control's bounds; resize the control or simplify the wording rather than crowding the sketch.
+
+### Reusable symbols and assets
+
+A **Symbol** is a reusable source made from controls and placed as an instance in one or more mockups. Edit the Symbol source to update its uses throughout the project; an instance can also override eligible properties or be broken apart when it must diverge. This is useful for repeated headers, navigation, cards, or common product chrome. Groups are convenient for manipulating a selection, while Symbols add a reusable source-and-instance relationship.
+
+**Assets** are project resources such as imported images and icons. They are managed separately from the canvas and can be used in mockups. Keep reusable imagery in the project asset collection when working in Balsamiq itself; don't assume a mockup-only data export will carry its asset files or Symbol libraries with it.
+
+### Mockups 3 file formats are not interchangeable
+
+| Format | What it represents upstream | When to use it |
+| --- | --- | --- |
+| **Mockups JSON** | A JSON representation of a selected mockup that Mockups 3 can export and import (the desktop workflow copies it through the clipboard). It is useful for moving one mockup's control data; it does not carry the project's images or Symbols. | Use for a single mockup's data, or when a tool explicitly accepts this JSON shape. It is not the complete desktop project file. |
+| **BMPR** | The Mockups 3 desktop project format: one project file containing its mockups and project resources, including assets and Symbols. | Use to save, share, or reopen a complete Mockups 3 project. |
+| **BMML / XML** | The older, human-readable Balsamiq Mockups Markup Language format, typically one XML file per mockup. Older multi-mockup projects could keep images and Symbols in a separate assets folder or ZIP. Mockups 3 provided import/conversion to BMPR; BMML is a legacy format, not a synonym for JSON. | Use only for legacy exchange or migration through a compatible Balsamiq application. |
+
+### Choosing common controls
+
+Choose the control that communicates the user's intent at a glance. In a sketch, controls represent a design decision rather than implementing it.
+
+| Control family | Good fit |
+| --- | --- |
+| Labels, titles, subtitles, paragraphs | Name a screen or section, label content, and provide short explanatory copy. Use clear heading levels and keep long copy brief. |
+| Text input and text area | Show where a user enters one-line or multi-line content. Put a short example or hint in the field when it clarifies the expected value. |
+| Button | Mark an action. Make the primary action visually prominent and name it with a verb; keep secondary actions quieter. |
+| Checkbox and radio button | Show independent toggles with checkboxes, or mutually exclusive options with radio buttons. Make the current choice obvious in the sketch. |
+| Combo box and list | Suggest a compact choice control or a visible set of options. Use a list when comparing options is more important than saving space. |
+| Rectangle and line | Group related content into a panel or separate regions with a divider. Keep decoration subordinate to information. |
+
+## blueprint4llm static renderer profile
+
+This project accepts one raw Mockups 3-style JSON mockup in a Markdown code fence tagged `balsamiq`. It normalizes the supported controls and renders a static SVG wireframe; it does not import Balsamiq project files or run UI behavior. The sections below specify this project's accepted profile, not the full Balsamiq format.
+
+### Document envelope
 
 The JSON root must be an object containing a `mockup` object. Inside it, `controls.control` must be a non-empty array of control objects. A `version` field is optional and is not used to choose or validate a format version.
 
 Set the canvas size with `mockupW` and `mockupH`. The renderer also accepts `measuredW` and `measuredH` in their place. If a root dimension is omitted, that dimension can come from the single `Canvas` control's width or height. Supply both dimensions through the root, the canvas, or a mix of the two. Root dimensions take precedence over canvas dimensions.
 
-## Controls and geometry
+### Controls and geometry
 
 Every control needs these fields:
 
@@ -47,7 +88,7 @@ The accepted `typeID` values are:
 
 These controls only describe their rendered appearance. They do not create interactive fields, menus, or actions.
 
-## Complete mockup
+### Complete mockup
 
 This support queue screen uses only supported controls and fields. Place the JSON object inside a Markdown fence tagged `balsamiq` when adding it to a document.
 
@@ -480,6 +521,15 @@ This support queue screen uses only supported controls and fields. Place the JSO
 }
 ```
 
-## Unsupported inputs
+### Unsupported inputs
 
-The renderer reads the code fence as strict JSON text. JSON comments, trailing commas, duplicate object keys, or a document without the `mockup` envelope are rejected. A `.bmpr` or `.bmml` file is not loaded or converted; the renderer has no project-file or XML import path. It also has no asset loader or symbol expansion step. Only the listed `typeID` values are rendered, so image or symbol controls are rejected as unsupported types. Put the supported JSON controls directly in the fenced source instead of relying on external files or references.
+The renderer reads the code fence as strict JSON text. JSON comments, trailing commas, duplicate object keys, or a document without the `mockup` envelope are rejected. The JSON root must have a nonempty `controls.control` array; the accepted input is limited to 256 KiB, nesting depth 100, and 3,000 controls. A `.bmpr` or `.bmml` file is not loaded or converted; the renderer has no project-file or XML import path. It also has no asset loader or symbol expansion step. Only the listed `typeID` values are rendered, so image or symbol controls are rejected as unsupported types. Put the supported JSON controls directly in the fenced source instead of relying on external files or references.
+
+## Sources and evidence
+
+- Official upstream reference: [Balsamiq Mockups 3 for Desktop documentation (PDF)](https://balsamiq.com/assets/product/mockups3fordesktop/balsamiq-mockups-3-for-desktop-documentation.pdf) (application overview, controls and properties, Symbols and Assets, Mockups JSON export/import, BMML import, and BMPR format).
+- Official migration reference: [Converting BMML files to BMPR](https://balsamiq.com/wireframes/cloud/docs/bmmltobmpr/).
+- Official background on the legacy XML name: [New File Extension: BMML](https://balsamiq.com/company/news/new-file-extension-bmml/).
+- Local profile checked against [balsamiq.ts](../../../src/renderers/balsamiq.ts), [balsamiq-json.ts](../../../src/renderers/balsamiq-json.ts), [balsamiq-svg.ts](../../../src/renderers/balsamiq-svg.ts), [balsamiq-json.test.ts](../../../tests/balsamiq-json.test.ts), and [balsamiq-svg.test.ts](../../../tests/balsamiq-svg.test.ts).
+
+**Review date:** 2026-10-26.
